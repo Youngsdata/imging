@@ -4,6 +4,9 @@
 !docker/
 !docker/nginx/
 !docker/nginx/default.conf
+!docker/nginx/app.conf
+!docker/nginx/ssl.conf
+!docker/nginx/40-enable-ssl.sh
 !图映-加密版-本地codecs.html
 !codecs/
 !codecs/**
