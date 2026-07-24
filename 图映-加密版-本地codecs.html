@@ -265,6 +265,8 @@
   .modetab.on{background:var(--surface); color:var(--teal-2); box-shadow:var(--shadow); border:1px solid var(--teal);}
   .modetab:not(.on){opacity:.92;}
   .modetab .new{font-family:var(--mono); font-size:9px; background:var(--coral); color:#fff; padding:1px 5px; border-radius:4px; font-weight:700;}
+  /* 图片压缩模式:复用单图/动图面板,但隐藏"选格式"区(格式已锁定=输入格式) */
+  #panel-img.cmode .fmtsec, #panel-anim.cmode .fmtsec{display:none;}
   .fmtgrid.g4{grid-template-columns:repeat(4,1fr);}
   @media(max-width:520px){ .fmtgrid.g4{grid-template-columns:repeat(2,1fr);} }
   .fmt .rec{position:absolute; top:-8px; left:50%; transform:translateX(-50%); font-size:9px; font-family:var(--mono); font-weight:700; padding:2px 6px; border-radius:5px; white-space:nowrap; letter-spacing:.01em;}
@@ -562,8 +564,9 @@
       </div>
       <div class="conv-body">
         <div class="modetabs" id="modetabs">
-          <button class="modetab on" data-mode="img" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="3" y="3" width="18" height="18" rx="2.5"/><circle cx="8.5" cy="8.5" r="1.6"/><path d="m21 15-5-5L5 21"/></svg>单图转换</button>
-          <button class="modetab" data-mode="anim" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="2.5" y="4" width="19" height="16" rx="2.5"/><path d="M7 4v16M17 4v16M2.5 9h4.5M17 9h4.5M2.5 15h4.5M17 15h4.5"/></svg>动图工坊<span class="new">新</span></button>
+          <button class="modetab on" data-mode="img" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="3" y="3" width="18" height="18" rx="2.5"/><circle cx="8.5" cy="8.5" r="1.6"/><path d="m21 15-5-5L5 21"/></svg>转换+压缩</button>
+          <button class="modetab" data-mode="compress" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V5a1 1 0 0 1 1-1h4M15 4h4a1 1 0 0 1 1 1v4M20 15v4a1 1 0 0 1-1 1h-4M9 20H5a1 1 0 0 1-1-1v-4"/><path d="m9 9 6 6M15 9l-6 6"/></svg>图片压缩<span class="new">新</span></button>
+          <button class="modetab" data-mode="anim" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="2.5" y="4" width="19" height="16" rx="2.5"/><path d="M7 4v16M17 4v16M2.5 9h4.5M17 9h4.5M2.5 15h4.5M17 15h4.5"/></svg>动图工坊</button>
         </div>
         <div id="panel-img">
         <!-- 上传区 -->
@@ -586,9 +589,11 @@
         <div class="srvnote" id="rdoffer" style="margin-top:9px"></div>
 
         <!-- 选格式 -->
+        <div class="fmtsec">
         <div class="seclabel"><span class="num">1</span>选择下载格式</div>
         <div class="fmtgrid" id="fmtgrid"></div>
         <p class="animsum" style="margin:8px 0 0; font-size:10.5px; line-height:1.5"><b style="color:var(--teal-2)">即时</b> = 浏览器能读原图 + 能编码目标格式 → 本地直接完成,原图不上传 &nbsp;·&nbsp; <b style="color:var(--teal-2)">端侧⤓</b> = 首次加载 WASM(AVIF 写 / HEIC 读),之后同样在本地完成 &nbsp;·&nbsp; <b style="color:var(--coral-2)">服务端</b> = 浏览器与端侧 WASM 都做不了的(如 HEIC 写)才交服务端</p>
+        </div>
 
         <!-- 选项 -->
         <div class="opts" id="opts"></div>
@@ -612,6 +617,26 @@
         </div>
         </div><!-- /panel-img -->
 
+        <!-- 图片压缩:上传入口(上传后按格式路由到「转换+压缩」或「动图工坊」的完整界面,只是锁定输出=输入格式)-->
+        <div id="panel-compress" hidden>
+          <div class="drop" id="dropC" tabindex="0" role="button" aria-label="上传图片或动图压缩">
+            <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V5a1 1 0 0 1 1-1h4M15 4h4a1 1 0 0 1 1 1v4M20 15v4a1 1 0 0 1-1 1h-4M9 20H5a1 1 0 0 1-1-1v-4"/></svg></div>
+            <b>把图片 / 动图拖到这里 · 或点击上传</b>
+            <p>同格式压缩:<b>传什么格式,就出什么格式</b> · 最大 40MB</p>
+            <div class="fmts">JPG · PNG · WEBP · GIF · APNG · AVIF &nbsp;(动图同样可压,含逐帧/循环)</div>
+            <input type="file" id="fileC" accept="image/*,.avif,.gif,.apng" hidden>
+          </div>
+          <div class="preview" id="previewC">
+            <img class="thumb" id="thumbC" alt="预览">
+            <div class="pv-meta">
+              <div class="fn" id="fnameC">image.jpg</div>
+              <div class="sz"><span id="fsizeC">—</span><span class="rdbadge" id="rdbadgeC"></span></div>
+            </div>
+            <button class="relink" id="relinkC">换一个</button>
+          </div>
+          <div class="srvnote" id="unsupC" style="margin-top:9px"></div>
+        </div><!-- /panel-compress -->
+
         <!-- 动图工坊 -->
         <div id="panel-anim" hidden>
           <div class="drop" id="dropA" tabindex="0" role="button" aria-label="上传动图或多张图">
@@ -629,8 +654,10 @@
             <div class="fstrip" id="fstrip"></div>
           </div>
 
-          <div class="seclabel"><span class="num">1</span>选择动图格式</div>
-          <div class="fmtgrid g4" id="fmtgridA"></div>
+          <div class="fmtsec">
+            <div class="seclabel"><span class="num">1</span>选择动图格式</div>
+            <div class="fmtgrid g4" id="fmtgridA"></div>
+          </div>
 
           <div class="opts" id="optsA"></div>
 
@@ -1042,6 +1069,7 @@
   var inputReadable=false, inputFmtName='';   // 输入端:浏览器能否解码这张原图(真去解一次得出)
   var modeline=document.getElementById('modeline'), rdbadge=document.getElementById('rdbadge'), rdoffer=document.getElementById('rdoffer'), smartline=document.getElementById('smartline');
   var SD=null, SDlock=false, isProgrammatic=false, curFeat=null;   // SD=推荐;SDlock=已接管;curFeat=本图特征
+  var imgLockFmt=null, animLockFmt=null;   // 「图片压缩」Tab:锁定输出格式=输入格式(null=正常的两个 Tab,不受影响)
   // 逐格式 × 内容档 的"视觉无损但最小"质量点(定义在此,须早于 init 的 pick(OUT[0]) → buildOpts 读它)。
   // 各值经"锚在已验证的 WebP 视觉无损点 + 真图肉眼 A/B"标定:JPG 与 WebP 相反(平滑档不能更低=防块状、锐边档很高=防振铃);
   // AVIF 是 UI 值(doConvert 内 ×0.78),普遍比 WebP 低约 2、体积小约 30%(实测 ui78≈WebP q80)。HEIC/JP2 服务端,principled 值。
@@ -1306,6 +1334,14 @@
     var cls=classify(F), soft=(F.alphaKind==='soft');
     var sd={cls:cls, fmt:'webp', q:80, p8:false, colorsExp:8, dither:false, scale:100, reason:'', offer:null, lowConf:false};
     var ce=Math.ceil(Math.log2(F.uniq+(F.hasAlpha?1:0))) + (F.edgeFrac>0.1?1:0); ce=Math.max(2,Math.min(8, isFinite(ce)?ce:8));
+    if(imgLockFmt){   // 「图片压缩」:锁定输出=输入格式,其余(档位芯片/推荐/回到推荐/缩放建议)全部复用单图逻辑
+      var tName={normal:'照片',smooth:'平滑照片',texture:'高纹理照片',sharp:'图标/线稿/截图'}[tierOf(F)];
+      sd.fmt=imgLockFmt;
+      if(imgLockFmt==='png'){ sd.p8=true; sd.colorsExp=ce; sd.dither=(ce>=6 && F.edgeMean<10); sd.reason='图片压缩 · 保持 PNG · 减色到 '+Math.pow(2,ce)+' 色(检测到'+tName+')'; }
+      else { var fn={jpg:'JPEG',webp:'WebP',avif:'AVIF'}[imgLockFmt]||imgLockFmt.toUpperCase(); sd.q=qualityFor(imgLockFmt,F); sd.reason='图片压缩 · 保持 '+fn+' · 检测到'+tName+' · 画质 '+sd.q+'(视觉无损又小)'; }
+      if(F.maxSide>2560) sd.offer={type:'scale', to:2048, max:F.maxSide, W:F.W0, H:F.H0};   // 保留"缩到 2048px 更省"的建议,不给换格式建议(格式已锁)
+      return sd;
+    }
     var lowConf=(F.uniq>=3000 && F.uniq<=6000 && F.edgeFrac>=0.28 && F.edgeFrac<=0.40);
     if(soft){ sd.fmt='webp'; sd.reason='检测到带渐变透明 · 已默认 WEBP · 画质 {q}(保留透明、线条干净)'; }
     else if(cls==='SOLID'){ sd.fmt='png'; sd.p8=true; sd.colorsExp=ce; sd.reason='检测到纯色/极简 · 已默认 PNG-8 · '+Math.pow(2,ce)+' 色(无损,通常最小)'; }
@@ -1415,17 +1451,17 @@
     };
     im.src=url;
   }
-  function reset(){ curFile=null; curImg=null; outBlob=null; inputReadable=false; inputFmtName=''; SD=null; SDlock=false; curFeat=null; hideSmart(); preview.classList.remove('show'); drop.style.display='block'; fileInput.value=''; result.classList.remove('show'); if(modeline) modeline.hidden=true; srvnote.classList.remove('show','codec'); if(rdoffer) rdoffer.classList.remove('show','codec'); updateGo(); }
+  function reset(){ var wasC=!!imgLockFmt; curFile=null; curImg=null; outBlob=null; inputReadable=false; inputFmtName=''; SD=null; SDlock=false; curFeat=null; hideSmart(); preview.classList.remove('show'); drop.style.display='block'; fileInput.value=''; result.classList.remove('show'); if(modeline) modeline.hidden=true; srvnote.classList.remove('show','codec'); if(rdoffer) rdoffer.classList.remove('show','codec'); updateGo(); if(wasC) showCompressHome(); }
 
   function updateGo(){ go.disabled=!(curFile && selFmt); }
 
-  fileInput.addEventListener('change', function(e){ loadFile(e.target.files[0]); });
+  fileInput.addEventListener('change', function(e){ imgLockFmt=null; go.textContent='转换并下载'; loadFile(e.target.files[0]); });   // 在「转换+压缩」里主动上传 → 解除压缩锁
   drop.addEventListener('click', function(){ fileInput.click(); });
   drop.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); fileInput.click(); } });
   relink.addEventListener('click', reset);
   ['dragenter','dragover'].forEach(function(ev){ drop.addEventListener(ev,function(e){ e.preventDefault(); drop.classList.add('over'); }); });
   ['dragleave','drop'].forEach(function(ev){ drop.addEventListener(ev,function(e){ e.preventDefault(); drop.classList.remove('over'); }); });
-  drop.addEventListener('drop', function(e){ if(e.dataTransfer.files[0]) loadFile(e.dataTransfer.files[0]); });
+  drop.addEventListener('drop', function(e){ if(e.dataTransfer.files[0]){ imgLockFmt=null; go.textContent='转换并下载'; loadFile(e.dataTransfer.files[0]); } });
 
   /* 转换 */
   go.addEventListener('click', async function(){
@@ -1439,7 +1475,7 @@
     go.textContent='处理中…'; go.disabled=true;
     await new Promise(function(r){ setTimeout(r,30); });
     try{ await doConvert(); } catch(e){ srvnote.classList.add('show'); srvnote.innerHTML='处理出错:'+((e&&e.message)||e); }
-    go.textContent='转换并下载'; go.disabled=false;
+    go.textContent=(imgLockFmt?'压缩并下载':'转换并下载'); go.disabled=false;
   });
 
   /* —— 引擎已外置到 dist/engine.min.js —— */
@@ -1497,14 +1533,98 @@
   function val(id,def){ var e=opts.querySelector('#'+id); return e?e.value:def; }
   function checked(id){ var e=opts.querySelector('#'+id); return e?e.checked:false; }
 
+  /* ---------- 图片压缩 = 路由:静态图 → 复用「转换+压缩」完整界面,动图 → 复用「动图工坊」完整界面;都只锁定输出=输入格式 ---------- */
+  function showCompressHome(){   // 回到压缩上传首页(供 relink / reset / resetAnim / 切 Tab 调用)
+    imgLockFmt=null; animLockFmt=null;
+    var pc=document.getElementById('panel-compress');
+    if(panelImg) panelImg.hidden=true; if(panelAnim) panelAnim.hidden=true; if(pc) pc.hidden=false;
+    if(panelImg) panelImg.classList.remove('cmode'); if(panelAnim) panelAnim.classList.remove('cmode');
+    if(go) go.textContent='转换并下载';
+    var dc=document.getElementById('dropC'), pv=document.getElementById('previewC'), un=document.getElementById('unsupC'), fc=document.getElementById('fileC');
+    if(dc) dc.style.display='block'; if(pv) pv.classList.remove('show'); if(un) un.classList.remove('show','codec'); if(fc) fc.value='';
+  }
+  (function(){
+    var dropC=document.getElementById('dropC'), fileC=document.getElementById('fileC'),
+        previewC=document.getElementById('previewC'), thumbC=document.getElementById('thumbC'),
+        fnameC=document.getElementById('fnameC'), fsizeC=document.getElementById('fsizeC'),
+        rdbadgeC=document.getElementById('rdbadgeC'), unsupC=document.getElementById('unsupC'), relinkC=document.getElementById('relinkC');
+    var EXT_MIME={jpg:'image/jpeg',jpeg:'image/jpeg',png:'image/png',apng:'image/apng',webp:'image/webp',gif:'image/gif',avif:'image/avif'};
+    function mimeOf(f){ var t=(f.type||'').toLowerCase(); if(t&&t!=='application/octet-stream') return t; return EXT_MIME[(f.name.split('.').pop()||'').toLowerCase()]||''; }
+    var cf=null;
+    function previewFile(f){ var url=URL.createObjectURL(f); fnameC.textContent=f.name; fsizeC.textContent=fmtBytes(f.size)+' · '+(f.type||mimeOf(f)||'unknown');
+      dropC.style.display='none'; previewC.classList.add('show');
+      var im=new Image(); im.onload=function(){ thumbC.src=url; thumbC.style.background=''; }; im.onerror=function(){ thumbC.src=phTile((f.name.split('.').pop()||'IMG').toUpperCase()); thumbC.style.background='var(--teal-bg)'; }; im.src=url; }
+    function showUnsupC(f, decodeFail){ previewFile(f); rdbadgeC.className='rdbadge srv'; rdbadgeC.textContent=decodeFail?'浏览器无法解码':'不支持压缩';
+      unsupC.classList.remove('codec'); unsupC.classList.add('show');
+      unsupC.innerHTML='<span class="txt">⚠ <b>'+(f.name.split('.').pop()||'IMG').toUpperCase()+'</b> '+(decodeFail?'浏览器无法解码':'没有浏览器端编码器,无法同格式压缩')+'。可在「<b>转换+压缩</b>」里转成 <b>WEBP / JPG / PNG</b> 再压。</span>'; }
+
+    async function routeCompress(f){
+      if(!f) return; cf=f; unsupC.classList.remove('show','codec');
+      var mime=mimeOf(f);
+      var kind={'image/jpeg':'jpeg','image/webp':'webp','image/png':'png','image/apng':'png','image/gif':'gif','image/avif':'avif'}[mime]||'';
+      if(!kind){ showUnsupC(f); return; }
+      var animated=(kind==='gif');
+      if(!animated && (kind==='webp'||kind==='png'||kind==='avif') && ('ImageDecoder' in window)){
+        previewFile(f); rdbadgeC.className='rdbadge'; rdbadgeC.textContent='检测中…';
+        try{ var r=await decodeAnim(f); if(cf!==f) return; if(r&&r.frames&&r.frames.length>1) animated=true; }catch(e){}
+      }
+      if(animated){ routeToAnim(f, {gif:'gif',apng:'apng',webp:'webp',avif:'avif',png:'apng'}[kind]||'webp'); }
+      else {
+        if(kind==='avif' && !(window.TYCODECS&&TYCODECS.enc&&TYCODECS.enc['image/avif'])){ offerAvifCodecC(f); return; }
+        var ifmt={jpeg:'jpg',png:'png',webp:'webp',avif:'avif'}[kind]; if(!ifmt){ showUnsupC(f); return; }
+        routeToImg(f, ifmt);
+      }
+    }
+    function routeToImg(f, fmtId){ imgLockFmt=fmtId; animLockFmt=null;
+      document.getElementById('panel-compress').hidden=true; panelAnim.hidden=true; panelImg.hidden=false; panelImg.classList.add('cmode');
+      go.textContent='压缩并下载'; loadFile(f); }
+    function routeToAnim(f, fmtId){ animLockFmt=fmtId; imgLockFmt=null;
+      document.getElementById('panel-compress').hidden=true; panelImg.hidden=true; panelAnim.hidden=false; panelAnim.classList.add('cmode');
+      loadAnim([f]); }
+    function offerAvifCodecC(f){ previewFile(f); var cc=CODEC_ENC.avif;
+      if(!(window.TYCODECS && window.TY_CODECS_LOCAL && TYCODECS.wasmOK)){ rdbadgeC.className='rdbadge srv'; rdbadgeC.textContent='端侧编码不可用';
+        unsupC.classList.remove('codec'); unsupC.classList.add('show');
+        unsupC.innerHTML='<span class="txt">⚠ <b>AVIF</b> 同格式压缩需端侧 AVIF 编码器(完整版随包)。演示版可用「<b>转换+压缩</b>」转成 WEBP 压缩。</span>'; return; }
+      rdbadgeC.className='rdbadge load'; rdbadgeC.textContent='端侧⤓ 待加载'; unsupC.classList.add('show','codec');
+      var envHint=codecEnvHint();
+      if(envHint){ unsupC.innerHTML=CHIP_SVG+'<span class="txt"><b>AVIF</b> 支持在本地端侧压缩,但'+envHint+'</span>'; return; }
+      unsupC.innerHTML=CHIP_SVG+'<span class="txt"><b>AVIF</b> 压缩需加载自托管的 <b>AVIF 编解码器 WASM</b>,之后本地完成、原图不上传。<b>加载一次,三个 Tab 通用</b>。</span><button id="loadCodecC" class="codec-btn">'+DL_SVG+'加载编解码器</button>';
+      var b=document.getElementById('loadCodecC');
+      if(b) b.addEventListener('click', function(){ b.disabled=true; b.innerHTML=DL_SVG+'加载中…';
+        TYCODECS.load(cc.name).then(function(){ if(TYCODECS.enc['image/avif']){ rememberCodec(cc.name); markFmtLive('avif','image/avif'); unsupC.classList.remove('show','codec'); routeCompress(f); }
+          else { b.disabled=false; b.innerHTML=DL_SVG+'加载编解码器'; } })
+        .catch(function(err){ var h=codecEnvHint(); if(h){ b.disabled=false; b.innerHTML=DL_SVG+'重试'; unsupC.innerHTML=CHIP_SVG+'<span class="txt"><b>AVIF</b> '+h+'</span>'; } else { unsupC.classList.remove('codec'); unsupC.innerHTML='加载失败:'+((err&&err.message)||err)+'(确认 codecs/avif.js 存在)。'; } }); });
+    }
+    if(fileC){
+      fileC.addEventListener('change', function(e){ routeCompress(e.target.files[0]); });
+      dropC.addEventListener('click', function(){ fileC.click(); });
+      dropC.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); fileC.click(); } });
+      if(relinkC) relinkC.addEventListener('click', function(){ showCompressHome(); });
+      ['dragenter','dragover'].forEach(function(ev){ dropC.addEventListener(ev,function(e){ e.preventDefault(); dropC.classList.add('over'); }); });
+      ['dragleave','drop'].forEach(function(ev){ dropC.addEventListener(ev,function(e){ e.preventDefault(); dropC.classList.remove('over'); }); });
+      dropC.addEventListener('drop', function(e){ if(e.dataTransfer.files[0]) routeCompress(e.dataTransfer.files[0]); });
+    }
+  })();
+
   /* ---------- 动图工坊 ---------- */
   var modetabs=document.getElementById('modetabs'),
-      panelImg=document.getElementById('panel-img'), panelAnim=document.getElementById('panel-anim');
+      panelImg=document.getElementById('panel-img'), panelAnim=document.getElementById('panel-anim'),
+      panelCompress=document.getElementById('panel-compress');
   modetabs.addEventListener('click', function(e){
     var b=e.target.closest('.modetab'); if(!b) return;
     [].forEach.call(modetabs.children, function(c){ c.classList.toggle('on', c===b); });
-    var anim=(b.dataset.mode==='anim'); panelImg.hidden=anim; panelAnim.hidden=!anim;
+    showTabPanel(b.dataset.mode);
   });
+  // 切 Tab 不清空压缩文件:图片压缩若已加载文件,切回来自动恢复其路由面板(和原有两个 Tab 一样保留各自状态)
+  function showTabPanel(m){
+    if(m==='img'){ panelImg.classList.remove('cmode'); go.textContent='转换并下载'; panelImg.hidden=false; panelCompress.hidden=true; panelAnim.hidden=true; }
+    else if(m==='anim'){ panelAnim.classList.remove('cmode'); panelAnim.hidden=false; panelCompress.hidden=true; panelImg.hidden=true; }
+    else {   // 图片压缩:有已加载的压缩文件 → 显示其路由面板(带锁);否则显示上传首页
+      if(animLockFmt){ panelAnim.classList.add('cmode'); panelAnim.hidden=false; panelImg.hidden=true; panelCompress.hidden=true; }
+      else if(imgLockFmt){ panelImg.classList.add('cmode'); go.textContent='压缩并下载'; panelImg.hidden=false; panelAnim.hidden=true; panelCompress.hidden=true; }
+      else { panelCompress.hidden=false; panelImg.hidden=true; panelAnim.hidden=true; }
+    }
+  }
 
   var AOUT=[
     {id:'webp', name:'WEBP', rec:'✓ 推荐', cls:'b', note:'又小又清晰', live:true},
@@ -1558,6 +1678,13 @@
     sda.qARec=qualityForA(cls, F, nFrames);   // 动图 WebP 推荐画质(即使默认走 GIF 也先算好,供切到 WebP 时提示)
     sda.tier=tierOf(F);                        // 本图档位,供 UI 高亮
     sda.big=bigAnim(F, nFrames);
+    if(animLockFmt){   // 「图片压缩」:锁定输出=输入格式,逐帧编辑器/循环/推荐等全部复用动图工坊
+      sda.fmt=animLockFmt;
+      if(animLockFmt==='gif'){ sda.colA=Math.max(16,Math.min(256,Math.ceil((F.uniq||16)/16)*16)); sda.dither=(F.uniq<=4?'none':'fs'); sda.reason='图片压缩 · 保持 GIF · '+sda.colA+' 色 · '+nFrames+' 帧'; }
+      else if(animLockFmt==='apng'){ sda.reason='图片压缩 · 保持 APNG(真彩无损)· '+nFrames+' 帧'; }
+      else { sda.qA=qualityForA(cls,F,nFrames); sda.reason='图片压缩 · 保持 '+({webp:'动图 WebP',avif:'动图 AVIF'}[animLockFmt]||animLockFmt.toUpperCase())+' · 画质 '+sda.qA+' · '+nFrames+' 帧'; }
+      return sda;
+    }
     // 线条/纯色/低色线稿 → GIF(边缘干净、兼容最好);其余(照片/彩色线稿/截图)→ 动图 WebP。
     var lineLike=(cls==='SOLID' || cls==='ICON' || (cls==='ILLUS' && F.uniq<=256));
     if(lineLike){
@@ -1672,7 +1799,7 @@
   }
   function bindR(id,vid,suf){ var e=optsA.querySelector('#'+id); if(e) e.oninput=function(){ optsA.querySelector('#'+vid).textContent=e.value+suf; }; }
 
-  fileA.addEventListener('change', function(e){ loadAnim([].slice.call(e.target.files)); });
+  fileA.addEventListener('change', function(e){ animLockFmt=null; loadAnim([].slice.call(e.target.files)); });   // 在「动图工坊」里主动上传 → 解除压缩锁
   var fileAadd=document.getElementById('fileAadd'), feAdd=document.getElementById('feAdd');
   if(feAdd) feAdd.addEventListener('click', function(e){ e.stopPropagation(); if(fileAadd) fileAadd.click(); });
   if(fileAadd){ fileAadd.addEventListener('click', function(e){ e.stopPropagation(); });   // 双保险:别冒泡到任何上传区
@@ -1681,7 +1808,7 @@
   dropA.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); fileA.click(); } });
   ['dragenter','dragover'].forEach(function(ev){ dropA.addEventListener(ev,function(e){ e.preventDefault(); dropA.classList.add('over'); }); });
   ['dragleave','drop'].forEach(function(ev){ dropA.addEventListener(ev,function(e){ e.preventDefault(); dropA.classList.remove('over'); }); });
-  dropA.addEventListener('drop', function(e){ if(e.dataTransfer.files.length) loadAnim([].slice.call(e.dataTransfer.files)); });
+  dropA.addEventListener('drop', function(e){ if(e.dataTransfer.files.length){ animLockFmt=null; loadAnim([].slice.call(e.dataTransfer.files)); } });
 
   function loadAnim(files){
     if(!files.length) return; animFiles=files; outBlobA=null; if(resultA) resultA.classList.remove('show'); srvnoteA.classList.remove('show');
@@ -1692,6 +1819,10 @@
       animprev.style.alignItems='center';
       // 静态首帧预览(不再把整个大动图当 <img> 循环播放 —— 大 APNG 会持续解码吃 CPU,切回标签就卡)
       animprev.innerHTML='<img id="apvImg" alt="首帧预览" style="background:var(--teal-bg)"><div class="pv-meta" style="flex:1;min-width:0"><div class="fn">'+esc(one.name)+'</div><div class="sz"><span>'+fmtBytes(one.size)+' · 压缩模式</span><span class="rdbadge" id="rdbadgeA"></span></div></div><button class="relink" id="relinkA">换一个</button>';
+      // 原生首帧快照:GIF/APNG/WebP 用 <img> 画到 canvas 取静态首帧 —— 不依赖 WebCodecs,http+IP(无安全上下文)也能预览
+      (function(){ var apv=document.getElementById('apvImg'); if(!apv) return; var u=URL.createObjectURL(one), pim=new Image();
+        pim.onload=function(){ try{ var c=document.createElement('canvas'); c.width=pim.naturalWidth||160; c.height=pim.naturalHeight||160; c.getContext('2d').drawImage(pim,0,0); apv.src=c.toDataURL('image/png'); }catch(e){ apv.src=u; } };
+        pim.onerror=function(){}; pim.src=u; })();
     } else {
       animMode='assemble';
       var h='<div style="flex:1;min-width:0"><div class="fn">'+files.length+' 张图 → 合成动图 <span class="rdbadge" id="rdbadgeA"></span></div><div class="sz">在下方逐帧编辑器里排序 · 调时长 · 删帧</div></div><button class="relink" id="relinkA">重选</button>';
@@ -1715,7 +1846,7 @@
     if(b){ if(allOk){ b.className='rdbadge ok'; b.textContent='✓ 浏览器可读'; } else { b.className='rdbadge srv'; b.textContent='需服务端解码('+okN+'/'+sample.length+' 可读)'; } }
     updateModeA();
   }
-  function resetAnim(){ freeFramesA(); animFiles=[]; animMode=''; animReadable=true; animInFmt=''; outBlobA=null; editFrames=[]; SDA=null; SDAlock=false; if(smartlineA) smartlineA.hidden=true; animprev.classList.remove('show'); animprev.innerHTML=''; if(fedit) fedit.classList.remove('show'); if(fstrip) fstrip.innerHTML=''; dropA.style.display='block'; fileA.value=''; srvnoteA.classList.remove('show'); if(resultA) resultA.classList.remove('show'); if(modelineA) modelineA.hidden=true; buildOptsA(); updateGoA(); }
+  function resetAnim(){ var wasC=!!animLockFmt; freeFramesA(); animFiles=[]; animMode=''; animReadable=true; animInFmt=''; outBlobA=null; editFrames=[]; SDA=null; SDAlock=false; if(smartlineA) smartlineA.hidden=true; animprev.classList.remove('show'); animprev.innerHTML=''; if(fedit) fedit.classList.remove('show'); if(fstrip) fstrip.innerHTML=''; dropA.style.display='block'; fileA.value=''; srvnoteA.classList.remove('show'); if(resultA) resultA.classList.remove('show'); if(modelineA) modelineA.hidden=true; buildOptsA(); updateGoA(); if(wasC) showCompressHome(); }
   function updateGoA(){ goA.disabled=!(animFiles.length && selA); }
   function esc(s){ return String(s).replace(/[<>&"]/g,function(c){return {'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c];}); }
 
