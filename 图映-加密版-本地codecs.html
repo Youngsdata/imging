@@ -1,0 +1,1930 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>图映 · 在线图片转换</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Cdefs%3E%3ClinearGradient%20id='g'%20x1='0'%20y1='0'%20x2='1'%20y2='1'%3E%3Cstop%20offset='0'%20stop-color='%230fa79f'/%3E%3Cstop%20offset='.55'%20stop-color='%23f4553f'/%3E%3Cstop%20offset='1'%20stop-color='%230fa79f'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20x='8'%20y='8'%20width='84'%20height='84'%20rx='24'%20fill='url(%23g)'/%3E%3Crect%20x='39'%20y='39'%20width='22'%20height='22'%20rx='6'%20fill='%23fff'/%3E%3C/svg%3E">
+</head><body>
+<style>
+  /* ============ 设计令牌 ============ */
+  :root{
+    --bg:#faf8f4; --bg-2:#f2efe8; --surface:#ffffff; --surface-2:#fbfaf7;
+    --ink:#1b1a22; --ink-2:#403e4b; --muted:#6d6a7a; --faint:#9b98a7;
+    --line:#e7e3da; --line-2:#d9d4c8;
+    --teal:#0fa79f; --teal-2:#0c8a83; --teal-bg:#e2f4f2;
+    --coral:#f4553f; --coral-2:#dd4330; --coral-bg:#fdeae6;
+    --shadow:0 1px 2px rgba(27,26,34,.04), 0 12px 34px -18px rgba(27,26,34,.22);
+    --shadow-lg:0 30px 70px -40px rgba(27,26,34,.4);
+    --r:14px; --r-sm:10px; --r-lg:22px;
+    --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+    --sans:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",Roboto,sans-serif;
+    --maxw:1140px;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --bg:#131218; --bg-2:#1a1922; --surface:#1e1d27; --surface-2:#232230;
+      --ink:#f0eef5; --ink-2:#c8c5d4; --muted:#928fa2; --faint:#6c6980;
+      --line:#2c2b38; --line-2:#3a3849;
+      --teal:#2ad4c9; --teal-2:#54e0d6; --teal-bg:#123330;
+      --coral:#ff6f57; --coral-2:#ff8873; --coral-bg:#3a1c17;
+      --shadow:0 1px 2px rgba(0,0,0,.3), 0 16px 40px -20px rgba(0,0,0,.6);
+      --shadow-lg:0 40px 90px -45px rgba(0,0,0,.75);
+    }
+  }
+  :root[data-theme="light"]{
+    --bg:#faf8f4; --bg-2:#f2efe8; --surface:#ffffff; --surface-2:#fbfaf7;
+    --ink:#1b1a22; --ink-2:#403e4b; --muted:#6d6a7a; --faint:#9b98a7;
+    --line:#e7e3da; --line-2:#d9d4c8;
+    --teal:#0fa79f; --teal-2:#0c8a83; --teal-bg:#e2f4f2;
+    --coral:#f4553f; --coral-2:#dd4330; --coral-bg:#fdeae6;
+    --shadow:0 1px 2px rgba(27,26,34,.04), 0 12px 34px -18px rgba(27,26,34,.22);
+    --shadow-lg:0 30px 70px -40px rgba(27,26,34,.4);
+  }
+  :root[data-theme="dark"]{
+    --bg:#131218; --bg-2:#1a1922; --surface:#1e1d27; --surface-2:#232230;
+    --ink:#f0eef5; --ink-2:#c8c5d4; --muted:#928fa2; --faint:#6c6980;
+    --line:#2c2b38; --line-2:#3a3849;
+    --teal:#2ad4c9; --teal-2:#54e0d6; --teal-bg:#123330;
+    --coral:#ff6f57; --coral-2:#ff8873; --coral-bg:#3a1c17;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 16px 40px -20px rgba(0,0,0,.6);
+    --shadow-lg:0 40px 90px -45px rgba(0,0,0,.75);
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion:reduce){ html{scroll-behavior:auto;} }
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:var(--sans); font-size:16px; line-height:1.6;
+    -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+    overflow-x:hidden;
+  }
+  .wrap{max-width:var(--maxw); margin:0 auto; padding:0 24px;}
+  a{color:inherit; text-decoration:none;}
+  h1,h2,h3{margin:0; text-wrap:balance; letter-spacing:-.02em; font-weight:800;}
+  .mono{font-family:var(--mono);}
+  .eyebrow{font-family:var(--mono); font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:var(--teal-2); font-weight:600;}
+
+  /* ============ 顶栏 ============ */
+  header.top{position:sticky; top:0; z-index:50; background:color-mix(in srgb, var(--bg) 86%, transparent); backdrop-filter:blur(10px); border-bottom:1px solid var(--line);}
+  .topin{display:flex; align-items:center; justify-content:space-between; height:62px;}
+  .brand{display:flex; align-items:center; gap:11px; font-weight:800; font-size:18px; letter-spacing:-.02em;}
+  .logo{width:34px; height:34px; border-radius:9px; position:relative; background:
+      conic-gradient(from 45deg, var(--teal), var(--coral), var(--teal)); display:grid; place-items:center; box-shadow:var(--shadow);}
+  .logo::after{content:""; width:12px; height:12px; border-radius:3px; background:var(--surface);}
+  .brand small{font-family:var(--mono); font-size:11px; color:var(--muted); font-weight:500; letter-spacing:.04em;}
+  .navlinks{display:flex; align-items:center; gap:26px; font-size:14.5px; color:var(--ink-2); font-weight:500;}
+  .navlinks a:hover{color:var(--teal-2);}
+  .top-actions{display:flex; align-items:center; gap:12px;}
+  .themebtn{width:38px; height:38px; border-radius:10px; border:1px solid var(--line); background:var(--surface); color:var(--ink-2); cursor:pointer; display:grid; place-items:center; transition:.2s;}
+  .themebtn:hover{border-color:var(--teal); color:var(--teal-2);}
+  .btn{font-family:var(--sans); font-weight:650; border:none; cursor:pointer; border-radius:11px; padding:11px 18px; font-size:14.5px; transition:transform .12s ease, box-shadow .2s, background .2s; display:inline-flex; align-items:center; gap:8px;}
+  .btn-primary{background:var(--coral); color:#fff; box-shadow:0 8px 22px -10px var(--coral);}
+  .btn-primary:hover{background:var(--coral-2); transform:translateY(-1px);}
+  .btn-ghost{background:transparent; border:1px solid var(--line-2); color:var(--ink);}
+  .btn-ghost:hover{border-color:var(--teal); color:var(--teal-2);}
+  @media(max-width:820px){ .navlinks{display:none;} }
+
+  /* ============ HERO ============ */
+  .hero{position:relative; padding:24px 0 30px; overflow:hidden;}
+  #pxcanvas{position:absolute; inset:0; width:100%; height:100%; z-index:0; opacity:.5; pointer-events:none;}
+  .herogrid{position:relative; z-index:1; display:grid; grid-template-columns:1fr 1.04fr; gap:46px; align-items:stretch;}
+  @media(max-width:940px){ .herogrid{grid-template-columns:1fr; gap:34px; align-items:start;} }
+  .herol{display:flex; flex-direction:column; min-width:0;}
+  .hero h1{font-size:clamp(32px,4.6vw,48px); line-height:1.06; font-weight:850;}
+  .hero h1 .hl{color:var(--teal-2); position:relative; white-space:nowrap;}
+  .lead{margin-top:16px; font-size:17px; color:var(--ink-2); line-height:1.6; max-width:38ch;}
+  .lead b{color:var(--ink); font-weight:700;}
+  .trust{display:flex; flex-wrap:wrap; gap:9px; margin-top:22px;}
+  .chip{display:inline-flex; align-items:center; gap:7px; font-size:13px; font-weight:600; color:var(--ink-2); background:var(--surface); border:1px solid var(--line); border-radius:999px; padding:7px 13px;}
+  .chip svg{width:15px; height:15px; color:var(--teal-2);}
+  .stats{display:flex; gap:28px; margin-top:26px;}
+  .stat .n{font-family:var(--mono); font-size:26px; font-weight:700; color:var(--ink); letter-spacing:-.02em;}
+  .stat .l{font-size:12.5px; color:var(--muted); margin-top:2px;}
+  /* DataDance 品牌区(用 .dbrand 独立类名,避免与头部 .brand 撞车):桌面推到左列底部,与右侧转换器底对齐 */
+  .dbrand{display:block; margin-top:28px; padding-top:20px; border-top:1px solid var(--line); text-decoration:none; color:inherit; transition:opacity .15s ease;}
+  @media(min-width:941px){ .dbrand{margin-top:auto;} }
+  .dbrand-head{display:flex; align-items:baseline; gap:10px;}
+  .dbrand-name{font-family:var(--mono); font-size:24px; font-weight:800; letter-spacing:-.01em; line-height:1; background:linear-gradient(96deg,var(--teal) 8%,var(--coral) 92%); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; color:transparent;}
+  .dbrand-by{font-family:var(--mono); font-size:12px; font-weight:700; color:var(--muted); letter-spacing:.14em;}
+  .dbrand-slogan{font-size:13.5px; font-weight:650; color:var(--ink-2); margin-top:8px; letter-spacing:.01em;}
+  .dbrand-note{font-size:12px; color:var(--muted); margin:7px 0 0; line-height:1.55;}
+  .dbrand-note b{color:var(--coral-2); font-weight:700;}
+  .dbrand-mail{color:var(--teal-2); font-weight:600;}
+  .dbrand:hover{opacity:.86;}
+  .dbrand:hover .dbrand-mail{text-decoration:underline;}
+
+  /* ============ 转换器 ============ */
+  .converter{background:var(--surface); border:1px solid var(--line); border-radius:var(--r-lg); box-shadow:var(--shadow-lg); overflow:hidden;}
+  .conv-head{display:flex; align-items:center; justify-content:space-between; padding:12px 16px; border-bottom:1px solid var(--line); background:var(--surface-2);}
+  .conv-head .t{font-weight:700; font-size:14.5px; display:flex; align-items:center; gap:9px;}
+  .dot3{display:flex; gap:5px;} .dot3 i{width:9px;height:9px;border-radius:50%;display:block;}
+  .conv-body{padding:12px 14px 13px;}
+  .drop{border:2px dashed var(--line-2); border-radius:var(--r); background:var(--surface-2); padding:12px 14px; text-align:center; cursor:pointer; transition:.18s; position:relative;}
+  .drop:hover,.drop.over{border-color:var(--teal); background:var(--teal-bg);}
+  .drop.pulse{border-color:var(--coral); animation:pulseA .7s ease 2;}
+  @keyframes pulseA{0%,100%{box-shadow:0 0 0 0 var(--coral-bg);}50%{box-shadow:0 0 0 6px var(--coral-bg);}}
+  @media (prefers-reduced-motion:reduce){ .drop.pulse{animation:none;} }
+  .drop .ic{width:38px;height:38px;border-radius:11px;background:var(--teal-bg);color:var(--teal-2);display:grid;place-items:center;margin:0 auto 7px;}
+  .drop .ic svg{width:21px;height:21px;}
+  .drop b{font-size:14.5px; color:var(--ink);}
+  .drop p{margin:5px 0 0; font-size:13px; color:var(--muted);}
+  .drop .fmts{margin-top:7px; font-family:var(--mono); font-size:10.5px; color:var(--faint); letter-spacing:.02em; line-height:1.55;}
+
+  .preview{display:none; gap:14px; align-items:center;}
+  .preview.show{display:flex;}
+  .thumb{width:62px; height:62px; border-radius:10px; object-fit:cover; border:1px solid var(--line-2); background:
+     repeating-conic-gradient(var(--bg-2) 0 25%, transparent 0 50%) 0 0/16px 16px, var(--surface);}
+  .pv-meta{flex:1; min-width:0;}
+  .pv-meta .fn{font-weight:650; font-size:14.5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .pv-meta .sz{font-family:var(--mono); font-size:12.5px; color:var(--muted); margin-top:3px;}
+  .relink{font-size:13px; color:var(--teal-2); font-weight:600; cursor:pointer; border:none; background:none; padding:0;}
+  .relink:hover{text-decoration:underline;}
+
+  .seclabel{font-size:12px; font-weight:700; color:var(--muted); letter-spacing:.04em; margin:10px 0 7px; display:flex; align-items:center; gap:8px;}
+  .seclabel .num{font-family:var(--mono); color:var(--teal-2); background:var(--teal-bg); border-radius:6px; width:20px; height:20px; display:grid; place-items:center; font-size:12px;}
+
+  .fmtgrid{display:grid; grid-template-columns:repeat(5,1fr); gap:6px;}
+  @media(max-width:520px){ .fmtgrid{grid-template-columns:repeat(3,1fr);} }
+  .fmt{position:relative; border:1.5px solid var(--line); background:var(--surface-2); border-radius:10px; padding:7px 4px 6px; text-align:center; cursor:pointer; transition:.15s;}
+  .fmt:hover{border-color:var(--teal); transform:translateY(-1px);}
+  .fmt.sel{border-color:var(--teal); background:var(--teal-bg); box-shadow:inset 0 0 0 1px var(--teal);}
+  .fmt .fn{font-family:var(--mono); font-weight:700; font-size:13.5px; letter-spacing:.01em; color:var(--ink);}
+  .fmt .badge{position:absolute; top:-7px; right:-6px; font-size:9px; font-family:var(--mono); font-weight:700; padding:2px 5px; border-radius:5px; letter-spacing:.02em;}
+  .badge.live{background:var(--teal); color:#fff;}
+  .badge.load{background:var(--teal-bg); color:var(--teal-2); border:1px dashed color-mix(in srgb,var(--teal) 46%, transparent);}
+  .badge.srv{background:var(--bg-2); color:var(--muted); border:1px solid var(--line-2);}
+
+  .opts{margin-top:9px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--r-sm); padding:10px 12px; display:none; flex-direction:column; gap:9px;}
+  .opts.show{display:flex;}
+  .opt{display:flex; align-items:center; gap:12px;}
+  .opt label{font-size:13.5px; font-weight:600; color:var(--ink-2); min-width:96px;}
+  .opt input[type=range]{flex:1; accent-color:var(--teal); height:4px;}
+  .opt .val{font-family:var(--mono); font-size:13px; color:var(--teal-2); min-width:52px; text-align:right; font-weight:600;}
+  .switch{position:relative; width:42px; height:24px; flex:0 0 auto;}
+  .switch input{opacity:0; width:0; height:0;}
+  .slider{position:absolute; inset:0; background:var(--line-2); border-radius:99px; cursor:pointer; transition:.2s;}
+  .slider::before{content:""; position:absolute; width:18px; height:18px; left:3px; top:3px; background:#fff; border-radius:50%; transition:.2s; box-shadow:0 1px 3px rgba(0,0,0,.3);}
+  .switch input:checked + .slider{background:var(--teal);}
+  .switch input:checked + .slider::before{transform:translateX(18px);}
+  .opt-row{display:flex; align-items:center; justify-content:space-between;}
+  .opt-row .lbl b{font-size:13.5px; color:var(--ink-2);}
+  .opt-row .lbl small{display:block; font-size:11.5px; color:var(--muted); font-weight:500;}
+  /* 专业动图控制面板 */
+  .optgroup{display:flex; flex-direction:column; gap:9px; border-top:1px solid var(--line); padding-top:11px;}
+  .optgroup:first-child{border-top:none; padding-top:0;}
+  .optgroup-t{font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--teal-2); font-weight:700;}
+  .opt2{display:flex; align-items:center; justify-content:space-between; gap:10px; margin:0;}
+  .opt2 .k{font-size:13.5px; font-weight:600; color:var(--ink-2);}
+  .opt2 .k small{font-weight:500; font-size:11.5px;}
+  .seg{display:inline-flex; gap:2px; background:var(--bg-2); border:1px solid var(--line); border-radius:8px; padding:2px;}
+  .seg button{border:none; background:none; font-family:var(--sans); font-size:12.5px; font-weight:600; color:var(--ink-2); padding:5px 11px; border-radius:6px; cursor:pointer; transition:.12s; white-space:nowrap;}
+  .seg button:hover{color:var(--teal-2);}
+  .seg button.on{background:var(--surface); color:var(--teal-2); box-shadow:var(--shadow);}
+  .numin{width:48px; text-align:center; font-family:var(--mono); font-size:13px; font-weight:700; color:var(--ink); background:var(--surface); border:1px solid var(--line-2); border-radius:7px; padding:5px 4px;}
+  .selin{font-family:var(--sans); font-size:12.5px; font-weight:600; color:var(--ink); background:var(--surface); border:1px solid var(--line-2); border-radius:7px; padding:6px 9px; cursor:pointer;}
+  .animsum{font-family:var(--mono); font-size:11.5px; color:var(--muted); margin:-3px 0 0;}
+  .moretoggle{align-self:flex-start; background:none; border:none; color:var(--teal-2); font-family:var(--sans); font-size:12.5px; font-weight:700; cursor:pointer; padding:2px 0; display:flex; align-items:center; gap:6px; margin-top:-2px;}
+  .moretoggle svg{width:13px; height:13px; transition:transform .2s;}
+  .moretoggle.open svg{transform:rotate(180deg);}
+  #advA{padding-top:11px; margin-top:-2px; border-top:1px dashed var(--line);}
+  .optgroup[hidden]{display:none !important;}
+  /* 输入可读徽标 + 处理方式提示 */
+  .rdbadge{font-family:var(--mono); font-size:10.5px; font-weight:700; padding:2px 7px; border-radius:5px; margin-left:8px; white-space:nowrap;}
+  .rdbadge.ok{background:var(--teal-bg); color:var(--teal-2);}
+  .rdbadge.load{background:var(--teal-bg); color:var(--teal-2); border:1px dashed color-mix(in srgb,var(--teal) 46%, transparent);}
+  .rdbadge.srv{background:var(--coral-bg); color:var(--coral-2);}
+  /* ===== 统一提示条视觉语言:柔和圆角卡 · 图标/标记顶对齐 · 动作按钮右侧居中 ===== */
+  .modeline{font-size:12.5px; font-weight:600; border-radius:11px; padding:9px 12px; margin-bottom:9px; display:flex; align-items:flex-start; gap:9px; line-height:1.5;}
+  .modeline[hidden]{display:none !important;}
+  .modeline svg{width:16px; height:16px; flex:0 0 auto; margin-top:1px;}
+  .modeline.client{background:var(--teal-bg); color:var(--teal-2);}
+  .modeline.server{background:var(--bg-2); color:var(--ink-2); border:1px solid var(--line);}
+  .modeline.server b{color:var(--coral-2);}
+  .advnote{background:var(--coral-bg); color:var(--coral-2); border:1px solid color-mix(in srgb,var(--coral) 28%, transparent); border-radius:11px; padding:11px 13px; margin:0 0 11px; font-size:12.5px; font-weight:600; line-height:1.5; display:flex; align-items:flex-start; gap:10px; flex-wrap:wrap;}
+  .advnote[hidden]{display:none !important;}
+  .advnote.tip{background:var(--teal-bg); color:var(--teal-2); border-color:color-mix(in srgb,var(--teal) 26%, transparent);}
+  .advnote span{flex:1 1 200px; min-width:0;}
+  .advnote .go2{margin-left:auto; align-self:center; font:700 12px var(--sans); background:var(--coral); color:#fff; border:none; border-radius:8px; padding:6px 13px; cursor:pointer; white-space:nowrap;}
+  .advnote.tip .go2{background:var(--teal);}
+
+  .conv-foot{margin-top:11px;}
+  .opts,.fmt,.converter{transition:border-color .15s ease, background .15s ease;}
+  .go{width:100%; justify-content:center; font-size:15px; padding:12px;}
+  .go:disabled{opacity:.5; cursor:not-allowed; transform:none;}
+  .srvnote{display:none; margin-top:11px; font-size:12.5px; color:var(--muted); background:var(--coral-bg); border:1px solid color-mix(in srgb,var(--coral) 28%, transparent); border-radius:11px; padding:11px 13px; line-height:1.5;}
+  .srvnote.show{display:block;}
+  .srvnote b{color:var(--coral-2);}
+  /* codec 加载入口 = 正向端侧能力(非警示)→ teal 卡片,图标顶对齐 + 按钮右侧居中 */
+  .srvnote.codec{background:var(--teal-bg); border-color:color-mix(in srgb,var(--teal) 22%, transparent); color:var(--ink-2);}
+  .srvnote.codec.show{display:flex; align-items:flex-start; gap:11px; flex-wrap:wrap; padding:12px 14px;}
+  .srvnote.codec b{color:var(--teal-2);}
+  .srvnote.codec .ci{flex:none; color:var(--teal-2); margin-top:1px;}
+  .srvnote.codec .txt{flex:1 1 190px; min-width:0; line-height:1.5;}
+  .codec-btn{flex:none; align-self:center; margin-left:auto; display:inline-flex; align-items:center; gap:6px; font:650 12.5px var(--sans); background:var(--teal); color:#fff; border:none; border-radius:9px; padding:8px 15px; cursor:pointer; white-space:nowrap; box-shadow:0 2px 7px color-mix(in srgb,var(--teal) 30%, transparent); transition:background .15s ease, transform .1s ease, box-shadow .15s ease;}
+  .codec-btn:hover{background:var(--teal-2); box-shadow:0 3px 11px color-mix(in srgb,var(--teal) 40%, transparent);}
+  .codec-btn:active{transform:translateY(1px);}
+  .codec-btn:disabled{opacity:.6; cursor:default; box-shadow:none;}
+  .codec-btn svg{flex:none;}
+  /* 智能默认理由条:grid 两行 —— 理由占满整行(不被按钮挤成孤字),备选按钮单独落第二行右对齐 */
+  .smartline{display:grid; grid-template-columns:auto minmax(0,1fr); column-gap:10px; row-gap:8px; align-items:start; margin:0 0 9px; font-size:12.5px; color:var(--ink-2); background:var(--teal-bg); border:1px solid color-mix(in srgb,var(--teal) 20%,transparent); border-radius:11px; padding:9px 12px; line-height:1.5;}
+  .smartline[hidden]{display:none!important;}
+  .smartline .sdtag{grid-column:1; grid-row:1; display:inline-flex; align-items:center; gap:5px; font-family:var(--mono); font-size:10.5px; font-weight:700; color:var(--teal-2); letter-spacing:.04em; margin-top:2px; white-space:nowrap;}
+  .smartline .sdtag::before{content:''; width:6px; height:6px; border-radius:50%; background:var(--teal); box-shadow:0 0 0 3px color-mix(in srgb,var(--teal) 22%,transparent);}
+  .smartline .sdtxt{grid-column:2; grid-row:1; min-width:0;}
+  /* 质量滑块下的「各内容档推荐画质」——直接排在压缩质量下,不再套框 */
+  .qrec{display:flex; flex-direction:column; gap:6px; margin:-2px 0 0;}
+  .qchips{display:flex; flex-wrap:wrap; align-items:center; gap:6px;}
+  .qchip{font-family:var(--mono); font-size:11px; font-weight:500; color:var(--muted); background:var(--surface); border:1px solid var(--line); border-radius:6px; padding:3px 9px; white-space:nowrap; transition:all .12s ease;}
+  .qchip b{font-weight:700; color:var(--ink-2);}
+  .qchip.on{color:var(--teal-2); background:var(--teal-bg); border-color:color-mix(in srgb,var(--teal) 38%,transparent); box-shadow:0 0 0 1px color-mix(in srgb,var(--teal) 20%,transparent);}
+  .qchip.on b{color:var(--teal-2);}
+  .qchip.on::after{content:'· 本图'; font-size:9px; font-weight:600; margin-left:3px; opacity:.9;}
+  .qreset{margin-left:auto; font:600 11px var(--sans); color:var(--teal-2); background:none; border:0; border-bottom:1px dashed color-mix(in srgb,var(--teal) 45%,transparent); padding:0 0 1px; cursor:pointer; white-space:nowrap;}
+  .qreset[hidden]{display:none;}
+  .qrec .qwhy{color:var(--muted); font-size:11px; line-height:1.5;}
+  /* 智能默认的备选建议:「自动」那行下方,左对齐文字链接(不再右浮框) */
+  .sdghost{grid-column:1/-1; grid-row:2; justify-self:start; margin-top:4px; font:600 12px var(--sans); color:var(--teal-2); background:none; border:none; padding:0; cursor:pointer; text-align:left; line-height:1.45; display:inline-flex; align-items:center; gap:5px;}
+  .sdghost svg{width:13px; height:13px; flex:0 0 auto;}
+  .sdghost span{border-bottom:1px dashed color-mix(in srgb,var(--teal) 45%,transparent); padding-bottom:1px;}
+  .sdghost:hover span{border-bottom-color:var(--teal-2);}
+  .fmt.rec{box-shadow:0 0 0 2px var(--teal);}
+  .fmt.rec::after{content:'推荐'; position:absolute; left:-5px; bottom:-7px; font-family:var(--mono); font-size:8.5px; font-weight:700; color:#fff; background:var(--teal-2); border-radius:4px; padding:1px 4px; letter-spacing:.02em;}
+
+  .result{display:none; margin-top:12px; border:1px solid var(--teal); background:var(--teal-bg); border-radius:var(--r); padding:12px 14px;}
+  .result.show{display:block;}
+  .result .rt{font-weight:700; font-size:14.5px; color:var(--teal-2); display:flex; align-items:center; gap:8px;}
+  .sizerow{display:flex; align-items:center; gap:12px; margin:10px 0; font-family:var(--mono); font-size:14px;}
+  .sizerow .o{color:var(--muted); text-decoration:line-through;}
+  .sizerow .arrow{color:var(--faint);}
+  .sizerow .nw{color:var(--ink); font-weight:700; font-size:16px;}
+  .save{margin-left:auto; background:var(--coral); color:#fff; font-family:var(--sans); font-weight:700; font-size:12.5px; padding:4px 10px; border-radius:7px;}
+  .save.zero{background:var(--bg-2); color:var(--muted);}
+
+  /* ---- 模式切换 Tab ---- */
+  .modetabs{display:flex; gap:5px; background:var(--bg-2); border:1px solid var(--line-2); border-radius:12px; padding:3px; margin-bottom:9px;}
+  .modetab{flex:1; display:flex; align-items:center; justify-content:center; gap:7px; padding:6px 8px; border-radius:9px; font-size:13.5px; font-weight:700; color:var(--ink-2); cursor:pointer; border:none; background:none; transition:.15s; font-family:var(--sans);}
+  .modetab svg{width:16px; height:16px;}
+  .modetab:hover{color:var(--teal-2);}
+  .modetab.on{background:var(--surface); color:var(--teal-2); box-shadow:var(--shadow); border:1px solid var(--teal);}
+  .modetab:not(.on){opacity:.92;}
+  .modetab .new{font-family:var(--mono); font-size:9px; background:var(--coral); color:#fff; padding:1px 5px; border-radius:4px; font-weight:700;}
+  .fmtgrid.g4{grid-template-columns:repeat(4,1fr);}
+  @media(max-width:520px){ .fmtgrid.g4{grid-template-columns:repeat(2,1fr);} }
+  .fmt .rec{position:absolute; top:-8px; left:50%; transform:translateX(-50%); font-size:9px; font-family:var(--mono); font-weight:700; padding:2px 6px; border-radius:5px; white-space:nowrap; letter-spacing:.01em;}
+  .rec.a{background:var(--coral);color:#fff;} .rec.b{background:var(--teal);color:#fff;} .rec.c{background:var(--bg-2);color:var(--muted);border:1px solid var(--line-2);}
+  /* 动图预览 / 帧条 */
+  .animprev{display:none; gap:13px; align-items:center; margin-bottom:2px;}
+  .animprev.show{display:flex;}
+  .animprev>img{width:78px; height:78px; object-fit:cover; border-radius:11px; border:1px solid var(--line-2); flex:0 0 auto; background:var(--teal-bg);}
+  .animprev .fn{font-weight:650; font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .animprev .sz{font-family:var(--mono); font-size:12.5px; color:var(--muted); margin-top:3px;}
+  .framestrip{display:flex; gap:6px; overflow-x:auto;}
+  .framestrip img{width:50px; height:50px; object-fit:cover; border-radius:8px; border:1px solid var(--line-2); flex:0 0 auto;}
+  .framestrip .more{flex:0 0 auto; width:50px; height:50px; border-radius:8px; border:1px dashed var(--line-2); display:grid; place-items:center; font-family:var(--mono); font-size:12px; color:var(--muted);}
+  /* ---- 逐帧编辑器 ---- */
+  .fedit{display:none; margin:12px 0 2px; border:1px solid var(--line); border-radius:var(--r-sm); background:var(--surface-2); padding:11px 12px;}
+  .fedit.show{display:block;}
+  .fedit-h{display:flex; align-items:baseline; justify-content:space-between; gap:10px; margin-bottom:9px;}
+  .fedit-h b{font-size:13.5px;}
+  .fedit-h .hint{font-size:11.5px; color:var(--faint);}
+  .fedit-h .sum{font-family:var(--mono); font-size:12px; color:var(--teal-2); font-weight:700;}
+  .fedit-h .r{display:flex; align-items:center; gap:10px;}
+  .feadd{font-family:var(--sans); font-size:12px; font-weight:650; color:var(--teal-2); background:var(--teal-bg); border:1px solid transparent; border-radius:7px; padding:4px 10px; cursor:pointer;}
+  .feadd:hover{border-color:var(--teal);}
+  .fstrip{display:flex; gap:9px; overflow-x:auto; padding:3px 1px 8px;}
+  .fcard{flex:0 0 auto; width:92px; background:var(--surface); border:1.5px solid var(--line-2); border-radius:10px; padding:6px; position:relative; cursor:grab; transition:.12s;}
+  .fcard:active{cursor:grabbing;}
+  .fcard.dragging{opacity:.4;}
+  .fcard.over{border-color:var(--teal); box-shadow:0 0 0 2px var(--teal-bg);}
+  .fcard .fth{width:100%; height:60px; object-fit:cover; border-radius:6px; border:1px solid var(--line); background:var(--teal-bg); display:block; cursor:grab; touch-action:none; -webkit-user-drag:none; user-select:none;}
+  .fcard .fth:active{cursor:grabbing;}
+  .fcard.over{border-color:var(--teal); box-shadow:-3px 0 0 0 var(--teal);}
+  .fcard.dragging{opacity:.45;}
+  .fcard .fno{position:absolute; top:9px; left:9px; font-family:var(--mono); font-size:10px; font-weight:700; background:rgba(27,26,34,.62); color:#fff; padding:1px 5px; border-radius:5px;}
+  .fcard .del{position:absolute; top:8px; right:8px; width:19px; height:19px; border:none; border-radius:50%; background:var(--coral); color:#fff; font-size:12px; line-height:1; cursor:pointer; display:grid; place-items:center; padding:0;}
+  .fcard .fdur{display:flex; align-items:center; gap:3px; margin-top:6px;}
+  .fcard .fdur input{width:100%; min-width:0; font-family:var(--mono); font-size:11.5px; font-weight:700; text-align:right; border:1px solid var(--line-2); border-radius:6px; padding:3px 5px; background:var(--surface); color:var(--ink);}
+  .fcard .fdur small{font-size:10px; color:var(--muted); flex:0 0 auto;}
+  .fcard .mvs{display:flex; gap:4px; margin-top:5px;}
+  .fcard .mv{flex:1; border:1px solid var(--line-2); background:var(--surface); border-radius:6px; font-size:12px; line-height:1; padding:3px 0; cursor:pointer; color:var(--ink-2);}
+  .fcard .mv:disabled{opacity:.35; cursor:default;}
+  .fcard .mv:not(:disabled):hover{border-color:var(--teal); color:var(--teal-2);}
+  .fedit .nofe{font-size:12.5px; color:var(--muted);}
+
+  /* ---- 动图格式对比区 ---- */
+  .animfmts{display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-top:6px;}
+  @media(max-width:900px){ .animfmts{grid-template-columns:repeat(2,1fr); gap:20px 16px;} }
+  @media(max-width:520px){ .animfmts{grid-template-columns:1fr;} }
+  .afmt{background:var(--surface); border:1px solid var(--line); border-radius:var(--r); padding:22px 18px 18px; position:relative; transition:transform .2s, box-shadow .2s;}
+  .afmt:hover{transform:translateY(-3px); box-shadow:var(--shadow);}
+  .afmt.best{border-color:var(--teal); box-shadow:0 0 0 1px var(--teal), var(--shadow);}
+  .afmt .rt{position:absolute; top:-11px; left:18px; font-family:var(--mono); font-size:10.5px; font-weight:700; padding:3px 9px; border-radius:6px; letter-spacing:.02em;}
+  .rt.best{background:var(--teal);color:#fff;} .rt.uni{background:var(--ink);color:var(--bg);} .rt.hi{background:var(--coral);color:#fff;} .rt.min{background:var(--surface-2);color:var(--ink-2);border:1px solid var(--line-2);}
+  .afmt h3{font-family:var(--mono); font-size:19px; font-weight:750; margin-bottom:13px; letter-spacing:.01em;}
+  .meter{display:flex; align-items:center; justify-content:space-between; margin:8px 0; font-size:12.5px; color:var(--muted);}
+  .dots{display:flex; gap:3px;} .dots i{width:7px; height:7px; border-radius:50%; background:var(--line-2);} .dots i.on{background:var(--teal);}
+  .afmt.best .dots i.on{background:var(--teal);}
+  .afmt .best-for{margin-top:14px; padding-top:12px; border-top:1px solid var(--line); font-size:13px; color:var(--ink-2); line-height:1.5;}
+  .afmt .best-for b{color:var(--ink);}
+  .pick-help{margin-top:22px; background:var(--surface); border:1px solid var(--line); border-radius:var(--r); padding:20px 24px; box-shadow:var(--shadow);}
+  .pick-help h4{font-size:15px; font-weight:750; margin:0 0 14px; display:flex; align-items:center; gap:9px;}
+  .pick-help h4 .k{width:26px; height:26px; border-radius:8px; background:var(--coral-bg); color:var(--coral-2); display:grid; place-items:center;}
+  .pick-help .rows{display:grid; grid-template-columns:repeat(2,1fr); gap:11px 30px;}
+  @media(max-width:640px){ .pick-help .rows{grid-template-columns:1fr;} }
+  .pick-help .row{display:flex; gap:12px; font-size:14px; align-items:baseline; justify-content:space-between; border-bottom:1px dashed var(--line); padding-bottom:9px;}
+  .pick-help .row .q{color:var(--ink-2);}
+  .pick-help .row .a{font-family:var(--mono); font-weight:700; color:var(--teal-2); white-space:nowrap;}
+
+  /* ============ 通用区块 ============ */
+  section.blk{padding:44px 0;}
+  .sec-head{text-align:center; max-width:600px; margin:0 auto 36px;}
+  .sec-head h2{font-size:clamp(26px,3.4vw,36px); line-height:1.15; margin-top:12px;}
+  .sec-head p{color:var(--muted); font-size:16.5px; margin-top:14px;}
+
+  /* 格式展示 */
+  .fmtshow{background:var(--bg-2); border-top:1px solid var(--line); border-bottom:1px solid var(--line);}
+  .tagwrap{display:flex; flex-wrap:wrap; gap:8px;}
+  .tag{font-family:var(--mono); font-size:12.5px; font-weight:600; color:var(--ink-2); background:var(--surface-2); border:1px solid var(--line-2); border-radius:7px; padding:6px 10px;}
+  .tag.hot{color:#fff; background:var(--teal); border-color:var(--teal);}
+  /* 支持格式 · 端侧⇄服务端分层(复用 .captier/.th/.badge2/.tag,与能力全景同源) */
+  .captier.fmt-local{border-left:3px solid var(--teal);}
+  .captier.fmt-server{border-left:3px solid var(--line-2);}
+  .fmtgrp{display:grid; grid-template-columns:150px minmax(0,1fr); gap:20px; align-items:start; padding:15px 22px;}
+  .fmtgrp + .fmtgrp{border-top:1px solid var(--line);}
+  .fmtgrp .lbl{display:flex; flex-direction:column; gap:3px; padding-top:2px;}
+  .fmtgrp .lbl .nm{font-size:13.5px; font-weight:750; color:var(--ink); letter-spacing:-.01em;}
+  .fmtgrp .lbl .ct{font-family:var(--mono); font-size:11px; font-weight:700; color:var(--muted); letter-spacing:.02em;}
+  .captier.fmt-local .fmtgrp .lbl .ct{color:var(--teal-2);}
+  @media(max-width:560px){ .fmtgrp{grid-template-columns:minmax(0,1fr); gap:9px; padding:14px 18px;} }
+  /* 第三态:端侧·按需 WASM(描边 teal,区别于原生实心 .tag.hot 与服务端灰 .tag) */
+  .tag.wasm{color:var(--teal-2); background:var(--teal-bg); border-color:var(--teal);}
+  .tag .star{color:var(--coral-2); font-weight:800; margin-left:2px;}
+  /* 图例 + 脚注 */
+  .fmtnote{margin:22px 2px 0; display:grid; gap:10px;}
+  .fmtkeys{display:flex; flex-wrap:wrap; gap:8px 20px; align-items:center; font-size:12.5px; color:var(--ink-2);}
+  .fmtkeys .k{display:inline-flex; align-items:center; gap:8px;}
+  .fmtkeys .sw{width:22px; height:15px; border-radius:5px; flex:0 0 auto;}
+  .fmtkeys .sw.on{background:var(--teal); border:1px solid var(--teal);}
+  .fmtkeys .sw.wasm{background:var(--teal-bg); border:1px solid var(--teal);}
+  .fmtkeys .sw.sv{background:var(--surface-2); border:1px solid var(--line-2);}
+  .fmtfoot{font-size:12px; color:var(--muted); line-height:1.65; margin:0;}
+  .fmtfoot b{color:var(--ink-2); font-weight:700;}
+  .fmtfoot .star{color:var(--coral-2); font-weight:800;}
+
+  /* 特性 */
+  .featgrid{display:grid; grid-template-columns:repeat(4,1fr); gap:16px;}
+  @media(max-width:900px){ .featgrid{grid-template-columns:repeat(2,1fr);} }
+  @media(max-width:520px){ .featgrid{grid-template-columns:1fr;} }
+  .feat{background:var(--surface); border:1px solid var(--line); border-radius:var(--r); padding:22px 20px; transition:.2s;}
+  .feat:hover{transform:translateY(-3px); box-shadow:var(--shadow); border-color:var(--line-2);}
+  .feat .fic{width:42px; height:42px; border-radius:12px; background:var(--teal-bg); color:var(--teal-2); display:grid; place-items:center; margin-bottom:14px;}
+  .feat.pop .fic{background:var(--coral-bg); color:var(--coral-2);}
+  .feat .fic svg{width:22px; height:22px;}
+  .feat h3{font-size:15.5px; font-weight:750; margin-bottom:7px;}
+  .feat p{font-size:13.5px; color:var(--muted); line-height:1.55; margin:0;}
+  .feat .star{font-family:var(--mono); font-size:10px; color:var(--coral-2); font-weight:700; letter-spacing:.08em; margin-bottom:9px; display:inline-block;}
+
+  /* 步骤 */
+  .steps{display:grid; grid-template-columns:repeat(3,1fr); gap:22px; counter-reset:s;}
+  @media(max-width:760px){ .steps{grid-template-columns:1fr;} }
+  .step{position:relative; padding:26px 22px; background:var(--surface); border:1px solid var(--line); border-radius:var(--r); box-shadow:var(--shadow);}
+  .step .no{font-family:var(--mono); font-size:13px; font-weight:700; color:#fff; background:var(--ink); width:30px; height:30px; border-radius:9px; display:grid; place-items:center; margin-bottom:15px;}
+  .step:nth-child(1) .no{background:var(--teal);} .step:nth-child(2) .no{background:var(--teal-2);} .step:nth-child(3) .no{background:var(--coral);}
+  .step h3{font-size:16.5px; font-weight:750; margin-bottom:8px;}
+  .step p{font-size:14px; color:var(--muted); margin:0; line-height:1.55;}
+  .step .arr{position:absolute; right:-16px; top:34px; color:var(--line-2); z-index:2;}
+  @media(max-width:760px){ .step .arr{display:none;} }
+
+  /* CTA */
+  .cta{margin:20px 0 0; background:linear-gradient(120deg, var(--teal) 0%, var(--teal-2) 55%, var(--coral) 140%); border-radius:var(--r-lg); padding:48px 34px; text-align:center; color:#fff; box-shadow:var(--shadow-lg);}
+  .cta h2{color:#fff; font-size:clamp(24px,3vw,34px);}
+  .cta p{color:rgba(255,255,255,.9); font-size:16.5px; margin:14px auto 26px; max-width:44ch;}
+  .cta .btn-primary{background:#fff; color:var(--coral-2); box-shadow:0 10px 30px -10px rgba(0,0,0,.35);}
+  .cta .btn-primary:hover{background:#fff; transform:translateY(-2px);}
+
+  footer{border-top:1px solid var(--line); padding:34px 0 44px; color:var(--muted); font-size:13.5px;}
+  .footin{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;}
+  .footin .note{font-size:12.5px; color:var(--muted); max-width:60ch; line-height:1.5;}
+
+  .reveal{opacity:0; transform:translateY(18px); transition:opacity .6s ease, transform .6s ease;}
+  .reveal.in{opacity:1; transform:none;}
+  @media (prefers-reduced-motion:reduce){ .reveal{opacity:1; transform:none; transition:none;} }
+  :focus-visible{outline:2.5px solid var(--teal); outline-offset:2px; border-radius:4px;}
+
+  /* ===== 能力全景(分层)===== */
+  .captier{background:var(--surface); border:1px solid var(--line); border-radius:var(--r); overflow:hidden; box-shadow:var(--shadow); margin-bottom:16px;}
+  .captier > .th{display:flex; align-items:center; gap:12px; padding:15px 22px; border-bottom:1px solid var(--line); background:var(--surface-2);}
+  .badge2{font-family:var(--mono); font-size:10.5px; font-weight:700; padding:4px 10px; border-radius:7px; letter-spacing:.03em; white-space:nowrap;}
+  .badge2.local{background:var(--teal); color:#fff;} .badge2.anim{background:var(--coral); color:#fff;} .badge2.ext{background:var(--bg-2); color:var(--ink-2); border:1px solid var(--line-2);}
+  .captier .th b{font-size:15.5px; font-weight:750;}
+  .captier .th .sub{font-size:12.5px; color:var(--muted); margin-left:auto;}
+  @media(max-width:600px){ .captier .th .sub{display:none;} }
+  .caplist{display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--line);}
+  @media(max-width:820px){ .caplist{grid-template-columns:repeat(2,1fr);} }
+  @media(max-width:480px){ .caplist{grid-template-columns:1fr;} }
+  .capitem{background:var(--surface); padding:15px 18px;}
+  .capitem h4{font-size:14px; font-weight:750; margin:0 0 5px; display:flex; align-items:center; gap:7px;}
+  .capitem h4 .dot{width:7px; height:7px; border-radius:50%; background:var(--teal); flex:0 0 auto;}
+  .capitem.hot h4 .dot{background:var(--coral);}
+  .capitem p{font-size:12.6px; color:var(--muted); line-height:1.5; margin:0;}
+  .capitem .metric{font-family:var(--mono); font-size:11px; color:var(--teal-2); font-weight:700; margin-top:7px; letter-spacing:.01em;}
+
+  /* ===== 行业对比 · mono 管道表 ===== */
+  .cmpwrap{overflow-x:auto; border:1px solid var(--line); border-radius:var(--r); background:var(--surface); box-shadow:var(--shadow);}
+  table.cmp{width:100%; border-collapse:collapse; font-size:13px; min-width:660px;}
+  table.cmp th, table.cmp td{padding:12px 14px; text-align:left; border-bottom:1px solid var(--line); vertical-align:middle; line-height:1.4;}
+  table.cmp thead th{font-family:var(--mono); font-size:12px; font-weight:700; color:var(--ink); background:var(--surface-2);}
+  table.cmp thead th.us{color:#fff; background:var(--teal);}
+  table.cmp tbody th{font-weight:650; color:var(--ink-2); width:26%;}
+  table.cmp td{color:var(--muted); font-variant-numeric:tabular-nums;}
+  table.cmp td.us{color:var(--ink); font-weight:600; background:var(--teal-bg);}
+  table.cmp tr:last-child th, table.cmp tr:last-child td{border-bottom:none;}
+  .cmp .y{color:var(--teal-2); font-weight:700;} .cmp .n{color:var(--muted);}
+  .cmp .sv{color:var(--coral-2); font-weight:600; font-size:.92em;}
+  /* 矩阵:全部左对齐;能力列/Safari 列按内容自适应、Safari 吃掉多余宽度;只把 Chrome 与 Firefox 两列设成等宽(Firefox 加宽到与 Chrome 一样) */
+  table.cmp.matrix th, table.cmp.matrix td{text-align:left; white-space:nowrap;}
+  table.cmp.matrix tbody th{width:auto; font-weight:650; color:var(--ink-2);}
+  table.cmp.matrix thead th:nth-child(2), table.cmp.matrix tbody td:nth-child(2),
+  table.cmp.matrix thead th:nth-child(3), table.cmp.matrix tbody td:nth-child(3){width:17%;}
+  table.cmp.matrix th:last-child, table.cmp.matrix td:last-child{width:99%; white-space:normal;}
+  .cmpnote{font-size:12px; color:var(--muted); margin-top:12px; line-height:1.55;}
+
+  /* ===== 浏览器兼容矩阵 ===== */
+  .bmat{display:grid; grid-template-columns:1.5fr repeat(3,1fr); gap:1px; background:var(--line); border:1px solid var(--line); border-radius:var(--r); overflow:hidden; box-shadow:var(--shadow); font-size:13px;}
+  @media(max-width:640px){ .bmat{font-size:11px;} }
+  .bmat > div{background:var(--surface); padding:11px 13px; display:flex; align-items:center;}
+  .bmat .hd{background:var(--surface-2); font-family:var(--mono); font-weight:700; font-size:11.5px; justify-content:center;}
+  .bmat .hd.rec2{background:var(--teal); color:#fff;}
+  .bmat .rk{font-weight:650; color:var(--ink-2);}
+  .bmat .c{justify-content:center; font-weight:600;}
+  .bmat .ok{color:var(--teal-2);} .bmat .no{color:var(--faint);} .bmat .sv{color:var(--coral-2); font-size:.92em;}
+  .bmat .recc{background:var(--teal-bg);}
+
+  /* ===== 能力探测横幅 ===== */
+  .capbanner{display:none; align-items:center; gap:11px; background:var(--coral-bg); border:1px solid var(--coral); color:var(--coral-2); border-radius:12px; padding:11px 15px; margin-bottom:18px; font-size:13.5px; font-weight:600; line-height:1.45;}
+  .capbanner.show{display:flex;}
+  .capbanner svg{width:19px; height:19px; flex:0 0 auto;}
+  .capbanner b{color:var(--coral-2);}
+  .capbanner .x{margin-left:auto; background:none; border:none; color:var(--coral-2); cursor:pointer; font-size:19px; line-height:1; padding:0 4px; flex:0 0 auto;}
+
+  /* ===== 意见反馈:导航脉冲点 + 悬浮按钮 + 弹窗 ===== */
+  .navfb{position:relative;}
+  .fbdot{display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--coral); margin-left:4px; vertical-align:super; animation:fbdot 1.8s ease-in-out infinite;}
+  @keyframes fbdot{0%,100%{box-shadow:0 0 0 0 color-mix(in srgb,var(--coral) 55%,transparent);} 60%{box-shadow:0 0 0 5px transparent;}}
+  .fbfab{position:fixed; right:20px; bottom:22px; z-index:150; display:inline-flex; align-items:center; gap:7px; background:var(--teal); color:#fff; border:none; border-radius:26px; padding:11px 17px 11px 14px; font:700 13.5px var(--sans); cursor:pointer; box-shadow:0 8px 24px color-mix(in srgb,var(--teal) 38%,transparent); transition:transform .15s ease, background .15s ease;}
+  .fbfab svg{width:18px; height:18px;}
+  .fbfab:hover{background:var(--teal-2); transform:translateY(-2px);}
+  .fbfab .fbfab-ping{position:absolute; inset:0; border-radius:26px; box-shadow:0 0 0 0 color-mix(in srgb,var(--teal) 50%,transparent); animation:fabping 2.6s ease-out infinite; pointer-events:none;}
+  @keyframes fabping{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--teal) 45%,transparent);} 70%,100%{box-shadow:0 0 0 14px transparent;}}
+  @media (prefers-reduced-motion:reduce){ .fbdot,.fbfab .fbfab-ping{animation:none;} }
+  @media(max-width:540px){ .fbfab span{display:none;} .fbfab{padding:13px; border-radius:50%;} .fbfab .fbfab-ping{border-radius:50%;} }
+  .fbmodal{position:fixed; inset:0; z-index:300; display:grid; place-items:center; padding:20px;}
+  .fbmodal[hidden]{display:none;}
+  .fbmask{position:absolute; inset:0; background:color-mix(in srgb,var(--ink) 46%,transparent); backdrop-filter:blur(3px);}
+  .fbcard{position:relative; width:min(540px,100%); background:var(--surface); border:1px solid var(--line); border-radius:18px; box-shadow:var(--shadow-lg); padding:28px 30px 26px; animation:fbin .22s ease;}
+  @keyframes fbin{from{opacity:0; transform:translateY(10px) scale(.98);} to{opacity:1; transform:none;}}
+  @media (prefers-reduced-motion:reduce){ .fbcard{animation:none;} }
+  .fbx{position:absolute; top:14px; right:14px; width:30px; height:30px; border:none; background:var(--surface-2); color:var(--muted); border-radius:9px; font-size:20px; line-height:1; cursor:pointer; transition:.15s;}
+  .fbx:hover{background:var(--line); color:var(--ink);}
+  .fbtag{display:inline-block; font-family:var(--mono); font-size:10.5px; font-weight:700; letter-spacing:.06em; color:var(--teal-2); background:var(--teal-bg); padding:3px 9px; border-radius:6px;}
+  .fbh{margin:11px 0 6px; font-size:19px; font-weight:800; letter-spacing:-.01em;}
+  .fbsub{margin:0; font-size:13px; color:var(--muted); line-height:1.55;}
+  .fbbody{display:flex; gap:18px; align-items:center; margin-top:20px;}
+  .fbqr{margin:0; text-align:center; flex:0 0 auto;}
+  .fbqr img{width:138px; height:138px; display:block; border:1px solid var(--line); border-radius:12px; padding:8px; background:#fff;}
+  .fbqr figcaption{margin-top:7px; font-size:11.5px; color:var(--muted);}
+  .fbdiv{display:flex; flex-direction:column; align-items:center; gap:8px; align-self:stretch; color:var(--faint); font-size:11.5px; font-weight:600;}
+  .fbdiv i{flex:1; width:1px; background:var(--line);}
+  .fbact{flex:1; display:flex; flex-direction:column; gap:9px; min-width:0;}
+  .fbbtn{display:flex; align-items:center; justify-content:center; gap:6px; background:var(--teal); color:#fff; font-weight:700; font-size:14.5px; padding:13px 16px; border-radius:11px; text-decoration:none; transition:.15s; white-space:nowrap;}
+  .fbbtn:hover{background:var(--teal-2); transform:translateY(-1px);}
+  .fbhint{font-size:11.5px; color:var(--muted); text-align:center; line-height:1.5;}
+  @media(max-width:480px){ .fbbody{flex-direction:column;} .fbdiv{flex-direction:row; width:100%;} .fbdiv i{width:auto; height:1px;} .fbact{width:100%;} .fbcard{padding:22px 18px 20px;} }
+</style>
+
+
+<!-- 编解码器插件的裸依赖映射(自托管 codecs/ 存在时生效;否则无害) -->
+<script type="importmap">{"imports":{"wasm-feature-detect":"./codecs/vendor/wasm-feature-detect.js"}}</script>
+
+<header class="top">
+  <div class="wrap topin">
+    <div class="brand">
+      <span class="logo" aria-hidden="true"></span>
+      <span>图映<small>&nbsp;· 在线图片转换</small></span>
+    </div>
+    <nav class="navlinks">
+      <a href="#convert">转换</a>
+      <a href="#features">能力</a>
+      <a href="#convert" data-open-anim>动图</a>
+      <a href="#compare">对比</a>
+      <a href="#browsers">兼容</a>
+      <a href="#feedback" data-fb class="navfb">反馈<span class="fbdot" aria-hidden="true"></span></a>
+    </nav>
+    <div class="top-actions">
+      <button class="themebtn" id="theme" aria-label="切换深浅色">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      </button>
+      <a href="#convert" class="btn btn-primary">开始转换</a>
+    </div>
+  </div>
+</header>
+
+<section class="hero" id="convert">
+  <canvas id="pxcanvas" aria-hidden="true"></canvas>
+  <div class="wrap herogrid">
+    <div class="herol">
+      <div class="capbanner" id="capbanner" role="alert">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1"><path d="M12 9v4M12 17h.01M10.3 3.9 2.4 18a2 2 0 0 0 1.7 3h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>
+        <span id="capbannerTxt"></span>
+        <button class="x" id="capbannerX" aria-label="关闭" type="button">×</button>
+      </div>
+      <span class="eyebrow">端侧图像引擎 · 常见格式零上传</span>
+      <h1>任何图片,<br>一步压成<span class="hl">你要的样子</span>。</h1>
+      <p class="lead">常见格式<b>不出你的设备</b> —— 用<b>自研专业引擎</b>在本地、靠你设备的算力直接完成:不上传、不排队、秒出。PNG 能压成 <b>PNG-8</b>(8 位索引色,画质反超 pngquant),连 <b>GIF / APNG 动图</b>都能压小、合成、逐帧编辑。就连 <b>AVIF 生成、HEIC 读取</b>也做进了设备本地(完整版按需加载 WASM 引擎,零上传);只有 <b>HEIC 写</b>、TIFF、JPEG 2000 这类才交服务端,用完即弃、不留存。</p>
+      <div class="trust">
+        <span class="chip"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2 4 6v6c0 4 3 7 8 8 5-1 8-4 8-8V6z"/><path d="m9 12 2 2 4-4"/></svg>常见格式零上传 · 本地处理</span>
+        <span class="chip"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z"/></svg>自研专业引擎 · 非套壳</span>
+        <span class="chip"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M13 2 4 14h6l-1 8 9-12h-6z"/></svg>秒级出图 · 用设备算力</span>
+      </div>
+      <div class="stats">
+        <div class="stat"><div class="n">16</div><div class="l">可读入格式</div></div>
+        <div class="stat"><div class="n">10</div><div class="l">可输出格式</div></div>
+        <div class="stat"><div class="n">45.8<span style="font-size:.5em">dB</span></div><div class="l">PNG-8 画质 · 反超 pngquant</div></div>
+      </div>
+      <a class="dbrand" href="mailto:admin@datadance.com" aria-label="DataDance 出品,联系 admin@datadance.com">
+        <div class="dbrand-head"><span class="dbrand-name">DataDance</span><span class="dbrand-by">出品</span></div>
+        <div class="dbrand-slogan">数据跳动出品,必是精品</div>
+        <p class="dbrand-note">服务端处理能力为<b>付费版本</b>,请联系: <span class="dbrand-mail">admin@datadance.com</span></p>
+      </a>
+    </div>
+
+    <div class="converter" id="tool">
+      <div class="conv-head">
+        <span class="t"><span class="dot3"><i style="background:var(--coral)"></i><i style="background:#f0b429"></i><i style="background:var(--teal)"></i></span>图片转换器</span>
+        <span class="mono" style="font-size:11px;color:var(--muted)">拖 · 选 · 下载</span>
+      </div>
+      <div class="conv-body">
+        <div class="modetabs" id="modetabs">
+          <button class="modetab on" data-mode="img" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="3" y="3" width="18" height="18" rx="2.5"/><circle cx="8.5" cy="8.5" r="1.6"/><path d="m21 15-5-5L5 21"/></svg>单图转换</button>
+          <button class="modetab" data-mode="anim" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="2.5" y="4" width="19" height="16" rx="2.5"/><path d="M7 4v16M17 4v16M2.5 9h4.5M17 9h4.5M2.5 15h4.5M17 15h4.5"/></svg>动图工坊<span class="new">新</span></button>
+        </div>
+        <div id="panel-img">
+        <!-- 上传区 -->
+        <div class="drop" id="drop" tabindex="0" role="button" aria-label="上传图片">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M8 8l4-4 4 4"/><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg></div>
+          <b>把图片拖到这里 · 或点击上传</b>
+          <p>单张随便传 · 最大 40MB</p>
+          <div class="fmts">JPG · PNG · HEIC · WEBP · AVIF · TIFF · GIF · BMP · JP2 · PSD · PDF …</div>
+          <input type="file" id="file" accept="image/*,.heic,.heif,.tiff,.tif,.avif,.jp2,.psd,.bmp" hidden>
+        </div>
+        <!-- 预览 -->
+        <div class="preview" id="preview">
+          <img class="thumb" id="thumb" alt="预览">
+          <div class="pv-meta">
+            <div class="fn" id="fname">image.jpg</div>
+            <div class="sz"><span id="fsize">—</span><span class="rdbadge" id="rdbadge"></span></div>
+          </div>
+          <button class="relink" id="relink">换一张</button>
+        </div>
+        <div class="srvnote" id="rdoffer" style="margin-top:9px"></div>
+
+        <!-- 选格式 -->
+        <div class="seclabel"><span class="num">1</span>选择下载格式</div>
+        <div class="fmtgrid" id="fmtgrid"></div>
+        <p class="animsum" style="margin:8px 0 0; font-size:10.5px; line-height:1.5"><b style="color:var(--teal-2)">即时</b> = 浏览器能读原图 + 能编码目标格式 → 本地直接完成,原图不上传 &nbsp;·&nbsp; <b style="color:var(--teal-2)">端侧⤓</b> = 首次加载 WASM(AVIF 写 / HEIC 读),之后同样在本地完成 &nbsp;·&nbsp; <b style="color:var(--coral-2)">服务端</b> = 浏览器与端侧 WASM 都做不了的(如 HEIC 写)才交服务端</p>
+
+        <!-- 选项 -->
+        <div class="opts" id="opts"></div>
+
+        <!-- 动作 -->
+        <div class="conv-foot">
+          <div class="smartline" id="smartline" hidden></div>
+          <div class="modeline" id="modeline" hidden></div>
+          <button class="btn btn-primary go" id="go" disabled>转换并下载</button>
+          <div class="srvnote" id="srvnote"></div>
+          <div class="result" id="result">
+            <div class="rt"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>转换完成</div>
+            <div class="sizerow">
+              <span class="o" id="oldsz">—</span><span class="arrow">→</span><span class="nw" id="newsz">—</span>
+              <span class="save" id="save">—</span>
+            </div>
+            <p class="animsum" id="engnote" style="margin:0 0 8px"></p>
+            <div class="advnote" id="advNote" hidden></div>
+            <button class="btn btn-primary" id="dl" style="width:100%;justify-content:center">↓ 保存到本地</button>
+          </div>
+        </div>
+        </div><!-- /panel-img -->
+
+        <!-- 动图工坊 -->
+        <div id="panel-anim" hidden>
+          <div class="drop" id="dropA" tabindex="0" role="button" aria-label="上传动图或多张图">
+            <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="19" height="14" rx="2"/><path d="M7 5v14M17 5v14M2.5 9.5h4.5M17 9.5h4.5M2.5 14.5h4.5M17 14.5h4.5"/></svg></div>
+            <b>拖入动图压缩 · 或多张图合成动图</b>
+            <p>GIF / APNG 直接压缩 · 或选多张图做成动图</p>
+            <div class="fmts">压缩:GIF · APNG · 动图 WEBP　|　合成:多张 JPG / PNG</div>
+            <input type="file" id="fileA" accept="image/*,.gif,.apng,.png,.webp" multiple hidden>
+          </div>
+          <!-- 追加输入放在 dropA 之外:否则 fileAadd.click() 会冒泡到 dropA 触发主上传 fileA(=替换) -->
+          <input type="file" id="fileAadd" accept="image/*,.png,.webp,.jpg,.jpeg" multiple hidden>
+          <div class="animprev" id="animprev"></div>
+          <div class="fedit" id="fedit">
+            <div class="fedit-h"><b>逐帧编辑 <span class="hint">拖动排序 · 单帧调时长 · ✕ 删帧</span></b><div class="r"><button class="feadd" id="feAdd" type="button" hidden>＋ 追加图片</button><span class="sum" id="feditSum"></span></div></div>
+            <div class="fstrip" id="fstrip"></div>
+          </div>
+
+          <div class="seclabel"><span class="num">1</span>选择动图格式</div>
+          <div class="fmtgrid g4" id="fmtgridA"></div>
+
+          <div class="opts" id="optsA"></div>
+
+          <div class="conv-foot">
+            <div class="smartline" id="smartlineA" hidden></div>
+            <div class="modeline" id="modelineA" hidden></div>
+            <button class="btn btn-primary go" id="goA" disabled>压缩并下载</button>
+            <div class="srvnote" id="srvnoteA"></div>
+            <div class="result" id="resultA">
+              <div class="rt"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg><span id="rtA">动图已生成</span></div>
+              <div class="sizerow">
+                <span class="o" id="oldszA">—</span><span class="arrow">→</span><span class="nw" id="newszA">—</span>
+                <span class="save" id="saveA">—</span>
+              </div>
+              <p class="animsum" id="engnoteA" style="margin:0 0 8px"></p>
+              <div class="advnote" id="advNoteA" hidden></div>
+              <div id="apreviewA" style="margin:0 0 11px;text-align:center"></div>
+              <div style="display:flex; gap:9px; flex-wrap:wrap">
+                <button class="btn btn-primary" id="dlA" style="flex:1; min-width:150px; justify-content:center">↓ 保存到本地</button>
+                <button class="btn btn-ghost" id="dlAllA" style="flex:1; min-width:150px; justify-content:center">⊞ 打包三格式 .zip</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 支持格式 -->
+<section class="blk fmtshow" id="formats">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">支持格式</span>
+      <h2>该留在你设备上的,绝不上传</h2>
+      <p>格式按<b>处理位置</b>分两层:常见格式在你浏览器<b>本地</b>即时读写、图片不出设备;专业与老格式才交<b>服务端</b>代劳。芯片颜色即处理位置,不看图例也分得清。</p>
+    </div>
+    <!-- ① 端侧即时 · teal -->
+    <div class="captier fmt-local reveal">
+      <div class="th">
+        <span class="badge2 local">端侧即时</span>
+        <b>浏览器本地完成 · 图片零上传</b>
+        <span class="sub">用你设备的算力,点一下就出</span>
+      </div>
+      <div class="fmtgrp">
+        <div class="lbl"><span class="nm">读入</span><span class="ct">7 种</span></div>
+        <div class="tagwrap"><span class="tag hot">PNG</span><span class="tag hot">JPEG</span><span class="tag hot">WEBP</span><span class="tag hot">GIF</span><span class="tag hot">BMP</span><span class="tag hot">AVIF</span><span class="tag wasm">HEIC</span></div>
+      </div>
+      <div class="fmtgrp">
+        <div class="lbl"><span class="nm">直出 · 单图</span><span class="ct">4 种</span></div>
+        <div class="tagwrap"><span class="tag hot">PNG-8/PNG</span><span class="tag hot">JPG</span><span class="tag hot">WEBP</span><span class="tag wasm">AVIF</span></div>
+      </div>
+      <div class="fmtgrp">
+        <div class="lbl"><span class="nm">直出 · 动图</span><span class="ct">4 种</span></div>
+        <div class="tagwrap"><span class="tag hot">GIF</span><span class="tag hot">APNG</span><span class="tag hot">动图 WebP</span><span class="tag hot">动图 AVIF<span class="star">*</span></span></div>
+      </div>
+    </div>
+
+    <!-- ② 服务端 · 灰 -->
+    <div class="captier fmt-server reveal">
+      <div class="th">
+        <span class="badge2 ext">服务端</span>
+        <b>专业 / 老格式 · 高速服务器代劳</b>
+        <span class="sub">付费版按需 · 用完即弃 · 不留存原图</span>
+      </div>
+      <div class="fmtgrp">
+        <div class="lbl"><span class="nm">读入</span><span class="ct">9 种</span></div>
+        <div class="tagwrap"><span class="tag">TIFF</span><span class="tag">JPEG 2000</span><span class="tag">PSD</span><span class="tag">PDF</span><span class="tag">DICOM</span><span class="tag">JXL</span><span class="tag">SGI</span><span class="tag">EMF</span><span class="tag">WMF</span></div>
+      </div>
+      <div class="fmtgrp">
+        <div class="lbl"><span class="nm">输出</span><span class="ct">5 种</span></div>
+        <div class="tagwrap"><span class="tag">HEIC</span><span class="tag">JPEG 2000</span><span class="tag">TIFF</span><span class="tag">PDF</span><span class="tag">BMP</span></div>
+      </div>
+    </div>
+
+    <div class="fmtnote reveal">
+      <div class="fmtkeys">
+        <span class="k"><span class="sw on"></span>端侧 · 浏览器原生 / 自研,零上传</span>
+        <span class="k"><span class="sw wasm"></span>端侧 · 按需加载 WASM 后仍本地完成</span>
+        <span class="k"><span class="sw sv"></span>服务端 · 付费版,用完即弃</span>
+      </div>
+      <p class="fmtfoot"><b>描边芯片</b>(HEIC 读 · AVIF 写)首次用到时才下载解码器(libheif / libavif),之后仍在你设备本地跑、图片不上传。<b>动图 AVIF</b><span class="star">*</span> 由自研 <b>WebCodecs AV1 差分帧</b>直出:无透明、循环 ∞,浏览器不支持时自动转服务端。读入合计 <b>7 + 9 = 16</b> 种;端侧直出 <b>8</b> 种(单图 4 + 动图 4)。</p>
+    </div>
+  </div>
+</section>
+
+<!-- 动图格式怎么选 -->
+<section class="blk" id="anim">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">动图选型</span>
+      <h2>动图,也能又清晰又小</h2>
+      <p>GIF、APNG、动图 WebP、<b>动图 AVIF</b> 全部端侧直出(动图 AVIF 用 WebCodecs AV1 + 自研容器,支持的浏览器即时,不支持则转服务端)—— 下面这张表帮你一眼选对。</p>
+      <button class="btn btn-primary" data-open-anim style="margin-top:18px">→ 打开动图工坊,压缩 / 合成动图</button>
+    </div>
+    <div class="animfmts">
+      <div class="afmt reveal">
+        <span class="rt uni">最通用</span>
+        <h3>GIF</h3>
+        <div class="meter"><span>画质</span><span class="dots"><i class="on"></i><i class="on"></i><i></i><i></i><i></i></span></div>
+        <div class="meter"><span>省体积</span><span class="dots"><i class="on"></i><i class="on"></i><i></i><i></i><i></i></span></div>
+        <div class="meter"><span>兼容性</span><span class="dots"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span></div>
+        <div class="best-for"><b>最适合:</b>表情包、发微信、要在<b>任何地方</b>都能播的简单动图。256 色,体积偏大。</div>
+      </div>
+      <div class="afmt best reveal">
+        <span class="rt best">✓ 推荐</span>
+        <h3>WEBP</h3>
+        <div class="meter"><span>画质</span><span class="dots"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i></span></div>
+        <div class="meter"><span>省体积</span><span class="dots"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i></span></div>
+        <div class="meter"><span>兼容性</span><span class="dots"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i></span></div>
+        <div class="best-for"><b>最适合:</b>网页、发微信,<b>又小又清晰</b>。真彩 + 透明,体积只有 GIF 的零头 —— 大多数情况的最佳选择。</div>
+      </div>
+      <div class="afmt reveal">
+        <span class="rt hi">高保真</span>
+        <h3>APNG</h3>
+        <div class="meter"><span>画质</span><span class="dots"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span></div>
+        <div class="meter"><span>省体积</span><span class="dots"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i></span></div>
+        <div class="meter"><span>兼容性</span><span class="dots"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i></span></div>
+        <div class="best-for"><b>最适合:</b>要<b>真彩 + 完整透明</b>的高保真短动画、贴纸。画质顶,体积比 WebP 略大。</div>
+      </div>
+      <div class="afmt reveal">
+        <span class="rt min">最小</span>
+        <h3>AVIF</h3>
+        <div class="meter"><span>画质</span><span class="dots"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span></div>
+        <div class="meter"><span>省体积</span><span class="dots"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span></div>
+        <div class="meter"><span>兼容性</span><span class="dots"><i class="on"></i><i class="on"></i><i></i><i></i><i></i></span></div>
+        <div class="best-for"><b>最适合:</b>追求<b>压到最小</b>又不掉画质、且播放平台够新的场景。压缩最狠,老设备可能不认;<b>动图 AVIF 已可端侧直出</b>(WebCodecs AV1 差分帧,无透明、循环∞)。</div>
+      </div>
+    </div>
+    <div class="pick-help reveal">
+      <h4><span class="k"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg></span>不知道选哪个?一句话帮你定</h4>
+      <div class="rows">
+        <div class="row"><span class="q">发微信 / 到哪都要能播</span><span class="a">→ GIF</span></div>
+        <div class="row"><span class="q">网页用,又小又清晰(大多数人)</span><span class="a">→ WebP ✓</span></div>
+        <div class="row"><span class="q">要真彩 + 透明的高保真短动画</span><span class="a">→ APNG</span></div>
+        <div class="row"><span class="q">追求压到最小、平台够新</span><span class="a">→ AVIF</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 能力 -->
+<section class="blk" id="features">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">能力全景</span>
+      <h2>一整套专业图像引擎,做成一个页面</h2>
+      <p>大部分活儿在你设备本地直接完成、图片不出门;少数高级格式才交服务端。每一项都实测过,不是嘴上说说。</p>
+    </div>
+
+    <div class="captier reveal">
+      <div class="th"><span class="badge2 local">端侧即时</span><b>本地引擎 · 图片不出设备</b><span class="sub">用你设备的算力,秒出,零上传</span></div>
+      <div class="caplist">
+        <div class="capitem hot"><h4><span class="dot"></span>pngquant 级 PNG-8 减色</h4><p>自研加权中位切分 + k-means 精修 + 精确最近色,把真彩 PNG 减到 ≤256 色。</p><div class="metric">256 色 45.8dB · 反超 pngquant(43.4dB)</div></div>
+        <div class="capitem"><h4><span class="dot"></span>Lanczos-3 高清缩放</h4><p>分离式重采样 + alpha 预乘,缩小放大都不糊、不出锯齿。</p></div>
+        <div class="capitem"><h4><span class="dot"></span>WebP / JPG / PNG 即时编码</h4><p>浏览器原生编码 + 自研索引 PNG,点一下就出,原图不上传。</p></div>
+        <div class="capitem"><h4><span class="dot"></span>智能默认 + 兜底建议</h4><p>默认就给最优格式;万一没变小,自动提示并一键换更优的。</p></div>
+      </div>
+    </div>
+
+    <div class="captier reveal">
+      <div class="th"><span class="badge2 anim">动图工坊</span><b>端侧自研动图 · 行业少见</b><span class="sub">压缩 / 合成 / 逐帧编辑,全在本地</span></div>
+      <div class="caplist">
+        <div class="capitem hot"><h4><span class="dot"></span>自研 GIF / APNG / 动图WebP 编码器</h4><p>三种动图格式全部自己实现,逐帧经真实解码器验证无损、无错位。</p><div class="metric">帧间优化:同图 843 → 350KB</div></div>
+        <div class="capitem"><h4><span class="dot"></span>帧间差分优化</h4><p>静止不动的像素复用前一帧,GIF/APNG/WebP 全支持,无损减半。</p></div>
+        <div class="capitem"><h4><span class="dot"></span>逐帧编辑器</h4><p>缩略图拖拽排序、单帧调时长、删帧、追加图片,增删不用重导。</p></div>
+        <div class="capitem"><h4><span class="dot"></span>自动读取原图节奏</h4><p>压缩已有动图时,每帧时长与循环方式自动读出并保真。</p></div>
+        <div class="capitem"><h4><span class="dot"></span>WebCodecs 拆帧重编</h4><p>把已有 GIF/APNG/WebP 拆成逐帧,重新压缩或改造。</p></div>
+        <div class="capitem"><h4><span class="dot"></span>多格式一键打包</h4><p>同一动图导出 WebP + GIF + APNG 三种,一次打成 zip。</p></div>
+      </div>
+    </div>
+
+    <div class="captier reveal">
+      <div class="th"><span class="badge2 local">端侧 WASM · 已随包</span><b>高级格式 & 能力扩展</b><span class="sub">该本地本地、该服务端服务端,判断清楚</span></div>
+      <div class="caplist">
+        <div class="capitem"><h4><span class="dot"></span>输入 × 输出双向探测</h4><p>不猜浏览器 —— 真去解码一次判断能否读、真测能否编,两头都行才本地。</p></div>
+        <div class="capitem hot"><h4><span class="dot"></span>AVIF 写 / HEIC 读 · 端侧直跑</h4><p>已随包WASM(libavif / libheif),完整版按需加载即在设备本地完成 AVIF 生成、HEIC 读取,零上传。</p><div class="metric">实测:PNG → 913 B 真 AVIF</div></div>
+        <div class="capitem"><h4><span class="dot"></span>高级格式服务端兜底</h4><p>HEIC 写(HEVC 专利)· TIFF · JPEG 2000 · PDF 等交高速服务器,用完即弃、不留存。</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 行业对比 -->
+<section class="blk fmtshow" id="compare">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">行业对比</span>
+      <h2>和市面主流放一起比</h2>
+      <p>不吹不黑,按事实列。真正端侧、又把动图做全的,现在很少 —— 这正是图映的位置。</p>
+    </div>
+    <div class="cmpwrap reveal">
+      <table class="cmp">
+        <thead>
+          <tr>
+            <th scope="col">维度</th>
+            <th scope="col" class="us">图映</th>
+            <th scope="col">Squoosh<span style="font-weight:400;color:var(--faint)"> · Google</span></th>
+            <th scope="col">TinyPNG</th>
+            <th scope="col">在线转换站<span style="font-weight:400;color:var(--faint)"> · CloudConvert 类</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">处理位置</th><td class="us">你设备本地</td><td>本地</td><td>上传服务器</td><td>上传服务器</td></tr>
+          <tr><th scope="row">图片隐私</th><td class="us"><span class="y">零上传</span></td><td><span class="y">零上传</span></td><td class="n">需上传</td><td class="n">需上传</td></tr>
+          <tr><th scope="row">单图压缩(PNG-8 / WebP / JPG)</th><td class="us"><span class="y">✓</span> 45.8dB PNG-8</td><td><span class="y">✓</span> 强</td><td><span class="y">✓</span> 主打</td><td>✓ 服务端</td></tr>
+          <tr><th scope="row">动图压缩(GIF / APNG / WebP)</th><td class="us"><span class="y">✓</span> 三格式 + 帧间优化</td><td class="n">✗</td><td>部分:APNG/WebP</td><td>部分 · 服务端</td></tr>
+          <tr><th scope="row">高级格式端侧(AVIF 写 / HEIC 读)</th><td class="us"><span class="y">✓</span> 加载 WASM 本地</td><td>仅 AVIF 写</td><td class="n">—</td><td>服务端</td></tr>
+          <tr><th scope="row">动图合成 + 逐帧编辑</th><td class="us"><span class="y">✓</span> 拖拽 / 删 / 调时长</td><td class="n">✗</td><td class="n">✗</td><td class="n">✗</td></tr>
+          <tr><th scope="row">自动读原图节奏(时长 / 循环)</th><td class="us"><span class="y">✓</span></td><td class="n">—</td><td class="n">—</td><td class="n">—</td></tr>
+          <tr><th scope="row">免费 · 无量限 · 无水印</th><td class="us"><span class="y">✓</span></td><td><span class="y">✓</span></td><td>有量限</td><td>常有额度限制</td></tr>
+          <tr><th scope="row">免注册 · 免安装</th><td class="us"><span class="y">✓</span></td><td><span class="y">✓</span></td><td><span class="y">✓</span></td><td class="n">常需注册</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="cmpnote reveal">说明:Squoosh 同样本地处理、单图很强 —— <b>浏览器端 AVIF/WebP 编码本就是它的看家本领</b>(图映的 AVIF 写用的正是同源引擎 libavif),但它没有动图能力、也不读 HEIC;TinyPNG 主打服务端压缩;在线转换站格式最全但要上传、常有额度限制。图映的差异点 = <b>端侧 + 动图工坊 + 逐帧编辑 + 一站式</b>。对比基于各家公开产品的通用事实,不同套餐/版本可能有出入。</p>
+  </div>
+</section>
+
+<!-- 浏览器兼容 -->
+<section class="blk" id="browsers">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">兼容性</span>
+      <h2>在哪跑、跑多强,一张表看清</h2>
+      <p>我们不靠"猜浏览器型号",而是<b>真实探测</b>你这台设备此刻的能力 —— 所以工具里那个"即时 / 服务端"标签,就是你现在真实能做到的。</p>
+    </div>
+    <div class="cmpwrap reveal">
+      <table class="cmp matrix">
+        <thead><tr><th scope="col">端侧能力</th><th scope="col" class="us">Chrome / Edge ★</th><th scope="col">Firefox</th><th scope="col">Safari</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">PNG-8 / JPG / WebP 即时</th><td class="us"><span class="y">✓</span></td><td><span class="y">✓</span></td><td>16.4+*</td></tr>
+          <tr><th scope="row">动图 GIF / APNG 编码</th><td class="us"><span class="y">✓</span></td><td><span class="y">✓</span></td><td><span class="y">✓</span> 16.4+</td></tr>
+          <tr><th scope="row">动图 WebP 编码</th><td class="us"><span class="y">✓</span></td><td><span class="y">✓</span></td><td>视版本*</td></tr>
+          <tr><th scope="row">动图 AVIF 编码(WebCodecs AV1)</th><td class="us"><span class="y">✓</span></td><td>视版本*</td><td>视版本*</td></tr>
+          <tr><th scope="row">压缩已有动图(拆帧)</th><td class="us"><span class="y">✓</span></td><td>部分</td><td class="n">✗</td></tr>
+          <tr><th scope="row">AVIF 读</th><td class="us"><span class="y">✓</span> 原生</td><td><span class="y">✓</span> 原生</td><td><span class="y">✓</span> 16+ 原生</td></tr>
+          <tr><th scope="row">HEIC 读</th><td class="us"><span class="y">✓</span> 端侧*</td><td><span class="y">✓</span> 端侧*</td><td><span class="y">✓</span> 17+ 原生</td></tr>
+          <tr><th scope="row">AVIF 写</th><td class="us"><span class="y">✓</span> 端侧*</td><td><span class="y">✓</span> 端侧*</td><td><span class="y">✓</span> 端侧*</td></tr>
+          <tr><th scope="row">HEIC 写</th><td class="us sv">服务端</td><td class="sv">服务端</td><td class="sv">服务端</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="cmpnote reveal">这些是各浏览器的<b>通用支持</b>,但我们不靠版本号猜 —— 工具会<b>实测你这台设备</b>此刻能不能编 / 能不能读,不支持的自动转服务端,绝不假装能做。想用满全部端侧能力(尤其<b>压缩已有动图</b>)建议 <b>Chrome / Edge 最新版</b>;Safari 17+ 能原生读 HEIC。<b>端侧*</b> = <b>自托管完整版</b>按需加载WASM 在本地完成:<b>AVIF 写</b>用 libavif、<b>HEIC 读</b>用 libheif,任何支持 WebAssembly 的浏览器都能跑;<b>HEIC 写</b>因 HEVC 专利 + 体积不做端侧,统一走服务端。单文件 / 在线演示版不随带 codecs 目录(单文件 + CSP 限制),这几项自动转服务端。WebP/PNG-8 编码在 Safari 依版本而定,不支持则转服务端。凡读不了 / 编不了的,工具当场标注并给建议,不会静默出错。</p>
+  </div>
+</section>
+
+<!-- 怎么用 -->
+<section class="blk fmtshow" id="how">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">怎么用</span>
+      <h2>三步,搞定</h2>
+      <p>没有学习成本 —— 会用微信发图,就会用它。</p>
+    </div>
+    <div class="steps">
+      <div class="step reveal"><div class="no">1</div><h3>传图片</h3><p>拖进来或点一下上传,一张或一堆都行,HEIC / AVIF / TIFF 这些也照收。</p>
+        <svg class="arr" width="30" height="20" viewBox="0 0 30 20" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 10h24M20 4l6 6-6 6"/></svg></div>
+      <div class="step reveal"><div class="no">2</div><h3>选格式 · 调选项</h3><p>点一个目标格式,想压缩就拉一下质量、开一下 PNG 减色,预览体积。</p>
+        <svg class="arr" width="30" height="20" viewBox="0 0 30 20" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 10h24M20 4l6 6-6 6"/></svg></div>
+      <div class="step reveal"><div class="no">3</div><h3>下载</h3><p>点"转换并下载",几秒钟拿到成品,体积、清晰度一目了然。</p></div>
+    </div>
+    <div class="cta reveal">
+      <h2>现在就试一张</h2>
+      <p>不用注册、不用付费,先把手上那张图丢进来看看效果。</p>
+      <a href="#convert" class="btn btn-primary">↑ 上传一张图片</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap footin">
+    <div class="brand" style="font-size:16px"><span class="logo" style="width:28px;height:28px" aria-hidden="true"></span>图映 · 在线图片转换</div>
+    <p class="note">常见格式在你设备本地、用自研引擎即时完成,图片零上传;<b>AVIF 写、HEIC 读</b>在完整版按需加载WASM 后同样在本地完成;仅 <b>HEIC 写</b> / JPEG 2000 / TIFF / PDF 等交高速服务端,用完即弃、不留存。</p>
+    <p class="note" style="margin-top:10px">用得顺不顺、想要什么功能?<a href="#feedback" data-fb style="color:var(--teal-2); font-weight:700; text-decoration:none; border-bottom:1px dashed color-mix(in srgb,var(--teal) 45%,transparent)">点这里给我们反馈 →</a></p>
+  </div>
+</footer>
+
+<!-- 悬浮反馈入口(更明显) -->
+<button class="fbfab" data-fb type="button" aria-label="意见反馈">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+  <span>反馈</span>
+  <i class="fbfab-ping" aria-hidden="true"></i>
+</button>
+
+<!-- 意见反馈弹窗 -->
+<div class="fbmodal" id="fbModal" hidden>
+  <div class="fbmask" id="fbMask"></div>
+  <div class="fbcard" role="dialog" aria-modal="true" aria-label="意见反馈">
+    <button class="fbx" id="fbClose" type="button" aria-label="关闭">&times;</button>
+    <span class="fbtag">意见反馈</span>
+    <h3 class="fbh">帮「图映」做得更好</h3>
+    <p class="fbsub">用得顺不顺、想要哪些格式/功能、遇到什么问题 —— 都欢迎告诉我们。</p>
+    <div class="fbbody">
+      <figure class="fbqr">
+        <img src="data:image/png;base64,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" alt="扫码进入反馈表单" width="150" height="150">
+        <figcaption>微信 / 相机 扫码</figcaption>
+      </figure>
+      <div class="fbdiv" aria-hidden="true"><i></i><span>或</span><i></i></div>
+      <div class="fbact">
+        <a class="fbbtn" href="https://ykbkqpq7db.feishu.cn/share/base/form/shrcnathB4oj08I2izhXW9xuXAb?from=navigation" target="_blank" rel="noopener">打开反馈表单 →</a>
+        <span class="fbhint">在飞书多维表单里填写,约 1 分钟</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>window.TY_CODECS_LOCAL=true;/*imging-local-codecs*/</script>
+<script>
+/* 图映引擎 · 构建产物(混淆加密)。请勿直接修改本文件;改 src/engine.js 后运行 node build.mjs 重新生成。*/
+(function(){var K=[55,154,81,196,46,184,109,19,240,90,137,36,207,113,62,166,75,210],D="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";try{var r=atob(D),n=r.length,u=new Uint8Array(n);for(var i=0;i<n;i++)u[i]=r.charCodeAt(i)^K[i%K.length];(0,eval)(new TextDecoder().decode(u));}catch(e){console.error("图映引擎加载失败",e);}})();
+</script>
+<script>
+
+(function(){
+  "use strict";
+  /* 引擎来自 dist/engine.min.js(混淆加密);解构为本地名,下方业务代码不变 */
+  if(!window.TY){ alert("引擎未加载:请确认 dist/engine.min.js 存在,且用本地服务器/直接打开本页"); }
+  var _E=window.TY||{}, crc32=_E.crc32, lanczosResize=_E.lanczosResize, quantize=_E.quantize, encodePNG8=_E.encodePNG8, canEncode=_E.canEncode, encodeAPNG=_E.encodeAPNG, encodeGIF=_E.encodeGIF, encodeAnimWebP=_E.encodeAnimWebP, encodeAnimAVIF=_E.encodeAnimAVIF, canAnimAVIF=_E.canAnimAVIF, decodeAnim=_E.decodeAnim;
+
+  /* ---------- 主题 ---------- */
+  var root=document.documentElement, tbtn=document.getElementById('theme');
+  function cur(){ var t=root.getAttribute('data-theme'); if(t) return t; return matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light'; }
+  tbtn.addEventListener('click', function(){ root.setAttribute('data-theme', cur()==='dark'?'light':'dark'); drawPixels(); });
+
+  /* ---------- 意见反馈弹窗 ---------- */
+  var fbModal=document.getElementById('fbModal');
+  function openFb(e){ if(e){ e.preventDefault(); } if(fbModal){ fbModal.hidden=false; document.body.style.overflow='hidden'; } }
+  function closeFb(){ if(fbModal){ fbModal.hidden=true; document.body.style.overflow=''; } }
+  [].forEach.call(document.querySelectorAll('[data-fb]'), function(el){ el.addEventListener('click', openFb); });
+  var fbC=document.getElementById('fbClose'), fbM=document.getElementById('fbMask');
+  if(fbC) fbC.addEventListener('click', closeFb);
+  if(fbM) fbM.addEventListener('click', closeFb);
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape' && fbModal && !fbModal.hidden) closeFb(); });
+
+  /* ---------- 像素马赛克背景 ---------- */
+  var cv=document.getElementById('pxcanvas'), ctx=cv.getContext('2d'), pr=Math.min(devicePixelRatio||1,2);
+  var reduce=matchMedia('(prefers-reduced-motion:reduce)').matches, cells=[];
+  function palette(){ var cs=getComputedStyle(root); return [cs.getPropertyValue('--teal').trim(), cs.getPropertyValue('--coral').trim(), cs.getPropertyValue('--teal-2').trim()]; }
+  function sizeCanvas(){ var h=cv.parentElement; cv.width=h.clientWidth*pr; cv.height=h.clientHeight*pr; }
+  function drawPixels(){
+    if(!cv.parentElement) return;
+    sizeCanvas();
+    var pal=palette(), g=26*pr, cols=Math.ceil(cv.width/g), rows=Math.ceil(cv.height/g);
+    cells=[];
+    for(var y=0;y<rows;y++) for(var x=0;x<cols;x++){
+      if(Math.random()<0.14) cells.push({x:x*g,y:y*g,c:pal[(Math.random()*pal.length)|0],a:Math.random()*0.5+0.1,p:Math.random()*Math.PI*2,s:g*(Math.random()*0.5+0.5)});
+    }
+    render(0);
+  }
+  function render(t){
+    ctx.clearRect(0,0,cv.width,cv.height);
+    for(var i=0;i<cells.length;i++){ var c=cells[i];
+      var a=reduce?c.a:c.a*(0.55+0.45*Math.sin(t/1400+c.p));
+      ctx.globalAlpha=Math.max(0,a); ctx.fillStyle=c.c;
+      ctx.fillRect(c.x, c.y, c.s-2*pr, c.s-2*pr);
+    }
+    ctx.globalAlpha=1;
+    if(!reduce) requestAnimationFrame(render);
+  }
+  var rtid; addEventListener('resize', function(){ clearTimeout(rtid); rtid=setTimeout(drawPixels,180); });
+  drawPixels();
+
+  /* ---------- 能力探测横幅:只在浏览器"真的太旧、连核心端侧能力都没有"时才弹(纯特性探测,不猜型号)。
+     WebCodecs 类(压缩已有动图 / 动图 AVIF)在 http+IP 非安全上下文下会缺,但那属正常降级、用户实际点用时会当场提示转服务端,不在此横幅重复告警。单图 AVIF/HEIC 用 WebAssembly,http+IP 也能跑。 */
+  (function capGate(){
+    var b=document.getElementById('capbanner'), t=document.getElementById('capbannerTxt'), x=document.getElementById('capbannerX');
+    if(!b) return;
+    try{ if(sessionStorage.getItem('capBannerX')) return; }catch(e){}
+    var miss=[];
+    if(typeof WebAssembly!=='object') miss.push('WebAssembly(AVIF / HEIC 编解码)');
+    if(typeof CompressionStream!=='function') miss.push('PNG-8 / APNG 编码');
+    if(miss.length){
+      t.innerHTML='当前浏览器较旧,缺:<b>'+miss.join(' · ')+'</b>。建议用 <b>Chrome / Edge / Firefox 最新版</b> —— 缺的部分自动交服务端,不影响基本使用。';
+      b.classList.add('show');
+    }
+    if(x) x.addEventListener('click', function(){ b.classList.remove('show'); try{ sessionStorage.setItem('capBannerX','1'); }catch(e){} });
+  })();
+
+  /* ---------- 格式数据 ---------- */
+  // 注:支持格式区块已改为静态标记(端侧⇄服务端分层),不再动态填充,故删去 READ/HOT/fill。
+  var OUT=[
+    {id:'webp', name:'WEBP', mime:'image/webp', live:true,  note:'现代首选 · 又小又清晰'},
+    {id:'jpg',  name:'JPG',  mime:'image/jpeg', live:true,  note:'照片通用 · 体积小'},
+    {id:'png',  name:'PNG',  mime:'image/png',  live:true,  note:'无损 · 支持透明 · 可 8 位减色压缩'},
+    {id:'avif', name:'AVIF', live:false, note:'新一代 · 极致压缩'},
+    {id:'heic', name:'HEIC', live:false, note:'苹果设备照片'},
+    {id:'jp2',  name:'JP2',  live:false, note:'JPEG 2000 · 高保真'},
+    {id:'tiff', name:'TIFF', live:false, note:'印刷 · 多页'},
+    {id:'gif',  name:'GIF',  live:false, note:'动图 · 简单图形'},
+    {id:'bmp',  name:'BMP',  live:false, note:'无压缩位图'},
+    {id:'pdf',  name:'PDF',  live:false, note:'图片转文档'}
+  ];
+  // 可加载浏览器 WASM 编码器的输出格式(自托管 codecs/<name>.js)。HEIC 写在浏览器端不现实(HEVC 专利+体积),留给服务端。
+  var CODEC_ENC={ avif:{name:'avif', mime:'image/avif'} };
+  // 可加载浏览器 WASM 解码器的输入格式:浏览器原生读不了、但自托管 codecs/<name>.js 能在本地解出来的。
+  var CODEC_DEC={ heic:{name:'heic', mimes:['image/heic','image/heif'], label:'HEIC/HEIF'} };
+
+
+  /* ---------- 转换器 ---------- */
+  var fileInput=document.getElementById('file'), drop=document.getElementById('drop'),
+      preview=document.getElementById('preview'), thumb=document.getElementById('thumb'),
+      fname=document.getElementById('fname'), fsize=document.getElementById('fsize'),
+      grid=document.getElementById('fmtgrid'), opts=document.getElementById('opts'),
+      go=document.getElementById('go'), srvnote=document.getElementById('srvnote'),
+      result=document.getElementById('result'), relink=document.getElementById('relink');
+  var curFile=null, curImg=null, selFmt=null, outBlob=null;
+  var inputReadable=false, inputFmtName='';   // 输入端:浏览器能否解码这张原图(真去解一次得出)
+  var modeline=document.getElementById('modeline'), rdbadge=document.getElementById('rdbadge'), rdoffer=document.getElementById('rdoffer'), smartline=document.getElementById('smartline');
+  var SD=null, SDlock=false, isProgrammatic=false, curFeat=null;   // SD=推荐;SDlock=已接管;curFeat=本图特征
+  // 逐格式 × 内容档 的"视觉无损但最小"质量点(定义在此,须早于 init 的 pick(OUT[0]) → buildOpts 读它)。
+  // 各值经"锚在已验证的 WebP 视觉无损点 + 真图肉眼 A/B"标定:JPG 与 WebP 相反(平滑档不能更低=防块状、锐边档很高=防振铃);
+  // AVIF 是 UI 值(doConvert 内 ×0.78),普遍比 WebP 低约 2、体积小约 30%(实测 ui78≈WebP q80)。HEIC/JP2 服务端,principled 值。
+  var QTAB={
+    webp:{sharp:90, smooth:78, texture:84, normal:80},
+    jpg: {sharp:93, smooth:85, texture:88, normal:84},
+    avif:{sharp:88, smooth:76, texture:82, normal:78},
+    heic:{sharp:90, smooth:82, texture:87, normal:83},
+    jp2: {sharp:89, smooth:81, texture:87, normal:83}
+  };
+  var QBASE={webp:80, jpg:85, avif:82, heic:85, jp2:85};
+  var TIER_LABEL={normal:'照片', smooth:'平滑', texture:'纹理', sharp:'图形/文字'};
+  var TIER_ORDER=['normal','smooth','texture','sharp'];
+  var FMT_NAME={webp:'WebP', jpg:'JPG', avif:'AVIF', heic:'HEIC', jp2:'JP2'};
+  var BOLT='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg>';
+  var CLOUD='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19a4.5 4.5 0 0 0 .5-8.97A6 6 0 0 0 6.5 9 4.5 4.5 0 0 0 7 19z"/><path d="M12 12v5M9.5 14.5 12 12l2.5 2.5"/></svg>';
+
+  function fmtBytes(b){ if(b<1024) return b+' B'; if(b<1048576) return (b/1024).toFixed(1)+' KB'; return (b/1048576).toFixed(2)+' MB'; }
+  function extOf(f){ var m=/\.([a-z0-9]+)$/i.exec((f&&f.name)||''); return m?m[1].toLowerCase():''; }
+
+  // 浏览器读不了的格式 → 画一个干净的格式码贴片当预览(替代碎图图标)
+  function phTile(t){
+    var cs=getComputedStyle(document.documentElement), s=120,
+        c=document.createElement('canvas'); c.width=c.height=s; var g=c.getContext('2d');
+    g.fillStyle=(cs.getPropertyValue('--teal-bg')||'#e2f4f2').trim(); g.fillRect(0,0,s,s);
+    g.fillStyle=(cs.getPropertyValue('--teal-2')||'#0c8a83').trim();
+    g.font='700 21px ui-monospace,Menlo,monospace'; g.textAlign='center'; g.textBaseline='middle';
+    g.fillText((t||'IMG').slice(0,5), s/2, s/2);
+    return c.toDataURL();
+  }
+  // 该输出格式此刻的徽标:即时(浏览器原生/已加载 WASM)· 端侧⤓(完整版可加载WASM 在本地跑)· 服务端
+  function outState(o){
+    if(o.live) return {cls:'live', t:'即时'};
+    if(window.TY_CODECS_LOCAL && CODEC_ENC[o.id] && window.TYCODECS && TYCODECS.wasmOK) return {cls:'load', t:'端侧⤓'};
+    return {cls:'srv', t:'服务端'};
+  }
+  // 当前输入图是否有可在本地加载的自托管解码器(完整版 + wasmOK + CODEC_DEC 命中)
+  function inputCodecAvail(){
+    if(!(window.TY_CODECS_LOCAL && window.TYCODECS && TYCODECS.wasmOK && curFile)) return false;
+    var t=curFile.type || (({heic:'image/heic',heif:'image/heif'})[(curFile.name.split('.').pop()||'').toLowerCase()]||'');
+    for(var k in CODEC_DEC){ if(CODEC_DEC[k].mimes.indexOf(t)>=0) return true; }
+    return false;
+  }
+  // file:// 直接双击打开时,浏览器出于安全策略会拦截 ES 模块加载(codec 是 <script type=module> + 内部还 import 子模块 / importmap)——
+  // 文件即使都在也加载不了,必须用本地服务器打开。返回提示串;可正常加载则返回 null。
+  function codecEnvHint(){
+    if(location.protocol==='file:') return '需用<b>本地服务器</b>打开才能在本地加载 —— 直接双击(file://)时浏览器会拦截本地 WASM 模块。在 <b>imging</b> 目录执行 <b>python3 -m http.server 8080</b>,再访问 <b>http://localhost:8080/图映.html</b> 即可(文件都在,只是 file:// 被浏览器限制)。';
+    return null;
+  }
+  // codec 卡片图标:端侧芯片(算力意象)+ 按钮下载箭头
+  var CHIP_SVG='<svg class="ci" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><rect x="7" y="7" width="10" height="10" rx="2"/><path d="M9.5 2.5v3M14.5 2.5v3M9.5 18.5v3M14.5 18.5v3M2.5 9.5h3M2.5 14.5h3M18.5 9.5h3M18.5 14.5h3"/></svg>';
+  var DL_SVG='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M12 3v11M7.5 9.5 12 14l4.5-4.5M5 20h14"/></svg>';
+  var OK_SVG='<svg class="ci" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.2l2.4 2.4 4.6-5"/></svg>';
+  // —— codec 记忆:加载过的编解码器记进 localStorage,刷新后自动静默加载(配合服务器 304,秒回不重下)——
+  function rememberCodec(name){ try{ var a=JSON.parse(localStorage.getItem('ty_codecs')||'[]'); if(a.indexOf(name)<0){ a.push(name); localStorage.setItem('ty_codecs', JSON.stringify(a)); } }catch(e){} }
+  function rememberedCodecs(){ try{ return JSON.parse(localStorage.getItem('ty_codecs')||'[]'); }catch(e){ return []; } }
+  function autoLoadCodecs(){
+    if(!(window.TY_CODECS_LOCAL && window.TYCODECS && TYCODECS.wasmOK)) return;
+    rememberedCodecs().forEach(function(name){
+      TYCODECS.load(name).then(function(){
+        // 编码器:点亮对应输出格式徽标为"即时"(无需用户再点)
+        for(var id in CODEC_ENC){ var cc=CODEC_ENC[id]; if(cc.name===name && TYCODECS.enc[cc.mime]) markFmtLive(id, cc.mime); }
+        // 解码器:已注册,后续上传该格式直接本地解;若正卡在该格式的"加载解码器"入口,重解一次
+        if(curFile && !inputReadable && typeof loadFile==='function'){ var f=curFile; loadFile(f); }
+      }).catch(function(){});
+    });
+  }
+  // 输入端可读徽标:✓ 浏览器可读 / 端侧可解⤓(可加载 WASM)/ 需服务端解码
+  function markInput(){
+    if(!rdbadge) return;
+    if(inputReadable){ rdbadge.className='rdbadge ok'; rdbadge.textContent='✓ 浏览器可读'; }
+    else if(inputCodecAvail()){ rdbadge.className='rdbadge load'; rdbadge.textContent='端侧可解⤓'; }
+    else { rdbadge.className='rdbadge srv'; rdbadge.textContent='需服务端解码'; }
+  }
+  // 两头相互作用:能不能"即时"= 浏览器能解码输入 且 能编码输出;否则服务端,并说清是哪一头卡住
+  function updateMode(){
+    if(!modeline) return;
+    if(!curFile||!selFmt){ modeline.hidden=true; return; }
+    modeline.hidden=false;
+    var inOk=inputReadable, outOk=!!selFmt.live;
+    // 输出端本身编不了、但完整版可加载WASM 在本地跑(如 AVIF 写):算"端侧可加载",不是服务端
+    var outLoadable=!outOk && window.TY_CODECS_LOCAL && CODEC_ENC[selFmt.id] && window.TYCODECS && TYCODECS.wasmOK && !(TYCODECS.enc[selFmt.mime||'']);
+    if(inOk&&outOk){
+      modeline.className='modeline client';
+      modeline.innerHTML=BOLT+'<span><b style="color:inherit">即时处理</b> · 在你的浏览器里直接完成,原图不会上传</span>';
+    }else if(inOk&&outLoadable){
+      modeline.className='modeline client';
+      modeline.innerHTML=BOLT+'<span><b style="color:inherit">端侧可用</b> · 首次加载 <b>'+selFmt.name+'</b> 编解码器(WASM),之后在本地完成、原图不上传</span>';
+    }else{
+      modeline.className='modeline server';
+      var rs=[];
+      if(!inOk) rs.push('<b>'+(inputFmtName||'该格式')+'</b> 浏览器无法解码');
+      if(!outOk&&!outLoadable) rs.push('<b>'+selFmt.name+'</b> 浏览器无法编码');
+      modeline.innerHTML=CLOUD+'<span>需服务端处理 · '+rs.join(' , ')+'</span>';
+    }
+  }
+
+  /* 格式按钮 */
+  OUT.forEach(function(o){
+    var d=document.createElement('div'); d.className='fmt'; d.tabIndex=0; d.dataset.id=o.id; d.setAttribute('role','button'); d.setAttribute('aria-pressed','false'); d.setAttribute('aria-label',o.name+' 格式');
+    var st0=outState(o); d.innerHTML='<span class="fn">'+o.name+'</span><span class="badge '+st0.cls+'">'+st0.t+'</span>';
+    d.addEventListener('click', function(){ pick(o,d); });
+    d.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); pick(o,d);} });
+    grid.appendChild(d);
+  });
+  // 默认预选 PNG:卡片一开始就有内容,切换格式时不忽大忽小
+  pick(OUT[0], grid.children[0]);
+  // 专业特性探测:用真实 toBlob 实测浏览器能原生编码哪些格式(比判断 UA/浏览器类型可靠得多)
+  // 能编码的 → 走浏览器"即时"(不上传);不能的 → 完整版可加载 WASM 显"端侧⤓",否则"服务端"。
+  // 注:任何浏览器都不能用 toBlob 原生编 AVIF(只能解),AVIF 写靠自托管 libavif WASM。
+  (function detectNative(){
+    var MIME={png:'image/png', jpg:'image/jpeg', webp:'image/webp', avif:'image/avif'};
+    Object.keys(MIME).forEach(function(id){
+      canEncode(MIME[id]).then(function(ok){
+        var o=OUT.filter(function(x){return x.id===id;})[0]; if(!o) return;
+        // 已由已加载 WASM 编码器点亮的格式(如自动加载的 AVIF)不要被探测结果降级
+        if(o.live && window.TYCODECS && TYCODECS.enc[o.mime]) return;
+        o.live=!!ok; if(ok) o.mime=MIME[id];
+        var chip=grid.querySelector('.fmt[data-id="'+id+'"] .badge');
+        var st1=outState(o); if(chip){ chip.className='badge '+st1.cls; chip.textContent=st1.t; }
+        if(selFmt&&selFmt.id===id){ if(ok) srvnote.classList.remove('show','codec'); updateGo(); updateMode(); }
+      });
+    });
+  })();
+  setTimeout(autoLoadCodecs, 0);   // 记住过的 codec 刷新后自动静默加载(此时 TYCODECS 已定义)
+
+  function markFmtLive(id,mime){ var o=OUT.filter(function(x){return x.id===id;})[0]; if(!o) return; o.live=true; o.mime=mime;
+    var chip=grid.querySelector('.fmt[data-id="'+id+'"] .badge'); if(chip){ chip.className='badge live'; chip.textContent='即时'; }
+    if(selFmt&&selFmt.id===id){ srvnote.classList.remove('show','codec'); updateGo(); updateMode(); } }
+  function pick(o,el){
+    userTakeover();   // 手动切格式(非程序触发)→ 停止本图自动覆盖
+    selFmt=o;
+    [].forEach.call(grid.children, function(c){ var on=c.dataset.id===o.id; c.classList.toggle('sel', on); c.setAttribute('aria-pressed', on?'true':'false'); });
+    buildOpts(o);
+    result.classList.remove('show');
+    srvnote.classList.remove('show','codec');   // 处理方式改由 modeline 主动提示(同时判断输入/输出两头)
+    updateGo(); updateMode();
+    // 输出格式浏览器原生编不了、但有可加载的 WASM 编码器 → 给"加载编解码器"入口(正向端侧能力,用 teal 卡片)
+    // (仅自托管完整版随包 codecs/ 目录并置本地标志;单文件/在线演示版无此目录,故不给必失败的入口,直接走服务端)
+    var cc=CODEC_ENC[o.id];
+    if(cc && !o.live && window.TYCODECS && window.TY_CODECS_LOCAL && TYCODECS.wasmOK && !TYCODECS.enc[cc.mime]){
+      srvnote.classList.add('show','codec');
+      var envHint=codecEnvHint();
+      if(envHint){ srvnote.innerHTML=CHIP_SVG+'<span class="txt"><b>'+o.name+'</b> 支持在本地端侧编码,但'+envHint+'</span>'; return; }
+      srvnote.innerHTML=CHIP_SVG+'<span class="txt"><b>'+o.name+'</b> 浏览器无法原生编码,但可加载自托管的 <b>'+o.name+' WASM 编码器</b>,之后在本地完成、原图不上传。</span><button id="loadCodec" class="codec-btn">'+DL_SVG+'加载编码器</button>';
+      var b=srvnote.querySelector('#loadCodec'); if(b) b.addEventListener('click', function(){ b.innerHTML=DL_SVG+'加载中…'; b.disabled=true;
+        TYCODECS.load(cc.name).then(function(){ if(TYCODECS.enc[cc.mime]){ markFmtLive(o.id,cc.mime); rememberCodec(cc.name);
+            srvnote.classList.add('show','codec'); srvnote.innerHTML=OK_SVG+'<span class="txt"><b>'+o.name+'</b> 编码器已就绪 —— 已记住,下次刷新自动加载。</span>';
+            setTimeout(function(){ if(selFmt&&selFmt.id===o.id&&o.live) srvnote.classList.remove('show','codec'); }, 3000);
+          } else { b.disabled=false; b.innerHTML=DL_SVG+'加载编码器'; srvnote.classList.remove('codec'); srvnote.innerHTML='<b>'+cc.name+'.js</b> 已加载但没注册 '+o.name+' 编码器(检查胶水是否调用 TYCODECS.onEnc)。'; } })
+        .catch(function(e){ var h=codecEnvHint(); if(h){ b.disabled=false; b.innerHTML=DL_SVG+'重试'; srvnote.innerHTML=CHIP_SVG+'<span class="txt"><b>'+o.name+'</b> '+h+'</span>'; } else { srvnote.classList.remove('codec'); srvnote.innerHTML='加载失败:'+e.message+'。请确认 <b>'+TYCODECS.base+cc.name+'.js</b> 存在(详见 README);暂交服务端。'; } }); });
+    }
+  }
+
+  function buildOpts(o){
+    opts.innerHTML=''; opts.classList.remove('show');
+    var sd=(SD && SD.fmt===o.id && !SDlock)?SD:null;   // 仅推荐格式且未被接管时,用智能默认做种子值
+    var rows=[];
+    if(o.id==='jpg'||o.id==='webp'||o.id==='avif'||o.id==='heic'||o.id==='jp2'){
+      var rq=qualityFor(o.id, curFeat);           // 该格式×本图的「视觉无损又最小」推荐画质
+      var qd=sd?sd.q:rq;                           // 推荐格式用 SD 的 q(=rq);切到别的格式也用 rq
+      rows.push('<div class="opt"><label>压缩质量</label><input type="range" id="q" min="30" max="100" value="'+qd+'"><span class="val" id="qv">'+qd+'</span></div>');
+      rows.push(qrecHTML(o.id, curFeat, qd));
+    }
+    if(o.id==='png'){
+      var pOn=!!(sd&&sd.p8), ce=sd?sd.colorsExp:8;
+      rows.push('<div class="opt-row"><div class="lbl"><b>8 位减色压缩</b><small>关=无损真彩;开=减到 ≤256 色瘦身,适合图标/纯色/插画。照片渐变图更推荐 WebP</small></div><label class="switch"><input type="checkbox" id="p8"'+(pOn?' checked':'')+'><span class="slider"></span></label></div>');
+      rows.push('<div id="p8opts" style="display:'+(pOn?'block':'none')+'">'+
+        '<div class="opt"><label>保留颜色</label><input type="range" id="colors" min="2" max="8" value="'+ce+'"><span class="val" id="cv2">'+Math.pow(2,ce)+' 色</span></div>'+
+        '<div class="opt2"><span class="k">抖动 <small style="color:var(--muted)">仅低色数时有助减色带</small></span><label class="switch"><input type="checkbox" id="pdither"'+(sd&&sd.dither?' checked':'')+'><span class="slider"></span></label></div>'+
+        '</div>');
+    }
+    rows.push('<div class="opt"><label>缩放</label><input type="range" id="scale" min="20" max="100" value="100"><span class="val" id="sv">100%</span></div>');
+    opts.innerHTML=rows.join('');
+    if(rows.length) opts.classList.add('show');
+
+    var q=opts.querySelector('#q'), qreset=opts.querySelector('#qreset'), qrecEl=opts.querySelector('.qrec');
+    var rqv=qrecEl?+qrecEl.dataset.rq:0;
+    if(q) q.oninput=function(){ userTakeover(); q.dataset.userSet='1'; opts.querySelector('#qv').textContent=q.value; if(qreset) qreset.hidden=(+q.value===rqv); };
+    if(qreset&&q) qreset.onclick=function(){ q.value=rqv; opts.querySelector('#qv').textContent=rqv; qreset.hidden=true; q.dataset.userSet=''; };
+    var sc=opts.querySelector('#scale'); if(sc) sc.oninput=function(){ userTakeover(); opts.querySelector('#sv').textContent=sc.value+'%'; };
+    var p8=opts.querySelector('#p8'); if(p8) p8.onchange=function(){ userTakeover(); opts.querySelector('#p8opts').style.display=p8.checked?'block':'none'; };
+    var col=opts.querySelector('#colors'); if(col) col.oninput=function(){ userTakeover(); opts.querySelector('#cv2').textContent=(Math.pow(2,+col.value))+' 色'; };
+    var pd=opts.querySelector('#pdither'); if(pd) pd.onchange=function(){ userTakeover(); };
+  }
+
+  /* ============ 智能默认:按图自适应最优格式与参数 ============ */
+  // 最近邻缩到 ≤256px 采样(插值会把 2 色 logo 插成上千色、软化硬边 alpha,必须关插值)
+  function extractFeatures(img, fmtName){
+    var W0=img.naturalWidth||img.width, H0=img.naturalHeight||img.height;
+    var s=Math.min(1, 256/Math.max(W0,H0));
+    var w=Math.max(1,Math.round(W0*s)), h=Math.max(1,Math.round(H0*s));
+    var c=document.createElement('canvas'); c.width=w; c.height=h;
+    var g=c.getContext('2d',{willReadFrequently:true}); g.imageSmoothingEnabled=false;
+    g.drawImage(img,0,0,w,h);
+    var d=g.getImageData(0,0,w,h).data, N=w*h;
+    var srcNoAlpha=/^(JPG|JPEG|BMP)$/.test(fmtName!==undefined?fmtName:(inputFmtName||''));
+    var aMin=255, aTrans=0, aSemi=0, seen=new Set(), lum=new Float32Array(N);
+    for(var i=0,p=0;i<N;i++,p+=4){
+      var r=d[p],gc=d[p+1],b=d[p+2],a=d[p+3];
+      if(a<aMin)aMin=a;
+      if(a<250){ aTrans++; if(a>10&&a<245)aSemi++; }
+      seen.add(((r>>3)<<10)|((gc>>3)<<5)|(b>>3));      // 15-bit 分桶(5bit/通道,抗噪)
+      lum[i]=0.299*r+0.587*gc+0.114*b;
+    }
+    var hasAlpha=!srcNoAlpha && aTrans/N>0.003 && aMin<246;
+    var softAlpha=hasAlpha && aSemi/Math.max(1,aTrans)>=0.10;
+    var eSum=0, eStrong=0;
+    for(var y=0;y<h;y++)for(var x=0;x<w;x++){
+      var k=y*w+x, gx=(x+1<w)?Math.abs(lum[k]-lum[k+1]):0, gy=(y+1<h)?Math.abs(lum[k]-lum[k+w]):0, gm=gx+gy;
+      eSum+=gm; if(gm>24)eStrong++;
+    }
+    return { W0:W0,H0:H0, maxSide:Math.max(W0,H0), MP:(W0*H0)/1e6,
+      uniq:seen.size, uniqRatio:seen.size/N, edgeMean:eSum/N, edgeFrac:eStrong/N,
+      hasAlpha:hasAlpha, alphaKind:(!hasAlpha?'none':(softAlpha?'soft':'binary')), isPhotoLike:seen.size>4096 };
+  }
+  function classify(F){
+    if(F.alphaKind!=='soft'){ if(F.uniq<=16) return 'SOLID'; if(F.uniq<=256) return 'ICON'; }
+    if(F.uniq>256 && F.uniqRatio<0.35 && F.edgeFrac>0.30) return 'SCREENSHOT';
+    // ILLUS 必须"够平"(edgeMean<6=大片纯色填充);连续调的照片(证件照灰背景+深西装虽颜色少,但处处有微梯度 edgeMean 偏高)不再误判成插画
+    if(F.uniq<=4096 && F.edgeFrac<0.30 && F.edgeMean<6 && F.alphaKind!=='soft') return 'ILLUS';
+    if((F.isPhotoLike || F.edgeMean>=6) && F.edgeMean<8) return 'PHOTO_SMOOTH';
+    if((F.isPhotoLike || F.edgeMean>=6) && (F.edgeMean>20 || F.edgeFrac>0.35)) return 'PHOTO_TEXTURE';
+    return 'PHOTO';
+  }
+  // 质量表 QTAB/QBASE/TIER_* 见 IIFE 顶部(须在 init 的 pick(OUT[0]) 之前定义,否则 buildOpts 读到 undefined)。
+  function tierOf(F){
+    if(!F) return 'normal';
+    var cls=classify(F);
+    return (cls==='SCREENSHOT'||cls==='ILLUS'||cls==='ICON'||F.alphaKind==='soft') ? 'sharp'
+         : (cls==='PHOTO_SMOOTH') ? 'smooth'
+         : (cls==='PHOTO_TEXTURE') ? 'texture' : 'normal';
+  }
+  function qualityFor(id, F){
+    if(!F) return QBASE[id]||82;
+    var t=tierOf(F);
+    return (QTAB[id] && QTAB[id][t]) || QBASE[id] || 82;
+  }
+  // 给用户看的「为什么推荐这个画质」——按格式效率解释,末尾统一给可调方向。
+  function qualityWhy(id, F){
+    var m={
+      webp:'WebP 效率高,这个画质已「肉眼看不出损失」、体积很小',
+      jpg: 'JPEG 效率较低、平滑渐变处易出现方块,同观感要比 WebP 高一些',
+      avif:'AVIF 最省,更低的画质就已「看不出损失」、体积最小',
+      heic:'HEIC(HEVC)高效,这个画质视觉无损(此格式当前交服务端处理)',
+      jp2: 'JPEG2000 无块状,这个画质视觉无损(此格式当前交服务端处理)'
+    };
+    return (m[id]||'这个画质在「看不出损失」的前提下最小')+' —— 拉低更小、拉高更清晰';
+  }
+  // 质量推荐提示 HTML:该格式「各内容档」的推荐画质全列出、本图所属档高亮(=推荐值);qd≠推荐时露"回到推荐"。(FMT_NAME 见 IIFE 顶部)
+  function qrecHTML(id, F, qd){
+    var tab=QTAB[id]; if(!tab) return '';
+    var tier=tierOf(F), rq=(tab[tier]||QBASE[id]||82);
+    var chips=TIER_ORDER.map(function(t){
+      return '<span class="qchip'+(t===tier?' on':'')+'">'+TIER_LABEL[t]+' <b>'+tab[t]+'</b></span>';
+    }).join('');
+    return '<div class="qrec" data-rq="'+rq+'">'
+      + '<div class="qchips">'+chips+'<button type="button" class="qreset" id="qreset"'+(+qd===rq?' hidden':'')+'>↺ 回到推荐 '+rq+'</button></div>'
+      + '<div class="qwhy">'+(FMT_NAME[id]||id)+' 各内容档推荐画质 · '+qualityWhy(id, F)+'</div></div>';
+  }
+  function computeSD(F){
+    var cls=classify(F), soft=(F.alphaKind==='soft');
+    var sd={cls:cls, fmt:'webp', q:80, p8:false, colorsExp:8, dither:false, scale:100, reason:'', offer:null, lowConf:false};
+    var ce=Math.ceil(Math.log2(F.uniq+(F.hasAlpha?1:0))) + (F.edgeFrac>0.1?1:0); ce=Math.max(2,Math.min(8, isFinite(ce)?ce:8));
+    var lowConf=(F.uniq>=3000 && F.uniq<=6000 && F.edgeFrac>=0.28 && F.edgeFrac<=0.40);
+    if(soft){ sd.fmt='webp'; sd.reason='检测到带渐变透明 · 已默认 WEBP · 画质 {q}(保留透明、线条干净)'; }
+    else if(cls==='SOLID'){ sd.fmt='png'; sd.p8=true; sd.colorsExp=ce; sd.reason='检测到纯色/极简 · 已默认 PNG-8 · '+Math.pow(2,ce)+' 色(无损,通常最小)'; }
+    else if(cls==='ICON'){ sd.fmt='png'; sd.p8=true; sd.colorsExp=ce; sd.reason='检测到图标/线稿 · 已默认 PNG-8 · '+Math.pow(2,ce)+' 色(无损又小)'; }
+    else if(cls==='SCREENSHOT'){ sd.fmt='webp'; sd.reason='检测到截图/界面 · 已默认 WEBP · 画质 {q}(文字更锐利)'; }
+    else if(cls==='ILLUS'){ sd.fmt='webp'; sd.reason='检测到插画/界面图 · 已默认 WEBP · 画质 {q}(线条更干净)'; sd.offer={type:'png8'}; }
+    else if(cls==='PHOTO_SMOOTH'){ sd.fmt='webp'; sd.reason='检测到平滑照片 · 已默认 WEBP · 画质 {q}(视觉无损、更省)'; sd.offer={type:'avif'}; }
+    else if(cls==='PHOTO_TEXTURE'){ sd.fmt='webp'; sd.reason='检测到高纹理照片 · 已默认 WEBP · 画质 {q}(保细节)'; sd.offer={type:'avif'}; }
+    else { sd.fmt='webp'; sd.reason='检测到照片 · 已默认 WEBP · 画质 {q}(又小又清晰)'; sd.offer={type:'avif'}; }
+    if(!soft && F.hasAlpha && sd.fmt==='webp' && cls.indexOf('PHOTO')===0) sd.reason='检测到带透明的图 · 已默认 WEBP · 画质 {q}(保留透明)';
+    sd.q=qualityFor(sd.fmt, F);                      // 质量点由逐格式×内容表统一给(经 SSIM 实测+肉眼 A/B 标定到视觉无损点)
+    sd.reason=sd.reason.replace('{q}', sd.q);
+    sd.dither=(sd.p8 && sd.colorsExp>=6 && F.edgeMean<10);
+    if(F.maxSide>2560) sd.offer={type:'scale', to:2048, max:F.maxSide, W:F.W0, H:F.H0};   // 超大图缩放 offer 优先
+    if(lowConf){ sd.lowConf=true; sd.reason=''; if(sd.offer && sd.offer.type!=='scale') sd.offer=null; }
+    return sd;
+  }
+  function applySmartDefaults(){
+    if(!curImg || !inputReadable){ hideSmart(); return; }
+    if(SDlock){ if(!curFeat){ try{ curFeat=extractFeatures(curImg); }catch(e){} } return; }
+    try{
+      curFeat=extractFeatures(curImg);   // 存本图特征,供切格式时算逐格式最优质量
+      SD=computeSD(curFeat);
+      var recO=OUT.filter(function(x){return x.id===SD.fmt;})[0], recEl=grid.querySelector('.fmt[data-id="'+SD.fmt+'"]');
+      if(recO && recEl){ isProgrammatic=true; pick(recO, recEl); isProgrammatic=false; }
+      renderSmart();
+    }catch(e){ SD=null; hideSmart(); }
+  }
+  function hideSmart(){ if(smartline) smartline.hidden=true; [].forEach.call(grid.children, function(c){ c.classList.remove('rec'); }); }
+  function avifAvailable(){ return !!(window.TY_CODECS_LOCAL && window.TYCODECS && TYCODECS.wasmOK) || !!(window.TYCODECS && TYCODECS.enc['image/avif']); }
+  function renderSmart(){
+    [].forEach.call(grid.children, function(c){ c.classList.toggle('rec', !!(SD && c.dataset.id===SD.fmt)); });
+    if(!SD || !SD.reason){ if(smartline) smartline.hidden=true; return; }
+    var off=SD.offer;
+    if(off && off.type==='avif' && !avifAvailable()) off=null;   // AVIF 不可端侧达成(演示版)→ 不给必落空的备选
+    var label=off ? ({
+      avif:'这张也可试 <b>AVIF</b> · 通常更小',
+      png8:'这张也可试 <b>PNG-8</b> · 通常更小',
+      scale:('当前 <b>'+off.W+'×'+off.H+'</b> · 缩到 '+off.to+'px 更省更快')
+    }[off.type]||'') : '';
+    var ic=(off&&off.type==='scale')
+      ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>'
+      : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>';
+    smartline.innerHTML='<span class="sdtag">自动</span><span class="sdtxt">'+SD.reason+'</span>'+(label?'<button class="sdghost" id="sdOffer" aria-label="为这张图推荐的备选,可随时改选">'+ic+'<span>'+label+' →</span></button>':'');
+    smartline.hidden=false;
+    var ob=smartline.querySelector('#sdOffer'); if(ob) ob.onclick=function(){ doOffer(off); };
+  }
+  function doOffer(off){
+    if(!off) return;
+    if(off.type==='avif'){ var a=grid.querySelector('.fmt[data-id="avif"]'); if(a) a.click(); return; }   // 掉进现有"加载编码器"流程;click 非程序触发→自动接管
+    SDlock=true; hideSmart();
+    if(off.type==='png8'){
+      var pe=grid.querySelector('.fmt[data-id="png"]'); isProgrammatic=true; pick(OUT.filter(function(x){return x.id==='png';})[0], pe); isProgrammatic=false;
+      var p8=opts.querySelector('#p8'); if(p8){ p8.checked=true; var po=opts.querySelector('#p8opts'); if(po) po.style.display='block'; }
+      var col=opts.querySelector('#colors'); if(col && SD){ col.value=SD.colorsExp||8; var cv=opts.querySelector('#cv2'); if(cv) cv.textContent=Math.pow(2,+col.value)+' 色'; }
+    } else if(off.type==='scale'){
+      var sc=opts.querySelector('#scale'); if(sc){ var pct=Math.max(20,Math.min(100,Math.round(off.to/off.max*100))); sc.value=pct; var sv=opts.querySelector('#sv'); if(sv) sv.textContent=pct+'%'; }
+    }
+  }
+  // 用户一改就撤:手动切格式 / 动任一选项 → 停止本图自动覆盖(无 SD 时不锁,避免上传前误触)
+  function userTakeover(){ if(isProgrammatic || !SD) return; SDlock=true; hideSmart(); }
+
+  function loadFile(f){
+    if(!f) return;
+    curFile=f; outBlob=null; result.classList.remove('show');
+    SD=null; SDlock=false; curFeat=null; if(smartline) smartline.hidden=true;   // 新图:清上一张的智能默认/接管/特征
+    inputFmtName=(extOf(f)||((f.type||'').split('/')[1])||'IMG').toUpperCase();
+    fname.textContent=f.name; fsize.textContent=fmtBytes(f.size)+' · '+(f.type||'image');
+    drop.style.display='none'; preview.classList.add('show');
+    if(rdbadge){ rdbadge.className='rdbadge'; rdbadge.textContent='检测中…'; }
+    if(rdoffer) rdoffer.classList.remove('show','codec');
+    // 真去解码一次:能加载=浏览器可读(即时可行);失败=浏览器读不了,必须服务端解码
+    var url=URL.createObjectURL(f), im=new Image();
+    function fail(){ curImg=null; inputReadable=false; thumb.src=phTile(inputFmtName); thumb.style.background='var(--teal-bg)'; markInput(); updateGo(); updateMode(); }
+    // 用已注册的 WASM 解码器解成 canvas
+    function decodeViaCodec(t){
+      f.arrayBuffer().then(function(ab){ return TYCODECS.dec[t](ab); }).then(function(id){
+        var c=document.createElement('canvas'); c.width=id.width; c.height=id.height; c.getContext('2d').putImageData(id,0,0);
+        curImg=c; inputReadable=true; thumb.src=c.toDataURL('image/png'); thumb.style.background=''; if(rdoffer) rdoffer.classList.remove('show','codec'); markInput(); updateGo(); updateMode(); applySmartDefaults();
+      }).catch(function(){ fail(); });
+    }
+    im.onload=function(){ curImg=im; inputReadable=true; thumb.src=url; thumb.style.background=''; markInput(); updateGo(); updateMode(); applySmartDefaults(); };
+    im.onerror=function(){
+      var t=f.type || (({heic:'image/heic',heif:'image/heif',avif:'image/avif',jxl:'image/jxl',tiff:'image/tiff'})[(f.name.split('.').pop()||'').toLowerCase()]||'');
+      // ① 已加载对应 WASM 解码器 → 直接用它解成 canvas
+      if(window.TYCODECS && TYCODECS.dec[t]){ decodeViaCodec(t); return; }
+      // ② 未加载但有可下载的自托管解码器 → 给"加载解码器"入口(与输出端"加载编解码器"对称;仅 TY_CODECS_LOCAL 完整版)
+      var cd=null; for(var k in CODEC_DEC){ if(CODEC_DEC[k].mimes.indexOf(t)>=0){ cd=CODEC_DEC[k]; break; } }
+      if(cd && window.TYCODECS && window.TY_CODECS_LOCAL && TYCODECS.wasmOK && rdoffer){
+        fail();
+        rdoffer.classList.add('show','codec');
+        var envHintD=codecEnvHint();
+        if(envHintD){ rdoffer.innerHTML=CHIP_SVG+'<span class="txt"><b>'+cd.label+'</b> 支持在本地端侧解码,但'+envHintD+'</span>'; return; }
+        rdoffer.innerHTML=CHIP_SVG+'<span class="txt"><b>'+cd.label+'</b> 浏览器无法原生解码,但可加载自托管的 <b>'+cd.label+' WASM 解码器</b>,在本地读取、原图不上传。</span><button id="loadDec" class="codec-btn">'+DL_SVG+'加载解码器</button>';
+        var b=document.getElementById('loadDec');
+        b.onclick=function(){
+          b.disabled=true; b.innerHTML=DL_SVG+'加载中…';
+          TYCODECS.load(cd.name).then(function(){
+            if(TYCODECS.dec[t]){ rememberCodec(cd.name); rdoffer.classList.remove('show','codec'); if(rdbadge){ rdbadge.className='rdbadge'; rdbadge.textContent='解码中…'; } decodeViaCodec(t); }
+            else { b.disabled=false; b.innerHTML=DL_SVG+'加载解码器'; rdoffer.classList.remove('codec'); rdoffer.innerHTML='<b>'+cd.name+'.js</b> 已加载但没注册解码器(检查胶水是否调用 TYCODECS.onDec)。'; }
+          }).catch(function(err){ var h=codecEnvHint(); if(h){ b.disabled=false; b.innerHTML=DL_SVG+'重试'; rdoffer.innerHTML=CHIP_SVG+'<span class="txt"><b>'+cd.label+'</b> '+h+'</span>'; } else { rdoffer.classList.remove('codec'); rdoffer.innerHTML='<b>'+cd.label+' 解码器加载失败</b>:'+((err&&err.message)||err); } });
+        };
+        return;
+      }
+      // ③ 无可用解码器 → 读不了,走服务端
+      fail();
+    };
+    im.src=url;
+  }
+  function reset(){ curFile=null; curImg=null; outBlob=null; inputReadable=false; inputFmtName=''; SD=null; SDlock=false; curFeat=null; hideSmart(); preview.classList.remove('show'); drop.style.display='block'; fileInput.value=''; result.classList.remove('show'); if(modeline) modeline.hidden=true; srvnote.classList.remove('show','codec'); if(rdoffer) rdoffer.classList.remove('show','codec'); updateGo(); }
+
+  function updateGo(){ go.disabled=!(curFile && selFmt); }
+
+  fileInput.addEventListener('change', function(e){ loadFile(e.target.files[0]); });
+  drop.addEventListener('click', function(){ fileInput.click(); });
+  drop.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); fileInput.click(); } });
+  relink.addEventListener('click', reset);
+  ['dragenter','dragover'].forEach(function(ev){ drop.addEventListener(ev,function(e){ e.preventDefault(); drop.classList.add('over'); }); });
+  ['dragleave','drop'].forEach(function(ev){ drop.addEventListener(ev,function(e){ e.preventDefault(); drop.classList.remove('over'); }); });
+  drop.addEventListener('drop', function(e){ if(e.dataTransfer.files[0]) loadFile(e.dataTransfer.files[0]); });
+
+  /* 转换 */
+  go.addEventListener('click', async function(){
+    if(!curFile||!selFmt) return;
+    if(!selFmt.live || !curImg){
+      // 无法在浏览器编码,或图片浏览器无法解码 → 提示走服务端
+      srvnote.classList.add('show');
+      srvnote.innerHTML='这张图或所选 <b>'+selFmt.name+'</b> 需要服务端引擎处理。演示环境仅支持浏览器可编码的 PNG / JPG / WEBP;接上你的服务后,此格式同样一键完成。';
+      return;
+    }
+    go.textContent='处理中…'; go.disabled=true;
+    await new Promise(function(r){ setTimeout(r,30); });
+    try{ await doConvert(); } catch(e){ srvnote.classList.add('show'); srvnote.innerHTML='处理出错:'+((e&&e.message)||e); }
+    go.textContent='转换并下载'; go.disabled=false;
+  });
+
+  /* —— 引擎已外置到 dist/engine.min.js —— */
+  async function doConvert(){
+    var scale=(+val('scale',100))/100, W0=curImg.naturalWidth||curImg.width, H0=curImg.naturalHeight||curImg.height;
+    var w=Math.max(1,Math.round(W0*scale)), h=Math.max(1,Math.round(H0*scale));
+    var sc=document.createElement('canvas'); sc.width=W0; sc.height=H0; sc.getContext('2d').drawImage(curImg,0,0);
+    var targetCanvas, targetData=null;
+    if(w!==W0||h!==H0){ targetData=lanczosResize(sc.getContext('2d').getImageData(0,0,W0,H0), w, h); targetCanvas=document.createElement('canvas'); targetCanvas.width=w; targetCanvas.height=h; targetCanvas.getContext('2d').putImageData(targetData,0,0); }
+    else { targetCanvas=sc; }
+    var blob, eng;
+    if(selFmt.id==='png' && checked('p8') && window.CompressionStream){
+      if(!targetData) targetData=targetCanvas.getContext('2d').getImageData(0,0,w,h);
+      var pdith=checked('pdither');
+      var qz=quantize(targetData, Math.pow(2,+val('colors',8)), pdith);
+      blob=await encodePNG8(qz);
+      eng=(scale<1?'Lanczos 高清缩放 · ':'')+'加权中位切分 + k-means 精修'+(pdith?' + 抖动':'')+' · '+qz.palette.length+' 色索引 PNG';
+    } else if(window.TYCODECS && TYCODECS.enc[selFmt.mime]){
+      // 已加载浏览器端 WASM 编码器(如 AVIF)→ 直接用
+      if(!targetData) targetData=targetCanvas.getContext('2d').getImageData(0,0,w,h);
+      try{ var bytes=await TYCODECS.enc[selFmt.mime](targetData, (+val('q',82))/100); blob=new Blob([bytes],{type:selFmt.mime}); }
+      catch(e){ srvnote.classList.add('show'); srvnote.innerHTML='<b>'+selFmt.name+'</b> 编码器出错:'+((e&&e.message)||e); return; }
+      eng=(scale<1?'Lanczos 高清缩放 · ':'')+'WASM '+selFmt.name+' 编码器';
+    } else {
+      blob=await new Promise(function(res){ targetCanvas.toBlob(function(b){res(b);}, selFmt.mime, (+val('q',82))/100); });
+      if(!blob){ srvnote.classList.add('show'); srvnote.innerHTML='当前浏览器不支持编码 <b>'+selFmt.name+'</b>,请换 PNG / JPG / WEBP。'; return; }
+      var enc=selFmt.id==='webp'?'原生 libwebp':selFmt.id==='avif'?'原生 AVIF · AV1':selFmt.id==='jpg'?'原生 JPEG':'无损 PNG';
+      eng=(scale<1?'Lanczos 高清缩放 · ':'')+enc+' 编码';
+    }
+    outBlob=blob;
+    var oldB=curFile.size, newB=blob.size, save=Math.round((1-newB/oldB)*100);
+    document.getElementById('oldsz').textContent=fmtBytes(oldB);
+    document.getElementById('newsz').textContent=fmtBytes(newB);
+    var sv=document.getElementById('save'); if(save>0){ sv.textContent='省 '+save+'%'; sv.classList.remove('zero'); } else { sv.textContent=(save===0?'体积持平':'+'+Math.abs(save)+'%'); sv.classList.add('zero'); }
+    var en=document.getElementById('engnote'); if(en) en.textContent=w+'×'+h+' · '+eng;
+    // 智能建议:变小=不提示;没变小分两种——非WebP→换WebP;已是WebP仍没变小→原图已很优,建议降质或保留原图
+    var adv=document.getElementById('advNote'), bigTxt=(save<0?'比原图大 '+Math.abs(save)+'%':'没有变小');
+    if(adv){
+      if(save>0){ adv.hidden=true; }
+      else if(selFmt.id!=='webp'){ adv.hidden=false; adv.className='advnote';
+        adv.innerHTML='<span>⚠ '+bigTxt+' —— 想更小换 <b>WEBP</b>(同画质通常最小)</span><button class="go2" id="switchWebpI">换 WEBP</button>';
+        var sw=adv.querySelector('#switchWebpI'); if(sw) sw.addEventListener('click', function(){ var c=grid.querySelector('.fmt[data-id="webp"]'); if(c) c.click(); go.click(); });
+      } else { adv.hidden=false; adv.className='advnote tip';   // 已是 WebP 仍没变小 = 原图已很优
+        adv.innerHTML='<span>ℹ '+bigTxt+' —— 原图已经压得很好了,想更小可<b>降质</b>(会损细节),否则直接用原图更划算</span><button class="go2" id="lowerQI">降质到 60</button>';
+        var lq=adv.querySelector('#lowerQI'); if(lq) lq.addEventListener('click', function(){ var qs=opts.querySelector('#q'); if(qs){ qs.value=60; if(qs.oninput) qs.oninput(); } go.click(); });
+      }
+    }
+    result.classList.add('show'); srvnote.classList.remove('show'); autoName();
+  }
+  function autoName(){ var base=(curFile.name.replace(/\.[^.]+$/,'')||'image'); outName=base+'.'+(selFmt.id==='jpg'?'jpg':selFmt.id); }
+  var outName='image.png';
+  document.getElementById('dl').addEventListener('click', function(){
+    if(!outBlob) return; var a=document.createElement('a'); a.href=URL.createObjectURL(outBlob); a.download=outName; document.body.appendChild(a); a.click(); a.remove();
+  });
+  function val(id,def){ var e=opts.querySelector('#'+id); return e?e.value:def; }
+  function checked(id){ var e=opts.querySelector('#'+id); return e?e.checked:false; }
+
+  /* ---------- 动图工坊 ---------- */
+  var modetabs=document.getElementById('modetabs'),
+      panelImg=document.getElementById('panel-img'), panelAnim=document.getElementById('panel-anim');
+  modetabs.addEventListener('click', function(e){
+    var b=e.target.closest('.modetab'); if(!b) return;
+    [].forEach.call(modetabs.children, function(c){ c.classList.toggle('on', c===b); });
+    var anim=(b.dataset.mode==='anim'); panelImg.hidden=anim; panelAnim.hidden=!anim;
+  });
+
+  var AOUT=[
+    {id:'webp', name:'WEBP', rec:'✓ 推荐', cls:'b', note:'又小又清晰', live:true},
+    {id:'gif',  name:'GIF',  rec:'最通用', cls:'c', note:'哪都能播', live:true},
+    {id:'apng', name:'APNG', rec:'高保真', cls:'a', note:'真彩+透明', live:true},
+    {id:'avif', name:'AVIF', rec:'最小',  cls:'c', note:'极致压缩', live:false}
+  ];
+  var gridA=document.getElementById('fmtgridA'), optsA=document.getElementById('optsA'),
+      goA=document.getElementById('goA'), srvnoteA=document.getElementById('srvnoteA'),
+      animprev=document.getElementById('animprev'), fileA=document.getElementById('fileA'), dropA=document.getElementById('dropA'),
+      modelineA=document.getElementById('modelineA'), resultA=document.getElementById('resultA'),
+      fedit=document.getElementById('fedit'), fstrip=document.getElementById('fstrip'), feditSum=document.getElementById('feditSum');
+  var selA=null, animFiles=[], animMode='', animReadable=true, animInFmt='', outBlobA=null, outNameA='anim.webp';
+  var editFrames=[], dragFrom=-1, srcRep=null;    // 帧模型:[{canvas,delayMs,origDelay,thumb}];srcRep=源动图循环(压缩模式自动读)
+  var SDA=null, SDAlock=false, isProgA=false, smartlineA=document.getElementById('smartlineA');   // 动图智能默认(首帧分析)
+  var HAS_DEC=('ImageDecoder' in window);
+
+  AOUT.forEach(function(o){
+    var d=document.createElement('div'); d.className='fmt'; d.tabIndex=0; d.dataset.id=o.id; d.setAttribute('role','button'); d.setAttribute('aria-pressed','false'); d.setAttribute('aria-label',o.name+' 动图格式');
+    d.innerHTML='<span class="rec '+o.cls+'">'+o.rec+'</span><span class="fn">'+o.name+'</span><span class="badge '+(o.live?'live':'srv')+'">'+(o.live?'即时':'服务端')+'</span>';
+    d.addEventListener('click', function(){ pickA(o,d); });
+    d.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); pickA(o,d);} });
+    gridA.appendChild(d);
+  });
+  function pickA(o){ userTakeoverA(); selA=o; [].forEach.call(gridA.children, function(c){ var on=c.dataset.id===o.id; c.classList.toggle('sel', on); c.setAttribute('aria-pressed', on?'true':'false'); }); buildOptsA(); if(editFrames.length) syncAnimSum(); srvnoteA.classList.remove('show'); if(resultA) resultA.classList.remove('show'); updateGoA(); updateModeA(); }
+  // 动图智能默认:首帧分析 → 线条/少色荐 GIF、照片/渐变荐 动图 WEBP;只在 live 格式里推荐,apng/avif 不自动
+  // 动图 WebP 逐档质量表(模块级,UI 档位提示也读):= 单图 WebP 各档 −2(运动掩盖伪影,可略压)。
+  var QTAB_A={ sharp:88, smooth:76, texture:82, normal:78 };
+  function bigAnim(F, nFrames){ return (F.maxSide>800 || nFrames>60); }   // 大动图/多帧:体积敏感,各档再 −8(floor 62,对齐旧版 photo→70)
+  function qualityForA(cls, F, nFrames){
+    var tier=(cls==='SCREENSHOT'||cls==='ILLUS'||F.alphaKind==='soft') ? 'sharp'
+            : (cls==='PHOTO_SMOOTH') ? 'smooth'
+            : (cls==='PHOTO_TEXTURE') ? 'texture' : 'normal';
+    var q=QTAB_A[tier]||78;
+    if(bigAnim(F, nFrames)) q=Math.max(62, q-8);
+    return q;
+  }
+  // 动图质量提示 HTML:动图 WebP 各内容档推荐画质(大动图各档 −8),本图档高亮。
+  function qrecHTMLA(tier, big, qAd){
+    var adj=function(v){ return big?Math.max(62, v-8):v; };
+    var chips=TIER_ORDER.map(function(t){
+      return '<span class="qchip'+(t===tier?' on':'')+'">'+TIER_LABEL[t]+' <b>'+adj(QTAB_A[t])+'</b></span>';
+    }).join('');
+    var rq=adj(QTAB_A[tier]||78);
+    return '<div class="qrec" data-rq="'+rq+'">'
+      + '<div class="qchips">'+chips+'<button type="button" class="qreset" id="qresetA"'+(+qAd===rq?' hidden':'')+'>↺ 回到推荐 '+rq+'</button></div>'
+      + '<div class="qwhy">动图 WebP 各内容档 · 播放时运动会掩盖轻微压缩'+(big?' · 大动图各档已 −8 更省':'') + ' —— 拉低更小、拉高更清晰</div></div>';
+  }
+  function computeSDA(F, nFrames){
+    var cls=classify(F), sda={fmt:'webp', qA:76, colA:256, dither:'fs', reason:''};
+    sda.qARec=qualityForA(cls, F, nFrames);   // 动图 WebP 推荐画质(即使默认走 GIF 也先算好,供切到 WebP 时提示)
+    sda.tier=tierOf(F);                        // 本图档位,供 UI 高亮
+    sda.big=bigAnim(F, nFrames);
+    // 线条/纯色/低色线稿 → GIF(边缘干净、兼容最好);其余(照片/彩色线稿/截图)→ 动图 WebP。
+    var lineLike=(cls==='SOLID' || cls==='ICON' || (cls==='ILLUS' && F.uniq<=256));
+    if(lineLike){
+      sda.fmt='gif'; sda.colA=Math.max(16,Math.min(256, Math.ceil((F.uniq||16)/16)*16)); sda.dither=(F.uniq<=4?'none':'fs');
+      sda.reason='线条/纯色动图 · 已默认 GIF · '+sda.colA+' 色(边缘干净、兼容好)';
+    } else {
+      sda.fmt='webp'; sda.qA=qualityForA(cls, F, nFrames);
+      var name=(cls==='SCREENSHOT'||cls==='ILLUS') ? '图形/线稿动图'
+             : (cls==='PHOTO_SMOOTH') ? '平滑照片动图'
+             : (cls==='PHOTO_TEXTURE') ? '高纹理动图' : '照片动图';
+      var big=(F.maxSide>800 || nFrames>60);
+      sda.reason=name+' · 已默认 动图 WEBP · 画质 '+sda.qA+(big?'(大动图·已适当压更省)':'(视觉≈无损)');
+    }
+    return sda;
+  }
+  function applySmartDefaultsA(){
+    if(!editFrames.length || SDAlock) return;
+    try{
+      SDA=computeSDA(extractFeatures(editFrames[0].canvas, animInFmt||''), editFrames.length);
+      var recO=AOUT.filter(function(x){return x.id===SDA.fmt;})[0], recEl=gridA.querySelector('.fmt[data-id="'+SDA.fmt+'"]');
+      if(recO && recEl){ isProgA=true; pickA(recO); isProgA=false; }
+      renderSmartA();
+    }catch(e){ SDA=null; if(smartlineA) smartlineA.hidden=true; }
+  }
+  function renderSmartA(){
+    if(!SDA || !SDA.reason){ if(smartlineA) smartlineA.hidden=true; return; }
+    smartlineA.innerHTML='<span class="sdtag">自动</span><span class="sdtxt">'+SDA.reason+'</span>';
+    smartlineA.hidden=false;
+  }
+  function userTakeoverA(){ if(isProgA || !SDA) return; SDAlock=true; if(smartlineA) smartlineA.hidden=true; }
+  function syncAnimSum(){ var asum=optsA.querySelector('#animSum'); if(!asum||!editFrames.length) return; var total=editFrames.reduce(function(s,f){ return s+(f.delayMs||0); },0); asum.textContent='共 '+editFrames.length+' 帧 · 总时长 ~'+(total/1000).toFixed(1)+'s'; }
+  // 动图输出能力探测:webp 看 toBlob 支持、apng 看 CompressionStream;gif 纯 JS 恒即时;avif 恒服务端
+  function setLiveA(id,ok){ var o=AOUT.filter(function(x){return x.id===id;})[0]; if(!o) return; o.live=!!ok; var chip=gridA.querySelector('.fmt[data-id="'+id+'"] .badge'); if(chip){ chip.className='badge '+(ok?'live':'srv'); chip.textContent=ok?'即时':'服务端'; } if(selA&&selA.id===id) updateModeA(); }
+  (function detectNativeA(){ setLiveA('apng', !!window.CompressionStream); canEncode('image/webp').then(function(ok){ setLiveA('webp', ok); }); canAnimAVIF().then(function(ok){ setLiveA('avif', ok); }); })();
+
+  // 动图两头判断:输出端浏览器能否编码 × 输入端浏览器能否解码(压缩模式还需 WebCodecs 拆帧)
+  function canClientA(){
+    if(!selA||!selA.live) return {ok:false, why:'<b>'+(selA?selA.name:'该格式')+'</b> 浏览器无法编码'};
+    if(!animReadable) return {ok:false, why:'<b>'+(animInFmt||'素材')+'</b> 浏览器无法解码'};
+    if(animMode==='compress' && !HAS_DEC) return {ok:false, why:'当前浏览器缺 WebCodecs,拆帧需服务端'};
+    return {ok:true};
+  }
+  function updateModeA(){
+    if(!modelineA) return;
+    if(!animFiles.length||!selA){ modelineA.hidden=true; return; }
+    modelineA.hidden=false; var c=canClientA();
+    if(c.ok){ modelineA.className='modeline client'; modelineA.innerHTML=BOLT+'<span><b style="color:inherit">即时'+(animMode==='compress'?'压缩':'合成')+'</b> · 在你的浏览器里直接完成,素材不会上传</span>'; }
+    else { modelineA.className='modeline server'; modelineA.innerHTML=CLOUD+'<span>需服务端处理 · '+c.why+'</span>'; }
+  }
+  function buildOptsA(){
+    var frames=(editFrames&&editFrames.length)||animFiles.length||0, G=[];
+    // 组① 时间 · 循环
+    var g1='<div class="optgroup"><div class="optgroup-t">时间 · 循环</div>';
+    if(animMode==='assemble'){
+      g1+='<div class="opt"><label>帧率</label><input type="range" id="fpsA" min="1" max="30" value="8"><span class="val" id="fpsAv">8 fps</span></div>';
+      g1+='<p class="animsum" id="animSum">共 '+frames+' 帧 · 每帧 125ms · 时长 ~'+(frames*0.125).toFixed(1)+'s</p>';
+    } else {
+      g1+='<div class="opt"><label>播放速度</label><input type="range" id="spdA" min="25" max="400" step="5" value="100"><span class="val" id="spdAv">1.00×</span></div>';
+    }
+    g1+='<div class="opt2"><span class="k">循环</span><div style="display:flex;align-items:center;gap:8px">'+
+        '<div class="seg" id="loopSeg"><button class="on" data-v="inf" type="button">无限</button><button data-v="1" type="button">一次</button><button data-v="n" type="button">指定</button></div>'+
+        '<span id="loopN" style="display:none;align-items:center;gap:5px"><input class="numin" id="loopCnt" value="3" inputmode="numeric"><small style="color:var(--muted)">次</small></span></div></div>';
+    if(animMode==='compress') g1+='<p class="animsum" id="loopHint" style="margin:3px 0 0;color:var(--teal-2)"></p>';
+    g1+='<div class="opt2"><span class="k">播放方向</span><div class="seg" id="dirSeg"><button class="on" data-v="fwd" type="button">正放</button><button data-v="rev" type="button">倒放</button><button data-v="boom" type="button">来回</button></div></div>';
+    g1+='</div>'; G.push(g1);
+    // 组② 画质 · 尺寸(基础,常显)
+    var sda=(SDA && !SDAlock)?SDA:null;   // 动图智能默认种子(未被接管时)
+    var g2='<div class="optgroup"><div class="optgroup-t">画质 · 尺寸</div>';
+    var qAd=sda?sda.qA:78;
+    g2+='<div class="opt"><label>质量</label><input type="range" id="qA" min="30" max="100" value="'+qAd+'"><span class="val" id="qAv">'+qAd+'</span></div>';
+    // 质量推荐提示:仅对用 qA 的有损动图(WebP/AVIF)显示
+    if(selA && (selA.id==='webp'||selA.id==='avif')){
+      var tierA=(SDA&&SDA.tier)?SDA.tier:'normal', bigA=!!(SDA&&SDA.big);
+      g2+=qrecHTMLA(tierA, bigA, qAd);
+    }
+    g2+='<div class="opt"><label>缩放</label><input type="range" id="scaleA" min="20" max="100" value="100"><span class="val" id="sAv">100%</span></div>';
+    g2+='</div>'; G.push(g2);
+    // 更多压缩设置(折叠)
+    G.push('<button class="moretoggle" id="moreA" type="button">更多压缩设置 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg></button>');
+    var g3='<div class="optgroup" id="advA" hidden>';
+    var colAd=sda?sda.colA:256, ditAd=sda?sda.dither:'fs';
+    g3+='<div class="opt"><label>颜色数<small style="color:var(--faint);font-weight:500"> GIF</small></label><input type="range" id="colA" min="16" max="256" step="16" value="'+colAd+'"><span class="val" id="colAv">'+colAd+'</span></div>';
+    g3+='<div class="opt2"><span class="k">抖动 <small style="color:var(--muted)">GIF 平滑渐变</small></span><select class="selin" id="ditA"><option value="fs"'+(ditAd==='fs'?' selected':'')+'>开(Floyd–Steinberg)</option><option value="none"'+(ditAd==='none'?' selected':'')+'>关闭</option></select></div>';
+    g3+='<div class="opt2"><span class="k">帧优化 <small style="color:var(--muted)">帧间差分</small></span><span class="rdbadge ok" style="margin:0">已自动 · 省体积</span></div>';
+    g3+='<div class="opt2"><span class="k">降帧 <small style="color:var(--muted)">减小体积</small></span><div class="seg" id="dropSeg"><button class="on" data-v="1" type="button">全部</button><button data-v="2" type="button">每2帧</button><button data-v="3" type="button">每3帧</button></div></div>';
+    g3+='</div>'; G.push(g3);
+    optsA.innerHTML=G.join(''); optsA.classList.add('show');
+    // 绑定滑块显示
+    bindR('qA','qAv',''); bindR('colA','colAv',''); bindR('scaleA','sAv','%');
+    // 用户动了质量/色数/抖动 → 撤销动图智能默认(与理由行所述一致)
+    ['qA','colA'].forEach(function(id){ var el=optsA.querySelector('#'+id); if(el) el.addEventListener('input', userTakeoverA); });
+    // 动图「回到推荐」联动
+    var qAel=optsA.querySelector('#qA'), qresetA=optsA.querySelector('#qresetA'), qrecAel=optsA.querySelector('.qrec');
+    var rqAv=qrecAel?+qrecAel.dataset.rq:0;
+    if(qAel&&qresetA){ qAel.addEventListener('input', function(){ qresetA.hidden=(+qAel.value===rqAv); });
+      qresetA.onclick=function(){ qAel.value=rqAv; optsA.querySelector('#qAv').textContent=rqAv; qresetA.hidden=true; }; }
+    var ditEl=optsA.querySelector('#ditA'); if(ditEl) ditEl.addEventListener('change', userTakeoverA);
+    var spd=optsA.querySelector('#spdA'); if(spd) spd.oninput=function(){ optsA.querySelector('#spdAv').textContent=(spd.value/100).toFixed(2)+'×'; if(editFrames.length) applySpeed((+spd.value)/100||1); };
+    var fps=optsA.querySelector('#fpsA'); if(fps) fps.oninput=function(){ var f=+fps.value, ms=Math.round(1000/f), sum=optsA.querySelector('#animSum'); optsA.querySelector('#fpsAv').textContent=f+' fps'; if(editFrames.length){ setAllDelays(ms); } else if(sum){ sum.textContent='共 '+frames+' 帧 · 每帧 '+ms+'ms · 时长 ~'+(frames/f).toFixed(1)+'s'; } };
+    // 更多设置折叠
+    var more=optsA.querySelector('#moreA'), adv=optsA.querySelector('#advA');
+    if(more) more.addEventListener('click', function(){ var hid=adv.hasAttribute('hidden'); if(hid){adv.removeAttribute('hidden');} else {adv.setAttribute('hidden','');} more.classList.toggle('open', hid); });
+    // 分段控件通用切换 + 循环"指定次数"显隐
+    optsA.querySelectorAll('.seg').forEach(function(seg){
+      seg.addEventListener('click', function(e){ var b=e.target.closest('button'); if(!b||!seg.contains(b)) return;
+        seg.querySelectorAll('button').forEach(function(x){ x.classList.toggle('on', x===b); });
+        if(seg.id==='loopSeg'){ var ln=optsA.querySelector('#loopN'); if(ln) ln.style.display=(b.dataset.v==='n')?'inline-flex':'none';
+          var lh=optsA.querySelector('#loopHint'); if(lh) lh.textContent=''; }   // 用户手动改了循环 → 撤掉"已按原图"提示
+      });
+    });
+    applyDetectedLoop();   // 压缩模式:把源动图的循环方式填进控件(切格式重建后也保持)
+  }
+  function bindR(id,vid,suf){ var e=optsA.querySelector('#'+id); if(e) e.oninput=function(){ optsA.querySelector('#'+vid).textContent=e.value+suf; }; }
+
+  fileA.addEventListener('change', function(e){ loadAnim([].slice.call(e.target.files)); });
+  var fileAadd=document.getElementById('fileAadd'), feAdd=document.getElementById('feAdd');
+  if(feAdd) feAdd.addEventListener('click', function(e){ e.stopPropagation(); if(fileAadd) fileAadd.click(); });
+  if(fileAadd){ fileAadd.addEventListener('click', function(e){ e.stopPropagation(); });   // 双保险:别冒泡到任何上传区
+    fileAadd.addEventListener('change', function(e){ appendFramesA([].slice.call(e.target.files)); e.target.value=''; }); }
+  dropA.addEventListener('click', function(){ fileA.click(); });
+  dropA.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); fileA.click(); } });
+  ['dragenter','dragover'].forEach(function(ev){ dropA.addEventListener(ev,function(e){ e.preventDefault(); dropA.classList.add('over'); }); });
+  ['dragleave','drop'].forEach(function(ev){ dropA.addEventListener(ev,function(e){ e.preventDefault(); dropA.classList.remove('over'); }); });
+  dropA.addEventListener('drop', function(e){ if(e.dataTransfer.files.length) loadAnim([].slice.call(e.dataTransfer.files)); });
+
+  function loadAnim(files){
+    if(!files.length) return; animFiles=files; outBlobA=null; if(resultA) resultA.classList.remove('show'); srvnoteA.classList.remove('show');
+    var one=files[0], isAnim=/gif|apng|webp/i.test(one.name+' '+(one.type||''));
+    animInFmt=((one.name.split('.').pop()||'')||(one.type||'').split('/')[1]||'IMG').toUpperCase(); animReadable=true;
+    if(files.length===1 && isAnim){
+      animMode='compress';
+      animprev.style.alignItems='center';
+      // 静态首帧预览(不再把整个大动图当 <img> 循环播放 —— 大 APNG 会持续解码吃 CPU,切回标签就卡)
+      animprev.innerHTML='<img id="apvImg" alt="首帧预览" style="background:var(--teal-bg)"><div class="pv-meta" style="flex:1;min-width:0"><div class="fn">'+esc(one.name)+'</div><div class="sz"><span>'+fmtBytes(one.size)+' · 压缩模式</span><span class="rdbadge" id="rdbadgeA"></span></div></div><button class="relink" id="relinkA">换一个</button>';
+    } else {
+      animMode='assemble';
+      var h='<div style="flex:1;min-width:0"><div class="fn">'+files.length+' 张图 → 合成动图 <span class="rdbadge" id="rdbadgeA"></span></div><div class="sz">在下方逐帧编辑器里排序 · 调时长 · 删帧</div></div><button class="relink" id="relinkA">重选</button>';
+      animprev.style.alignItems='center'; animprev.innerHTML=h;
+    }
+    animprev.classList.add('show'); dropA.style.display='none';
+    var rl=animprev.querySelector('#relinkA'); if(rl) rl.addEventListener('click', resetAnim);
+    buildOptsA();
+    goA.textContent = (animMode==='compress') ? '压缩并下载' : '合成并下载';
+    updateGoA(); updateModeA();
+    probeAnimReadable(files);   // 异步:真去解一次,确定浏览器能否读入
+    prepFramesA(files);         // 异步:抽帧 → 渲染逐帧编辑器
+  }
+  function probeReadable(file){ return new Promise(function(res){ var im=new Image(), u=URL.createObjectURL(file); im.onload=function(){ URL.revokeObjectURL(u); res(true); }; im.onerror=function(){ URL.revokeObjectURL(u); res(false); }; im.src=u; }); }
+  async function probeAnimReadable(files){
+    var b=document.getElementById('rdbadgeA'); if(b){ b.className='rdbadge'; b.textContent='检测中…'; }
+    var sample=files.slice(0,8), oks=await Promise.all(sample.map(probeReadable));
+    if(files!==animFiles) return;   // 已换素材,丢弃过期结果
+    var okN=oks.filter(Boolean).length, allOk=oks.every(Boolean); animReadable=allOk;
+    b=document.getElementById('rdbadgeA');
+    if(b){ if(allOk){ b.className='rdbadge ok'; b.textContent='✓ 浏览器可读'; } else { b.className='rdbadge srv'; b.textContent='需服务端解码('+okN+'/'+sample.length+' 可读)'; } }
+    updateModeA();
+  }
+  function resetAnim(){ freeFramesA(); animFiles=[]; animMode=''; animReadable=true; animInFmt=''; outBlobA=null; editFrames=[]; SDA=null; SDAlock=false; if(smartlineA) smartlineA.hidden=true; animprev.classList.remove('show'); animprev.innerHTML=''; if(fedit) fedit.classList.remove('show'); if(fstrip) fstrip.innerHTML=''; dropA.style.display='block'; fileA.value=''; srvnoteA.classList.remove('show'); if(resultA) resultA.classList.remove('show'); if(modelineA) modelineA.hidden=true; buildOptsA(); updateGoA(); }
+  function updateGoA(){ goA.disabled=!(animFiles.length && selA); }
+  function esc(s){ return String(s).replace(/[<>&"]/g,function(c){return {'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c];}); }
+
+  /* —— 下载 + 极简 ZIP(store 存储法,复用 crc32)—— */
+  function downloadBlob(blob,name){ var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click(); a.remove(); }
+  function zipStore(entries){ var enc=new TextEncoder(), chunks=[], central=[], offset=0;
+    function u16(v){ return [v&255,(v>>8)&255]; } function u32(v){ return [v&255,(v>>8)&255,(v>>16)&255,(v>>>24)&255]; }
+    entries.forEach(function(e){ var nm=enc.encode(e.name), crc=crc32(e.data), sz=e.data.length;
+      var lh=[0x50,0x4b,0x03,0x04].concat(u16(20),u16(0),u16(0),u16(0),u16(0),u32(crc),u32(sz),u32(sz),u16(nm.length),u16(0));
+      var la=new Uint8Array(lh.length+nm.length); la.set(lh,0); la.set(nm,lh.length); chunks.push(la,e.data);
+      var cd=[0x50,0x4b,0x01,0x02].concat(u16(20),u16(20),u16(0),u16(0),u16(0),u16(0),u32(crc),u32(sz),u32(sz),u16(nm.length),u16(0),u16(0),u16(0),u16(0),u32(0),u32(offset));
+      var ca=new Uint8Array(cd.length+nm.length); ca.set(cd,0); ca.set(nm,cd.length); central.push(ca);
+      offset+=la.length+sz; });
+    var cdSize=central.reduce(function(s,c){ return s+c.length; },0);
+    var eocd=new Uint8Array([0x50,0x4b,0x05,0x06].concat(u16(0),u16(0),u16(entries.length),u16(entries.length),u32(cdSize),u32(offset),u16(0)));
+    return new Blob(chunks.concat(central,[eocd]), {type:'application/zip'}); }
+
+  /* —— 读控件 —— */
+  function aVal(id,def){ var e=optsA.querySelector('#'+id); return e?e.value:def; }
+  function segVal(id,def){ var seg=optsA.querySelector('#'+id); if(!seg) return def; var b=seg.querySelector('button.on'); return b?b.dataset.v:def; }
+  function readLoopA(){ var v=segVal('loopSeg','inf'); if(v==='inf') return 0; if(v==='1') return 1; var n=parseInt(aVal('loopCnt','3'),10); return (n>0?n:1); }
+  // 压缩模式:把从源动图读到的循环方式(srcRep)自动填到循环控件,原样带到输出
+  function applyDetectedLoop(){
+    if(animMode!=='compress' || srcRep==null) return;
+    var seg=optsA.querySelector('#loopSeg'); if(!seg) return;
+    var v = (srcRep===Infinity||srcRep>1e6) ? 'inf' : (srcRep<=0 ? '1' : 'n');
+    seg.querySelectorAll('button').forEach(function(b){ b.classList.toggle('on', b.dataset.v===v); });
+    var ln=optsA.querySelector('#loopN'); if(ln) ln.style.display=(v==='n')?'inline-flex':'none';
+    if(v==='n'){ var lc=optsA.querySelector('#loopCnt'); if(lc) lc.value=srcRep; }
+    var lh=optsA.querySelector('#loopHint'); if(lh) lh.textContent='✓ 已按原图读取:每帧时长 + '+(v==='inf'?'无限循环':v==='1'?'只播一次':'循环 '+srcRep+' 次');
+  }
+  function loadImg(file){ return new Promise(function(res){ var im=new Image(), u=URL.createObjectURL(file); im.onload=function(){ URL.revokeObjectURL(u); res(im); }; im.onerror=function(){ URL.revokeObjectURL(u); res(null); }; im.src=u; }); }
+  // 帧只存 canvas(不再同时存 ImageData),像素到转换时才现取 → 大动图内存直接减半
+  function freeFramesA(){ editFrames.forEach(function(f){ if(f&&f.canvas){ f.canvas.width=f.canvas.height=0; f.canvas=null; } if(f) f.thumb=null; }); }
+  function unifySize(frames){ var W=frames[0].canvas.width,H=frames[0].canvas.height,out=[];
+    frames.forEach(function(f){ if(f.canvas.width===W&&f.canvas.height===H){ out.push(f); return; }
+      var c=document.createElement('canvas'); c.width=W; c.height=H; var cx=c.getContext('2d');
+      var sw=f.canvas.width,sh=f.canvas.height,sc=Math.max(W/sw,H/sh),dw=sw*sc,dh=sh*sc; cx.drawImage(f.canvas,(W-dw)/2,(H-dh)/2,dw,dh);
+      out.push({canvas:c,delayMs:f.delayMs}); });
+    return out; }
+  /* —— 逐帧编辑器 —— */
+  function makeThumb(canvas){ var W=100,s=Math.min(1,W/canvas.width),w=Math.max(1,Math.round(canvas.width*s)),h=Math.max(1,Math.round(canvas.height*s));
+    var c=document.createElement('canvas'); c.width=w; c.height=h; c.getContext('2d').drawImage(canvas,0,0,w,h); return c.toDataURL('image/png'); }
+  async function extractFrames(){ freeFramesA(); editFrames=[]; srcRep=null;
+    if(animMode==='assemble'){
+      var fps=+aVal('fpsA',8), delay=Math.round(1000/Math.max(1,fps)), frames=[];
+      for(var i=0;i<animFiles.length;i++){ var im=await loadImg(animFiles[i]); if(!im) continue;
+        var c=document.createElement('canvas'); c.width=im.naturalWidth; c.height=im.naturalHeight; c.getContext('2d').drawImage(im,0,0);
+        frames.push({canvas:c, delayMs:delay}); }
+      if(!frames.length) return false; frames=unifySize(frames);
+      editFrames=frames.map(function(f){ return {canvas:f.canvas, delayMs:f.delayMs, origDelay:f.delayMs, thumb:makeThumb(f.canvas)}; }); return true;
+    } else {
+      if(!HAS_DEC) return false; var res=await decodeAnim(animFiles[0]); if(!res||!res.frames||!res.frames.length) return false;
+      editFrames=res.frames.map(function(f){ return {canvas:f.canvas, delayMs:f.delayMs, origDelay:f.delayMs, thumb:makeThumb(f.canvas)}; });
+      srcRep=res.rep;   // 记住源动图的循环方式,原样带到输出
+      return true;
+    } }
+  // 追加图片:增量加到现有帧,保留已有的删/排序/时长编辑,不用全部重导(仅合成模式)
+  async function appendFramesA(newFiles){
+    if(!newFiles.length || animMode!=='assemble') return;
+    var W=editFrames.length?editFrames[0].canvas.width:0, H=editFrames.length?editFrames[0].canvas.height:0;
+    var delay=editFrames.length?editFrames[editFrames.length-1].delayMs:Math.round(1000/Math.max(1,+aVal('fpsA',8))), added=0;
+    for(var i=0;i<newFiles.length;i++){ var im=await loadImg(newFiles[i]); if(!im) continue;
+      var c=document.createElement('canvas'), cx;
+      if(W){ c.width=W; c.height=H; cx=c.getContext('2d'); var sw=im.naturalWidth,sh=im.naturalHeight,sc=Math.max(W/sw,H/sh),dw=sw*sc,dh=sh*sc; cx.drawImage(im,(W-dw)/2,(H-dh)/2,dw,dh); }
+      else { c.width=im.naturalWidth; c.height=im.naturalHeight; cx=c.getContext('2d'); cx.drawImage(im,0,0); W=c.width; H=c.height; }
+      editFrames.push({canvas:c, delayMs:delay, origDelay:delay, thumb:makeThumb(c)});
+      animFiles.push(newFiles[i]); added++; }
+    if(added){ renderFrameEditor(); updateGoA(); updateModeA(); if(resultA) resultA.classList.remove('show'); }
+  }
+  async function prepFramesA(files){
+    if(fedit){ fedit.classList.add('show'); fstrip.innerHTML='<div class="nofe">读取帧…</div>'; if(feditSum) feditSum.textContent=''; }
+    SDA=null; SDAlock=false; if(smartlineA) smartlineA.hidden=true;   // 新素材:清动图智能默认
+    var ok=await extractFrames(); if(files!==animFiles) return;   // 已换素材,丢弃过期
+    if(ok){ applySmartDefaultsA();   // 首帧分析 → 推荐格式/质量(先于 renderFrameEditor,好让 pickA 重建选项)
+      renderFrameEditor(); applyDetectedLoop();   // 压缩模式:自动填源动图的循环方式
+      var apv=document.getElementById('apvImg'); if(apv&&editFrames[0]) apv.src=editFrames[0].thumb; }   // 压缩模式:填静态首帧
+    else if(fedit){ fstrip.innerHTML='<div class="nofe">'+((!HAS_DEC&&animMode==='compress')?'当前浏览器缺 WebCodecs,压缩动图无法在浏览器拆帧(转换走服务端)。':'此素材无法在浏览器拆帧,逐帧编辑不可用。')+'</div>'; if(feditSum) feditSum.textContent=''; }
+    updateGoA(); updateModeA();
+  }
+  function renderFrameEditor(){
+    if(!fedit||!fstrip) return;
+    if(!editFrames.length){ fedit.classList.remove('show'); fstrip.innerHTML=''; return; }
+    fedit.classList.add('show');
+    var feAddB=document.getElementById('feAdd'); if(feAddB) feAddB.hidden=(animMode!=='assemble');
+    var total=editFrames.reduce(function(s,f){ return s+(f.delayMs||0); },0);
+    if(feditSum) feditSum.textContent=editFrames.length+' 帧 · 总时长 '+(total/1000).toFixed(2)+'s';
+    syncAnimSum();
+    fstrip.innerHTML='';
+    editFrames.forEach(function(f,i){
+      var card=document.createElement('div'); card.className='fcard'; card.dataset.i=i;
+      card.innerHTML='<div class="fno">#'+(i+1)+'</div><button class="del" title="删除此帧" aria-label="删除此帧">✕</button>'+
+        '<img class="fth" src="'+f.thumb+'" alt="帧'+(i+1)+'" title="按住缩略图拖动排序">'+
+        '<div class="fdur"><input type="number" min="20" max="60000" step="10" value="'+Math.round(f.delayMs)+'"><small>ms</small></div>'+
+        '<div class="mvs"><button class="mv" data-d="-1" aria-label="前移一帧"'+(i===0?' disabled':'')+' title="前移">◀</button><button class="mv" data-d="1" aria-label="后移一帧"'+(i===editFrames.length-1?' disabled':'')+' title="后移">▶</button></div>';
+      card.querySelector('.del').addEventListener('click', function(){ editFrames.splice(i,1); renderFrameEditor(); postEditA(); });
+      card.querySelector('.fdur input').addEventListener('change', function(e){ var v=parseInt(e.target.value,10); if(!(v>=20)) v=20; if(v>60000) v=60000; f.delayMs=v; f.origDelay=v; renderFrameEditor(); });
+      card.querySelectorAll('.mv').forEach(function(btn){ btn.addEventListener('click', function(){ moveFrame(i,+btn.dataset.d); }); });
+      card.querySelector('.fth').addEventListener('pointerdown', function(e){ startCardDrag(e, i, card); });   // 指针拖拽(桌面+触屏)
+      fstrip.appendChild(card);
+    });
+  }
+  function moveFrame(i,d){ var j=i+d; if(j<0||j>=editFrames.length) return; var m=editFrames.splice(i,1)[0]; editFrames.splice(j,0,m); renderFrameEditor(); postEditA(); }
+  // 指针拖拽排序:抓缩略图,拖到目标位置松手。桌面鼠标 + 移动端触屏通用(不依赖 HTML5 DnD)
+  function startCardDrag(e, from, card){
+    if(e.pointerType==='mouse' && e.button!==0) return;
+    e.preventDefault();
+    var moved=false, insertIdx=from;
+    card.classList.add('dragging');
+    try{ card.setPointerCapture(e.pointerId); }catch(_){}
+    function idxAt(clientX){ var cards=fstrip.children, idx=cards.length;
+      for(var k=0;k<cards.length;k++){ var r=cards[k].getBoundingClientRect(); if(clientX < r.left + r.width/2){ idx=k; break; } } return idx; }
+    function onMove(ev){ moved=true; insertIdx=idxAt(ev.clientX);
+      var vis=insertIdx>=fstrip.children.length?fstrip.children.length-1:insertIdx;
+      [].forEach.call(fstrip.children,function(c,ci){ c.classList.toggle('over', ci===vis); }); }
+    function onUp(){ card.removeEventListener('pointermove',onMove); card.removeEventListener('pointerup',onUp); card.removeEventListener('pointercancel',onUp);
+      card.classList.remove('dragging'); [].forEach.call(fstrip.children,function(c){ c.classList.remove('over'); });
+      if(moved){ var target=insertIdx>from?insertIdx-1:insertIdx; target=Math.max(0,Math.min(editFrames.length-1,target));
+        if(target!==from){ var m=editFrames.splice(from,1)[0]; editFrames.splice(target,0,m); renderFrameEditor(); postEditA(); } } }
+    card.addEventListener('pointermove',onMove); card.addEventListener('pointerup',onUp); card.addEventListener('pointercancel',onUp);
+  }
+  function postEditA(){ if(!editFrames.length){ resetAnim(); return; } if(resultA) resultA.classList.remove('show'); updateGoA(); updateModeA(); }
+  function setAllDelays(ms){ editFrames.forEach(function(f){ f.delayMs=ms; f.origDelay=ms; }); renderFrameEditor(); }
+  function applySpeed(spd){ editFrames.forEach(function(f){ f.delayMs=Math.max(20,Math.round(f.origDelay/(spd||1))); }); renderFrameEditor(); }
+  async function gatherFramesA(){ if(!editFrames.length) return null; return editFrames.map(function(f){ var w=f.canvas.width,h=f.canvas.height; return {canvas:f.canvas, data:f.canvas.getContext('2d').getImageData(0,0,w,h), delayMs:f.delayMs}; }); }
+  function arrangeFramesA(frames){
+    var drop=parseInt(segVal('dropSeg','1'),10)||1;
+    if(drop>1){ var kept=[]; for(var i=0;i<frames.length;i+=drop) kept.push(frames[i]); if(kept.length<2) kept=frames.slice(0,Math.min(2,frames.length)); frames=kept; }
+    var dir=segVal('dirSeg','fwd');
+    if(dir==='rev') frames=frames.slice().reverse();
+    else if(dir==='boom' && frames.length>2) frames=frames.concat(frames.slice(1,-1).reverse());
+    return frames;
+  }
+  async function scaleFramesA(frames){
+    var scale=(+aVal('scaleA',100))/100; if(scale>=1) return frames;
+    var W=Math.max(1,Math.round(frames[0].canvas.width*scale)), H=Math.max(1,Math.round(frames[0].canvas.height*scale)), out=[];
+    frames.forEach(function(f){ var id=lanczosResize(f.data,W,H); var c=document.createElement('canvas'); c.width=W; c.height=H; c.getContext('2d').putImageData(id,0,0); out.push({canvas:c,data:id,delayMs:f.delayMs}); });
+    return out;
+  }
+  async function doConvertA(){
+    var can=canClientA();
+    if(!can.ok){ var act=(animMode==='compress')?'压缩':'合成';
+      srvnoteA.classList.add('show'); srvnoteA.innerHTML='本页即时合成支持 <b>WEBP / GIF / APNG</b>;当前('+can.why.replace(/<\/?b>/g,'')+')需服务端。接上服务端后此项同样一键'+act+'完成。'; return; }
+    var raw=await gatherFramesA();
+    if(!raw||!raw.length){ srvnoteA.classList.add('show'); srvnoteA.innerHTML='未能读取素材帧,请换用浏览器可解码的图片/动图。'; return; }
+    var frames=await scaleFramesA(arrangeFramesA(raw)), loop=readLoopA(), blob, eng;
+    if(selA.id==='webp'){ blob=await encodeAnimWebP(frames,{loop:loop, quality:(+aVal('qA',78))/100}); eng='动图 WebP · 浏览器编每帧 + 自研容器'; }
+    else if(selA.id==='apng'){ blob=await encodeAPNG(frames,{loop:loop}); eng='APNG · 真彩无损逐帧'; }
+    else if(selA.id==='gif'){ var dit=aVal('ditA','fs'); blob=await encodeGIF(frames,{loop:loop, colors:+aVal('colA',256), dither:dit!=='none'}); eng='GIF89a · '+(+aVal('colA',256))+' 色'+(dit!=='none'?' + 抖动':''); }
+    else if(selA.id==='avif'){ blob=new Blob([await encodeAnimAVIF(frames,{quality:(+aVal('qA',78))/100})],{type:'image/avif'}); eng='动图 AVIF · WebCodecs AV1 差分帧 + 自研容器(无限循环 · 不含透明)'; }
+    else return;
+    outBlobA=blob; outNameA=(animFiles[0].name.replace(/\.[^.]+$/,'')||'anim')+'.'+selA.id;
+    var oldB=animFiles.reduce(function(s,f){ return s+f.size; },0), newB=blob.size, save=Math.round((1-newB/oldB)*100);
+    document.getElementById('rtA').textContent=(animMode==='compress'?'压缩完成':'合成完成')+' · '+frames.length+' 帧';
+    document.getElementById('oldszA').textContent=fmtBytes(oldB);
+    document.getElementById('newszA').textContent=fmtBytes(newB);
+    var sv=document.getElementById('saveA'); if(save>0){ sv.textContent='省 '+save+'%'; sv.classList.remove('zero'); } else { sv.textContent=(save===0?'体积持平':'+'+Math.abs(save)+'%'); sv.classList.add('zero'); }
+    document.getElementById('engnoteA').textContent=frames[0].canvas.width+'×'+frames[0].canvas.height+' · 循环'+(loop===0?'∞':loop+'次')+' · '+eng;
+    // 智能建议:变小=不提示;没变小分两种——非WebP→建议换WebP;已是WebP仍没变小→说明原图已高度优化,建议降质或保留原图
+    var adv=document.getElementById('advNoteA'), bigTxt=(save<0?'比原图大 '+Math.abs(save)+'%':'没有变小');
+    if(adv){
+      if(save>0){ adv.hidden=true; }
+      else if(selA.id!=='webp'){ adv.hidden=false; adv.className='advnote';
+        adv.innerHTML='<span>⚠ '+bigTxt+' —— <b>'+selA.name+'</b> 不适合这种画面,<b>WEBP</b> 一般更小更清晰</span><button class="go2" id="switchWebp">换 WEBP 重转</button>';
+        var sw=adv.querySelector('#switchWebp'); if(sw) sw.addEventListener('click', function(){ var c=gridA.querySelector('.fmt[data-id="webp"]'); if(c) c.click(); goA.click(); });
+      } else { adv.hidden=false; adv.className='advnote tip';   // 已是 WebP(最优浏览器格式)仍没变小 = 原图本就压得好
+        adv.innerHTML='<span>ℹ '+bigTxt+' —— 这张原图本身已是高度压缩的动图,浏览器端重压很难再小。想更小可<b>降质</b>(会损细节),否则直接用原图更划算</span><button class="go2" id="lowerQA">降质到 60 重试</button>';
+        var lq=adv.querySelector('#lowerQA'); if(lq) lq.addEventListener('click', function(){ var qs=optsA.querySelector('#qA'); if(qs){ qs.value=60; if(qs.oninput) qs.oninput(); } goA.click(); });
+      }
+    }
+    var pv=document.getElementById('apreviewA'); if(pv){ pv.innerHTML=''; var im=new Image(); im.src=URL.createObjectURL(blob); im.alt='生成结果'; im.style.maxWidth='100%'; im.style.maxHeight='220px'; im.style.borderRadius='10px'; im.style.border='1px solid var(--line)'; pv.appendChild(im); }
+    srvnoteA.classList.remove('show'); resultA.classList.add('show');
+  }
+  // 多格式一次打包:同一动图导出 WebP + GIF + APNG 三种,zip 下载
+  async function batchExportA(){
+    var can=canClientA(); if(!can.ok){ srvnoteA.classList.add('show'); srvnoteA.innerHTML='多格式打包需可即时合成的素材('+can.why.replace(/<\/?b>/g,'')+')。'; return; }
+    var raw=await gatherFramesA(); if(!raw||!raw.length){ srvnoteA.classList.add('show'); srvnoteA.innerHTML='没有可导出的帧。'; return; }
+    var frames=await scaleFramesA(arrangeFramesA(raw)), loop=readLoopA(), base=(animFiles[0].name.replace(/\.[^.]+$/,'')||'anim'), entries=[];
+    var w=await encodeAnimWebP(frames,{loop:loop,quality:(+aVal('qA',78))/100}); entries.push({name:base+'.webp',data:new Uint8Array(await w.arrayBuffer())});
+    var g=encodeGIF(frames,{loop:loop,colors:+aVal('colA',256),dither:aVal('ditA','fs')!=='none'}); entries.push({name:base+'.gif',data:new Uint8Array(await g.arrayBuffer())});
+    var a=await encodeAPNG(frames,{loop:loop}); entries.push({name:base+'.png',data:new Uint8Array(await a.arrayBuffer())});
+    downloadBlob(zipStore(entries), base+'_三格式.zip');
+  }
+
+  goA.addEventListener('click', async function(){
+    if(!animFiles.length||!selA) return;
+    goA.disabled=true; var t=goA.textContent; goA.textContent='处理中…';
+    await new Promise(function(r){ setTimeout(r,30); });
+    try{ await doConvertA(); }catch(e){ srvnoteA.classList.add('show'); srvnoteA.innerHTML='处理出错:'+((e&&e.message)||e); }
+    goA.textContent=t; goA.disabled=false;
+  });
+  var dlA=document.getElementById('dlA'); if(dlA) dlA.addEventListener('click', function(){ if(outBlobA) downloadBlob(outBlobA, outNameA); });
+  var dlAllA=document.getElementById('dlAllA'); if(dlAllA) dlAllA.addEventListener('click', async function(){ var t=dlAllA.textContent; dlAllA.disabled=true; dlAllA.textContent='打包中…'; try{ await batchExportA(); }catch(e){ srvnoteA.classList.add('show'); srvnoteA.innerHTML='打包出错:'+((e&&e.message)||e); } dlAllA.textContent=t; dlAllA.disabled=false; });
+  pickA(AOUT[0]); // 默认预选 WEBP
+
+  // 任何"动图"入口(导航、讲解区按钮)→ 直接切到动图工坊并滚到上传框
+  function openAnim(){
+    var t=modetabs.querySelector('.modetab[data-mode="anim"]'); if(t) t.click();
+    var el=document.getElementById('convert'); if(el) el.scrollIntoView({behavior:'smooth', block:'start'});
+    setTimeout(function(){ if(dropA) dropA.classList.add('pulse'); setTimeout(function(){ if(dropA) dropA.classList.remove('pulse'); }, 1400); }, 500);
+  }
+  document.querySelectorAll('[data-open-anim]').forEach(function(b){ b.addEventListener('click', function(e){ e.preventDefault(); openAnim(); }); });
+
+  /* ---------- 滚动揭示 ---------- */
+  if('IntersectionObserver' in window && !reduce){
+    var io=new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } }); }, {threshold:0.12, rootMargin:'0px 0px -8% 0px'});
+    document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+  } else { document.querySelectorAll('.reveal').forEach(function(el){ el.classList.add('in'); }); }
+})();
+
+</script>
+</body></html>

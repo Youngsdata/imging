@@ -1,0 +1,14 @@
+**
+
+!Dockerfile
+!docker/
+!docker/nginx/
+!docker/nginx/default.conf
+!图映-加密版-本地codecs.html
+!codecs/
+!codecs/**
+
+codecs/.DS_Store
+codecs/**/*.d.ts
+codecs/**/*.md
+codecs/**/package.json
