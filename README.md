@@ -1,4 +1,36 @@
-# 图映（imging）发行包
+[![简体中文](https://img.shields.io/badge/语言-简体中文-0969da)](README.md)
+[![English](https://img.shields.io/badge/Language-English-d0d7de)](README.en.md)
+
+# 图映（imging）· 端侧图片与动图处理工具
+
+图映把图片压缩、格式转换和动图工坊放进一个可自托管的页面。PNG、JPEG、WebP 等常见格式直接在浏览器本地处理；发行包内置的 WASM codecs 还能在端侧完成 AVIF 编码和 HEIC 解码，图片无需上传。
+
+## 为什么选择图映
+
+- **隐私优先**：常见格式、AVIF 编码和 HEIC 解码均可在设备本地完成。
+- **不只压单图**：支持 GIF、APNG、动图 WebP、动图 AVIF 的压缩与合成，并提供逐帧排序、删帧和时长调整。
+- **一键自托管**：提供 `linux/amd64`、`linux/arm64` Docker 镜像，可部署在私有网络。
+- **按能力透明降级**：浏览器无法处理的专业或老格式才交给可选的服务端解码器，不会把“服务端处理”伪装成“本地处理”。
+
+> [!IMPORTANT]
+> TIFF、JPEG 2000、PSD、PDF、DICOM、JXL 等专业或老格式所需的**服务端解码器为付费能力**。如需购买、集成或私有化部署，请联系 [admin@datadance.com](mailto:admin@datadance.com)。
+
+## 与 TinyPNG 的产品力对比
+
+| 维度 | 图映（本仓库发行包） | [TinyPNG / Tinify](https://tinypng.com/) |
+| --- | --- | --- |
+| 核心定位 | 可自托管的端侧图片处理 + 动图工坊 | 成熟的在线压缩服务 + API + CDN |
+| 处理位置与隐私 | 常见格式、AVIF 编码、HEIC 解码在浏览器本地完成；启用服务端解码器时，对应文件需要发送到自有服务 | 图片上传至 Tinify 服务处理；官网说明文件最多保留 48 小时 |
+| 静态图片 | PNG / JPEG / WebP / AVIF 压缩与转换，含 PNG-8 减色和 Lanczos-3 缩放 | JXL / AVIF / WebP / JPEG / PNG 压缩与转换，单图压缩能力成熟 |
+| 动图能力 | GIF / APNG / 动图 WebP / 动图 AVIF 压缩与合成，支持帧间优化 | 官网公开列出 APNG 压缩；未提供同类多格式动图工坊 |
+| 逐帧编辑 | 支持拖拽排序、删帧、追加帧、单帧时长和循环设置 | 官网未提供同类逐帧编辑功能 |
+| 自托管 / 离线 | 支持 Docker 私有化部署；本地路径不消耗云端调用额度 | 以托管 Web、Developer API 和 Image CDN 为主 |
+| 免费 Web 限制 | 本地处理没有账号或 API 次数限制，实际吞吐受设备性能和浏览器内存约束 | 免费 Web 端每批最多 20 张、每张最大 5 MB；免费格式转换最多 3 张 |
+| 开发者生态 | 聚焦可自托管页面；服务端解码器单独付费授权 | API、Image CDN、WordPress / Figma 插件及多语言 SDK 更成熟 |
+
+图映更适合看重**图片不出设备、私有化部署和完整动图工作流**的场景；TinyPNG 更适合需要**成熟云服务、API、CDN 和现成生态集成**的团队。对比依据为双方公开产品能力，TinyPNG 信息核对于 **2026-07-27**，其套餐和功能可能调整，请以 [TinyPNG 官网](https://tinypng.com/)及 [Developer API](https://tinify.com/developers) 为准。
+
+## 发行包
 
 这是图映的公开发行仓库，只包含可直接部署的构建产物：
 
@@ -9,7 +41,7 @@
 
 本仓库不包含图映的明文业务源码。图映自有页面及相关材料没有以开源许可证授权；公开可见、可拉取镜像不等于获得复制、修改或再发布授权。第三方组件仍分别适用其原有许可证，详见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。
 
-## Docker
+## Docker 部署
 
 镜像支持 `linux/amd64` 和 `linux/arm64`：
 
