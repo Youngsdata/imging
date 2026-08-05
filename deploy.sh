@@ -10,10 +10,14 @@ readonly CONTAINER_NAME="imging"
 readonly IMAGE="ghcr.io/youngsdata/imging:latest"
 readonly HOST_PORT="8080"
 readonly DEFAULT_HTTPS_PORT="443"
+readonly DEFAULT_BIND_ADDRESS="0.0.0.0"
 readonly SSL_LABEL="io.youngsdata.imging.ssl"
 readonly CERT_LABEL="io.youngsdata.imging.ssl.cert"
 readonly KEY_LABEL="io.youngsdata.imging.ssl.key"
 readonly HTTPS_PORT_LABEL="io.youngsdata.imging.ssl.https-port"
+readonly BIND_LABEL="io.youngsdata.imging.bind"
+readonly ICP_LABEL="io.youngsdata.imging.beian.icp"
+readonly OWNER_LABEL="io.youngsdata.imging.beian.owner"
 
 usage() {
   cat <<'EOF'
@@ -25,9 +29,13 @@ usage() {
   -k, --key FILE           启用 HTTPS，挂载证书私钥
       --https-port PORT    HTTPS 主机端口，默认 443
       --no-ssl             显式关闭已有容器的 HTTPS 配置
+      --bind ADDR          端口绑定地址，默认 0.0.0.0；用前置反代时建议 127.0.0.1
+      --icp TEXT           页脚展示的 ICP 备案号，传空串清除
+      --owner TEXT         页脚展示的主办单位名称，传空串清除
   -h, --help               显示帮助
 
-再次执行或使用 -u 时，会自动继承已有容器的 HTTPS 证书路径和端口。
+再次执行或使用 -u 时，会自动继承已有容器的 HTTPS 证书路径和端口、绑定地址与备案信息。
+备案信息只写入容器环境变量，不进镜像也不进仓库。
 EOF
 }
 
@@ -36,9 +44,15 @@ disable_ssl=false
 certificate_input=""
 private_key_input=""
 https_port_input=""
+bind_input=""
+icp_input=""
+owner_input=""
 certificate_option_seen=false
 private_key_option_seen=false
 https_port_option_seen=false
+bind_option_seen=false
+icp_option_seen=false
+owner_option_seen=false
 
 while (( $# > 0 )); do
   case "$1" in
@@ -95,6 +109,51 @@ while (( $# > 0 )); do
       disable_ssl=true
       shift
       ;;
+    --bind)
+      if (( $# < 2 )); then
+        echo "选项 --bind 缺少绑定地址" >&2
+        usage >&2
+        exit 2
+      fi
+      bind_input="$2"
+      bind_option_seen=true
+      shift 2
+      ;;
+    --bind=*)
+      bind_input="${1#*=}"
+      bind_option_seen=true
+      shift
+      ;;
+    --icp)
+      if (( $# < 2 )); then
+        echo "选项 --icp 缺少备案号" >&2
+        usage >&2
+        exit 2
+      fi
+      icp_input="$2"
+      icp_option_seen=true
+      shift 2
+      ;;
+    --icp=*)
+      icp_input="${1#*=}"
+      icp_option_seen=true
+      shift
+      ;;
+    --owner)
+      if (( $# < 2 )); then
+        echo "选项 --owner 缺少主办单位名称" >&2
+        usage >&2
+        exit 2
+      fi
+      owner_input="$2"
+      owner_option_seen=true
+      shift 2
+      ;;
+    --owner=*)
+      owner_input="${1#*=}"
+      owner_option_seen=true
+      shift
+      ;;
     -h|--help)
       usage
       exit 0
@@ -138,6 +197,12 @@ fi
 
 if [[ "$https_port_option_seen" == true ]] && [[ -z "$https_port_input" ]]; then
   echo "--https-port 的值不能为空" >&2
+  exit 2
+fi
+
+# --icp 与 --owner 允许空串（表示清除页脚展示），--bind 是必须落到 docker publish 上的地址，不能为空。
+if [[ "$bind_option_seen" == true ]] && [[ -z "$bind_input" ]]; then
+  echo "--bind 的值不能为空" >&2
   exit 2
 fi
 
@@ -249,19 +314,58 @@ if [[ "$ssl_enabled" == true ]]; then
   validate_port "$https_port"
 fi
 
+# 绑定地址与备案信息都落在 label 上：-u 拉到新镜像时容器会被重建，
+# 不继承就会悄悄退回默认值——端口重新暴露到公网、页脚备案号消失，且两者都不会报错。
+bind_address="$DEFAULT_BIND_ADDRESS"
+beian_icp=""
+beian_owner=""
+
+if [[ "$container_present" == true ]]; then
+  bind_address="$(container_label "$BIND_LABEL")"
+  bind_address="${bind_address:-$DEFAULT_BIND_ADDRESS}"
+  beian_icp="$(container_label "$ICP_LABEL")"
+  beian_owner="$(container_label "$OWNER_LABEL")"
+fi
+
+if [[ "$bind_option_seen" == true ]] && [[ "$bind_input" != "$bind_address" ]]; then
+  bind_address="$bind_input"
+  configuration_changed=true
+fi
+
+if [[ "$icp_option_seen" == true ]] && [[ "$icp_input" != "$beian_icp" ]]; then
+  beian_icp="$icp_input"
+  configuration_changed=true
+fi
+
+if [[ "$owner_option_seen" == true ]] && [[ "$owner_input" != "$beian_owner" ]]; then
+  beian_owner="$owner_input"
+  configuration_changed=true
+fi
+
 start_container() {
   local -a docker_arguments=(
     docker run
     --detach
     --name "$CONTAINER_NAME"
     --restart unless-stopped
-    --publish "$HOST_PORT:80"
+    --publish "$bind_address:$HOST_PORT:80"
     --label "io.youngsdata.imging.managed-by=deploy.sh"
+    --label "$BIND_LABEL=$bind_address"
+    --label "$ICP_LABEL=$beian_icp"
+    --label "$OWNER_LABEL=$beian_owner"
   )
+
+  if [[ -n "$beian_icp" ]]; then
+    docker_arguments+=(--env "IMGING_BEIAN_ICP=$beian_icp")
+  fi
+
+  if [[ -n "$beian_owner" ]]; then
+    docker_arguments+=(--env "IMGING_SITE_OWNER=$beian_owner")
+  fi
 
   if [[ "$ssl_enabled" == true ]]; then
     docker_arguments+=(
-      --publish "$https_port:443"
+      --publish "$bind_address:$https_port:443"
       --env "IMGING_SSL_ENABLED=1"
       --mount "type=bind,source=$certificate_path,target=/etc/nginx/ssl/tls.crt,readonly"
       --mount "type=bind,source=$private_key_path,target=/etc/nginx/ssl/tls.key,readonly"
