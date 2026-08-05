@@ -88,6 +88,28 @@ If port 443 is already in use, add `--https-port 8443`. Running `./deploy.sh` or
 
 Certificates and private keys are never copied into the container image or GitHub repository.
 
+### Reverse proxy and port binding
+
+The container publishes to `0.0.0.0:8080` by default. When another Nginx/Caddy sits in front of it, use `--bind` to restrict the published port to loopback so the public internet cannot reach the container directly and bypass the proxy:
+
+```bash
+./deploy.sh --bind 127.0.0.1
+```
+
+Docker writes published ports straight into the iptables NAT chain, ahead of ufw rules, so `ufw deny 8080` will not block them — the bind address is the reliable control.
+
+### Footer site information
+
+To show deployment-specific information in the footer — for example, mainland China deployments must display an ICP filing number linking to MIIT — inject it from environment variables at container start. Nothing is written into the image or the repository:
+
+```bash
+./deploy.sh \
+  --icp "浙ICP备00000000号-0" \
+  --owner "Example Technology Co., Ltd."
+```
+
+Either option can be used on its own; pass an empty string (`--icp ""`) to clear it. The bind address and both values are stored as container labels, so `./deploy.sh -u` reuses them when a new image triggers a container rebuild. For manual startup the equivalents are `--env IMGING_BEIAN_ICP=...` and `--env IMGING_SITE_OWNER=...`.
+
 ### Manual deployment
 
 ```bash
