@@ -5,6 +5,8 @@
 
 imging brings image compression, format conversion, and an animation workshop into one self-hostable page. Common formats such as PNG, JPEG, and WebP are processed locally in the browser. The bundled WASM codecs also encode AVIF and decode HEIC on the client side, without uploading the image.
 
+**Live demo: <https://imging.cn>**
+
 ## Why imging
 
 - **Privacy first**: common formats, AVIF encoding, and HEIC decoding can all run locally on the user's device.
