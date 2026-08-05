@@ -15,7 +15,9 @@ readonly SSL_LABEL="io.youngsdata.imging.ssl"
 readonly CERT_LABEL="io.youngsdata.imging.ssl.cert"
 readonly KEY_LABEL="io.youngsdata.imging.ssl.key"
 readonly HTTPS_PORT_LABEL="io.youngsdata.imging.ssl.https-port"
+readonly DEFAULT_SECCOMP_MODE="default"
 readonly BIND_LABEL="io.youngsdata.imging.bind"
+readonly SECCOMP_LABEL="io.youngsdata.imging.seccomp"
 readonly ICP_LABEL="io.youngsdata.imging.beian.icp"
 readonly OWNER_LABEL="io.youngsdata.imging.beian.owner"
 
@@ -30,6 +32,8 @@ usage() {
       --https-port PORT    HTTPS 主机端口，默认 443
       --no-ssl             显式关闭已有容器的 HTTPS 配置
       --bind ADDR          端口绑定地址，默认 0.0.0.0；用前置反代时建议 127.0.0.1
+      --seccomp MODE       default(默认) 或 unconfined；老内核 libseccomp 过旧导致
+                           nginx 报 "Operation not permitted" 时改用 unconfined
       --icp TEXT           页脚展示的 ICP 备案号，传空串清除
       --owner TEXT         页脚展示的主办单位名称，传空串清除
   -h, --help               显示帮助
@@ -45,12 +49,14 @@ certificate_input=""
 private_key_input=""
 https_port_input=""
 bind_input=""
+seccomp_input=""
 icp_input=""
 owner_input=""
 certificate_option_seen=false
 private_key_option_seen=false
 https_port_option_seen=false
 bind_option_seen=false
+seccomp_option_seen=false
 icp_option_seen=false
 owner_option_seen=false
 
@@ -122,6 +128,21 @@ while (( $# > 0 )); do
     --bind=*)
       bind_input="${1#*=}"
       bind_option_seen=true
+      shift
+      ;;
+    --seccomp)
+      if (( $# < 2 )); then
+        echo "选项 --seccomp 缺少模式" >&2
+        usage >&2
+        exit 2
+      fi
+      seccomp_input="$2"
+      seccomp_option_seen=true
+      shift 2
+      ;;
+    --seccomp=*)
+      seccomp_input="${1#*=}"
+      seccomp_option_seen=true
       shift
       ;;
     --icp)
@@ -203,6 +224,11 @@ fi
 # --icp 与 --owner 允许空串（表示清除页脚展示），--bind 是必须落到 docker publish 上的地址，不能为空。
 if [[ "$bind_option_seen" == true ]] && [[ -z "$bind_input" ]]; then
   echo "--bind 的值不能为空" >&2
+  exit 2
+fi
+
+if [[ "$seccomp_option_seen" == true ]] && [[ "$seccomp_input" != "default" ]] && [[ "$seccomp_input" != "unconfined" ]]; then
+  echo "--seccomp 只支持 default 或 unconfined，当前: $seccomp_input" >&2
   exit 2
 fi
 
@@ -317,18 +343,26 @@ fi
 # 绑定地址与备案信息都落在 label 上：-u 拉到新镜像时容器会被重建，
 # 不继承就会悄悄退回默认值——端口重新暴露到公网、页脚备案号消失，且两者都不会报错。
 bind_address="$DEFAULT_BIND_ADDRESS"
+seccomp_mode="$DEFAULT_SECCOMP_MODE"
 beian_icp=""
 beian_owner=""
 
 if [[ "$container_present" == true ]]; then
   bind_address="$(container_label "$BIND_LABEL")"
   bind_address="${bind_address:-$DEFAULT_BIND_ADDRESS}"
+  seccomp_mode="$(container_label "$SECCOMP_LABEL")"
+  seccomp_mode="${seccomp_mode:-$DEFAULT_SECCOMP_MODE}"
   beian_icp="$(container_label "$ICP_LABEL")"
   beian_owner="$(container_label "$OWNER_LABEL")"
 fi
 
 if [[ "$bind_option_seen" == true ]] && [[ "$bind_input" != "$bind_address" ]]; then
   bind_address="$bind_input"
+  configuration_changed=true
+fi
+
+if [[ "$seccomp_option_seen" == true ]] && [[ "$seccomp_input" != "$seccomp_mode" ]]; then
+  seccomp_mode="$seccomp_input"
   configuration_changed=true
 fi
 
@@ -351,9 +385,16 @@ start_container() {
     --publish "$bind_address:$HOST_PORT:80"
     --label "io.youngsdata.imging.managed-by=deploy.sh"
     --label "$BIND_LABEL=$bind_address"
+    --label "$SECCOMP_LABEL=$seccomp_mode"
     --label "$ICP_LABEL=$beian_icp"
     --label "$OWNER_LABEL=$beian_owner"
   )
+
+  # 老内核（如 CentOS 7）的 libseccomp 不认识新版 musl 使用的 pwritev2 等 syscall，
+  # Docker 默认 profile 对未知 syscall 返回 EPERM，nginx 会卡在写 /run/nginx.pid 直接退出。
+  if [[ "$seccomp_mode" == "unconfined" ]]; then
+    docker_arguments+=(--security-opt "seccomp=unconfined")
+  fi
 
   if [[ -n "$beian_icp" ]]; then
     docker_arguments+=(--env "IMGING_BEIAN_ICP=$beian_icp")

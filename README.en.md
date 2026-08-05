@@ -98,6 +98,22 @@ The container publishes to `0.0.0.0:8080` by default. When another Nginx/Caddy s
 
 Docker writes published ports straight into the iptables NAT chain, ahead of ufw rules, so `ufw deny 8080` will not block them — the bind address is the reliable control.
 
+### Hosts with an old kernel (CentOS 7 and similar)
+
+If the container restarts in a loop and its log stops at:
+
+```
+nginx: [crit] pwrite() "/run/nginx.pid" failed (1: Operation not permitted)
+```
+
+the host's libseccomp is too old to recognise syscalls such as `pwritev2` used by recent Alpine musl, and Docker's default seccomp profile returns EPERM for unknown syscalls. CentOS 7 ships libseccomp 2.3.1 at most and is end-of-life, so use:
+
+```bash
+./deploy.sh --seccomp unconfined
+```
+
+The trade-off is that this container loses syscall filtering, so pair it with `--bind 127.0.0.1` behind a reverse proxy. Once the host can be upgraded, update Docker and libseccomp, then switch back with `--seccomp default`.
+
 ### Footer site information
 
 To show deployment-specific information in the footer — for example, mainland China deployments must display an ICP filing number linking to MIIT — inject it from environment variables at container start. Nothing is written into the image or the repository:

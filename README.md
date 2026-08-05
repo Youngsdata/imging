@@ -98,6 +98,22 @@ cd imging
 
 Docker 的端口发布直接写在 iptables NAT 链上，位置先于 ufw 规则，`ufw deny 8080` 拦不住它，绑定地址才是可靠做法。
 
+### 老内核宿主（CentOS 7 等）
+
+若容器反复重启，日志停在：
+
+```
+nginx: [crit] pwrite() "/run/nginx.pid" failed (1: Operation not permitted)
+```
+
+说明宿主 libseccomp 过旧，不认识新版 Alpine musl 使用的 `pwritev2` 等 syscall，Docker 默认 seccomp profile 对未知 syscall 返回 EPERM。CentOS 7 官方源最高只到 libseccomp 2.3.1 且已 EOL，此时用：
+
+```bash
+./deploy.sh --seccomp unconfined
+```
+
+代价是该容器失去 syscall 过滤，建议同时用 `--bind 127.0.0.1` 收在前置反代之后。宿主可升级时优先升级 Docker 与 libseccomp，再用 `--seccomp default` 切回。
+
 ### 页脚站点信息
 
 需要在页脚展示备案号、主办单位一类的部署方信息时（如在中国大陆部署需展示 ICP 备案号并链接到工信部），由容器启动时按环境变量注入，不写进镜像也不写进仓库：
