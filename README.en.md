@@ -17,20 +17,22 @@ imging brings image compression, format conversion, and an animation workshop in
 > [!IMPORTANT]
 > The **server-side decoder is a paid capability** for professional and legacy formats such as TIFF, JPEG 2000, PSD, PDF, DICOM, and JXL. For licensing, integration, or private deployment, contact [admin@datadance.com](mailto:admin@datadance.com).
 
-## Product comparison with TinyPNG
+## Product comparison with mainstream image tools
 
-| Dimension | imging (this distribution) | [TinyPNG / Tinify](https://tinypng.com/) |
-| --- | --- | --- |
-| Primary focus | Self-hostable client-side image processing and an animation workshop | Mature online compression service, API, and CDN |
-| Processing and privacy | Common formats, AVIF encoding, and HEIC decoding run locally in the browser; files handled by the optional server decoder are sent to your own service | Images are uploaded to Tinify for processing; its website states that files are retained for up to 48 hours |
-| Static images | PNG / JPEG / WebP / AVIF compression and conversion, including PNG-8 quantization and Lanczos-3 resizing | JXL / AVIF / WebP / JPEG / PNG compression and conversion, with a mature static-image workflow |
-| Animation | Compress and create GIF / APNG / animated WebP / animated AVIF, including inter-frame optimization | APNG compression is publicly listed; no comparable multi-format animation workshop is advertised |
-| Frame editor | Drag to reorder, delete or append frames, adjust individual frame durations, and configure looping | No comparable frame editor is advertised |
-| Self-hosting / offline use | Docker-based private deployment; local processing does not consume cloud API credits | Primarily offered as a hosted web app, Developer API, and Image CDN |
-| Free web limits | No account or API quota for local processing; throughput is bounded by device performance and browser memory | Free web use allows up to 20 images per batch and 5 MB per image; free format conversion is limited to 3 images |
-| Developer ecosystem | Focused on the self-hostable web app; the server-side decoder is licensed separately | More mature API, Image CDN, WordPress / Figma plugins, and multi-language SDKs |
+| Dimension | imging (this distribution) | [Squoosh](https://squoosh.app/) · Google Chrome Labs | [TinyPNG / Tinify](https://tinypng.com/) | Online converters such as [CloudConvert](https://cloudconvert.com/) |
+| --- | --- | --- | --- | --- |
+| Primary focus | Self-hostable client-side image processing and a complete animation workshop | Client-side image lab focused on individual images | Mature online compression service, API, and CDN | Cloud conversion across a broad range of formats |
+| Processing and image privacy | Common formats, AVIF encoding, and HEIC decoding run on the device; only the optional server decoder sends files to your own service | All compression runs locally in the browser; images are not uploaded | Images are uploaded to Tinify for processing | Images are uploaded for server-side processing; CloudConvert automatically deletes files after processing |
+| Static image compression | PNG-8 / JPEG / WebP / AVIF, with about 45.8 dB in the reference PNG-8 test and Lanczos-3 resizing | Strong client-side PNG / JPEG / WebP / AVIF and other codecs | Mature JXL / AVIF / WebP / JPEG / PNG compression | Broad format coverage; compression and conversion depend on the server-side engine |
+| Animation compression | GIF / APNG / animated WebP / animated AVIF with inter-frame optimization | No animation compression workflow | APNG is publicly supported; no comparable multi-format animation workshop | Server-side conversion or optimization for selected animated formats |
+| Advanced formats on the client | Local WASM AVIF encoding and HEIC decoding | Local WASM codecs including AVIF; no HEIC decoding | None; AVIF, HEIC, and similar formats are processed in the cloud | None; advanced formats are processed in the cloud |
+| Animation creation and frame editing | Reorder, delete, or append frames; adjust per-frame duration and looping | Not provided | Not provided | Generally no comparable interactive frame workshop |
+| Source animation timing | Automatically reads duration, loop settings, and per-frame timing | Not applicable | No independent per-frame timing controls | Depends on the converter and selected options |
+| Self-hosting / offline use | Docker-based private deployment; local processing consumes no cloud credits | Open-source PWA with local processing after load | Primarily a hosted web app, Developer API, and Image CDN | Primarily a hosted web app, API, and third-party integrations |
+| Free use, accounts, and watermarks | Free local processing with no registration, quotas, or watermarks; throughput is bounded by device performance and browser memory | Free, no registration, and no watermark | Free web use allows up to 20 images per batch and 5 MB per image; free format conversion is limited to 3 images | Free tiers usually have quotas; CloudConvert requires sign-up and includes 10 conversion credits per day |
+| Developer ecosystem | Focused on the self-hostable web app; the server-side decoder is licensed separately | Open-source web app without an equally mature hosted API or CDN | More mature API, Image CDN, WordPress / Figma plugins, and multi-language SDKs | Mature API, cloud-storage, and automation integrations |
 
-Choose imging when **on-device privacy, private deployment, and a complete animation workflow** matter most. TinyPNG is a stronger fit when a team needs a **mature cloud service, API, CDN, and ready-made integrations**. This comparison is based on public product information checked on **2026-07-27**. Plans and features may change; refer to the [TinyPNG website](https://tinypng.com/) and [Developer API](https://tinify.com/developers) for current details.
+imging differs by combining **on-device privacy, animation compression and creation, per-frame editing, and self-hosting** in one tool rather than focusing only on individual images. Squoosh also keeps processing local and is strong for individual images. TinyPNG stands out for its mature cloud compression, API, CDN, and plugin ecosystem, while CloudConvert-style services cover more formats on the server. This comparison is based on public product information checked on **2026-08-11**. Plans and features may change; refer to the [Squoosh project](https://github.com/GoogleChromeLabs/squoosh), [TinyPNG website](https://tinypng.com/), [Developer API](https://tinify.com/developers), and [CloudConvert website](https://cloudconvert.com/) for current details. The 45.8 dB PNG-8 figure is PSNR from imging's existing 256-color reference sample, not a guarantee for every image.
 
 ## Distribution contents
 

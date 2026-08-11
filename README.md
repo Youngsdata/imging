@@ -17,20 +17,22 @@
 > [!IMPORTANT]
 > TIFF、JPEG 2000、PSD、PDF、DICOM、JXL 等专业或老格式所需的**服务端解码器为付费能力**。如需购买、集成或私有化部署，请联系 [admin@datadance.com](mailto:admin@datadance.com)。
 
-## 与 TinyPNG 的产品力对比
+## 与主流图片工具的产品力对比
 
-| 维度 | 图映（本仓库发行包） | [TinyPNG / Tinify](https://tinypng.com/) |
-| --- | --- | --- |
-| 核心定位 | 可自托管的端侧图片处理 + 动图工坊 | 成熟的在线压缩服务 + API + CDN |
-| 处理位置与隐私 | 常见格式、AVIF 编码、HEIC 解码在浏览器本地完成；启用服务端解码器时，对应文件需要发送到自有服务 | 图片上传至 Tinify 服务处理；官网说明文件最多保留 48 小时 |
-| 静态图片 | PNG / JPEG / WebP / AVIF 压缩与转换，含 PNG-8 减色和 Lanczos-3 缩放 | JXL / AVIF / WebP / JPEG / PNG 压缩与转换，单图压缩能力成熟 |
-| 动图能力 | GIF / APNG / 动图 WebP / 动图 AVIF 压缩与合成，支持帧间优化 | 官网公开列出 APNG 压缩；未提供同类多格式动图工坊 |
-| 逐帧编辑 | 支持拖拽排序、删帧、追加帧、单帧时长和循环设置 | 官网未提供同类逐帧编辑功能 |
-| 自托管 / 离线 | 支持 Docker 私有化部署；本地路径不消耗云端调用额度 | 以托管 Web、Developer API 和 Image CDN 为主 |
-| 免费 Web 限制 | 本地处理没有账号或 API 次数限制，实际吞吐受设备性能和浏览器内存约束 | 免费 Web 端每批最多 20 张、每张最大 5 MB；免费格式转换最多 3 张 |
-| 开发者生态 | 聚焦可自托管页面；服务端解码器单独付费授权 | API、Image CDN、WordPress / Figma 插件及多语言 SDK 更成熟 |
+| 维度 | 图映（本仓库发行包） | [Squoosh](https://squoosh.app/) · Google Chrome Labs | [TinyPNG / Tinify](https://tinypng.com/) | [CloudConvert](https://cloudconvert.com/) 类在线转换站 |
+| --- | --- | --- | --- | --- |
+| 核心定位 | 可自托管的端侧图片处理 + 完整动图工坊 | 专注单图的端侧压缩实验室 | 成熟的在线压缩服务 + API + CDN | 覆盖大量格式的云端转换服务 |
+| 处理位置与图片隐私 | 常见格式、AVIF 编码、HEIC 解码均在设备本地完成；仅启用可选服务端解码器时上传到自有服务 | 全部压缩在浏览器本地完成，图片不上传 | 图片上传至 Tinify 服务处理 | 图片上传至服务端处理；以 CloudConvert 为例，文件处理后自动删除 |
+| 单图压缩 | PNG-8 / JPEG / WebP / AVIF，PNG-8 参考测试约 45.8 dB，含 Lanczos-3 缩放 | PNG / JPEG / WebP / AVIF 等端侧编解码器，单图能力强 | JXL / AVIF / WebP / JPEG / PNG，单图压缩能力成熟 | 格式覆盖广，压缩或转换能力取决于服务端引擎 |
+| 动图压缩 | GIF / APNG / 动图 WebP / 动图 AVIF，含帧间优化 | 未提供动图压缩工作流 | 公开支持 APNG；未提供同类多格式动图工坊 | 支持部分动图格式的服务端转换或优化 |
+| 高级格式端侧能力 | WASM 本地 AVIF 编码 + HEIC 解码 | WASM 本地 AVIF 等格式编解码；未提供 HEIC 解码 | 无，AVIF / HEIC 等由云端处理 | 无，高级格式由云端处理 |
+| 动图合成与逐帧编辑 | 支持拖拽排序、删帧、追加帧、单帧时长和循环设置 | 未提供 | 未提供 | 通常未提供同类交互式逐帧工坊 |
+| 原图节奏读取 | 自动读取动图时长、循环与逐帧节奏 | 不适用 | 无独立逐帧节奏控制 | 取决于具体转换器和参数 |
+| 自托管 / 离线 | 支持 Docker 私有化部署；本地路径不消耗云端调用额度 | 开源 PWA，加载后可本地处理 | 以托管 Web、Developer API 和 Image CDN 为主 | 以托管 Web、API 和第三方集成为主 |
+| 免费、账号与水印 | 本地处理免费、免注册、无次数限制、无水印；吞吐受设备性能和浏览器内存约束 | 免费、免注册、无水印 | 免费 Web 端每批最多 20 张、每张最大 5 MB；免费格式转换最多 3 张 | 通常有免费额度；CloudConvert 免费档需注册，每日 10 个转换积分 |
+| 开发者生态 | 聚焦可自托管页面；服务端解码器单独付费授权 | 开源 Web 应用，未提供同等成熟的托管 API / CDN | API、Image CDN、WordPress / Figma 插件及多语言 SDK 更成熟 | API、云存储和自动化集成成熟 |
 
-图映更适合看重**图片不出设备、私有化部署和完整动图工作流**的场景；TinyPNG 更适合需要**成熟云服务、API、CDN 和现成生态集成**的团队。对比依据为双方公开产品能力，TinyPNG 信息核对于 **2026-07-27**，其套餐和功能可能调整，请以 [TinyPNG 官网](https://tinypng.com/)及 [Developer API](https://tinify.com/developers) 为准。
+图映的差异点不是只做单图压缩，而是把**端侧隐私、动图压缩与合成、逐帧编辑和自托管**放在一个工具里。Squoosh 同样坚持本地处理，单图能力很强；TinyPNG 强在成熟的云端压缩、API、CDN 和插件生态；CloudConvert 类服务则以服务端覆盖更多格式。对比依据为各家公开产品能力，信息核对日期为 **2026-08-11**；套餐和功能可能调整，请以 [Squoosh 项目说明](https://github.com/GoogleChromeLabs/squoosh)、[TinyPNG 官网](https://tinypng.com/)、[Developer API](https://tinify.com/developers)及 [CloudConvert 官网](https://cloudconvert.com/)为准。PNG-8 的 45.8 dB 为图映现有参考样例在 256 色下的 PSNR，不代表所有图片。
 
 ## 发行包
 
