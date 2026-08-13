@@ -5,7 +5,7 @@ a786670ca340cb94b738db5e82f676ae28bf4f6bf17e0318dc0901a3aaef368d  ./DISTRIBUTION
 6c343a78c2ede2d96ecb0c043b382fd80ed4bfbab335296e3f0721a5fa0ce21d  ./README.en.md
 463fc8e580adf92baf324e9762ee704314515ad246eff90c58a75c761e93f84a  ./README.md
 b234d257701909812e33b64e8bf95ef3f3a16ddc424395099ad3aeb574012b18  ./THIRD_PARTY_NOTICES.md
-93a2ec9dd2d4155bfd02de28558744f07ebccdbd34afe46b6ee576ce840448e6  ./codecs/avif.js
+b555b2c26c430dd74fd9fcaab82529fca358caf2fab7c5721dbdb0d10e005607  ./codecs/avif.js
 8c3690b09c168f196446cf5904332023bbc15eb92b6a7cee470ac829e6a65d20  ./codecs/avif/LICENSE
 65d0fd2b2e415bf2712c329694dc2bc257fc54f02572c29d5c46212ae6dc6c3c  ./codecs/avif/codec/dec/avif_dec.js
 5c35dde23dfd862088a49a6b8a9fe81f9f9a1a46aaa27de7efd7baa7611c4b47  ./codecs/avif/codec/dec/avif_dec.wasm
@@ -32,4 +32,4 @@ ca2692b1050eab9f62bd56e4c9114ed68b86c30e62e3fa23745b2ae28a89ff86  ./docker/nginx
 e3a994d82e644b03a792a930f574002658412f62407f5fee083f2555c5f23118  ./licenses/libheif-js-LGPL-3.0.txt
 fa81ce652315b013359d6e8e4744335f31a50c7c192907176d3632f78a3b4596  ./licenses/libheif-wasm-NOTICES.txt
 bcf29b4fd3ec2cb5f9d40a0866da446f6da62170d2ccedf4aeca9cf9406dd20c  ./licenses/wasm-feature-detect-Apache-2.0.txt
-0788497f8d17fe3ea7471e4a3e3fb2592357fceca0182115bad1bc1d5b50dd1a  ./图映-加密版-本地codecs.html
+b8c97504274bf81d16142b1bacbc92aa365f0490d9e74a0058c4fe9ad0895671  ./图映-加密版-本地codecs.html
