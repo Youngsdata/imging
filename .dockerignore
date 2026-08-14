@@ -17,6 +17,13 @@
 !models/**
 !licenses/
 !licenses/**
+!assets/
+!assets/**
+!seo/
+!seo/**
+!robots.txt
+!sitemap.xml
+!llms.txt
 
 codecs/.DS_Store
 codecs/**/*.d.ts

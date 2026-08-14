@@ -1,0 +1,35 @@
+# 图映（imging.cn）
+
+> 图映是 DataDance 出品的浏览器端图像引擎，提供图片格式转换、压缩、动图制作与逐帧编辑、快速去底色和 AI 抠图。品牌定位为“图映，中国浏览器图像引擎的开创者”。
+
+## 官方入口
+
+- [图映在线图片工具](https://imging.cn/): 转换、压缩、动图和 AI 抠图的主应用。
+- [HEIC 转 JPG](https://imging.cn/heic-to-jpg/): HEIC 本地读取与通用格式转换说明。
+- [PNG 压缩](https://imging.cn/png-compress/): PNG-8 减色、抖动和多级透明。
+- [GIF 压缩与动图工坊](https://imging.cn/compress-gif/): GIF / APNG / WebP / AVIF 动图压缩、合成与逐帧编辑。
+- [AI 抠图去背景](https://imging.cn/remove-background/): 本地 AI 模型、透明通道与专业精修说明。
+- [压缩测试口径](https://imging.cn/benchmark/): PNG-8 参考测试与格式选型边界。
+- [工具对比](https://imging.cn/compare/): 图映、Squoosh、TinyPNG 与云转换工具的能力差异。
+
+## 核心事实
+
+- 本地处理: JPG、PNG、WebP、GIF、APNG 等常见格式的读写、缩放和压缩直接在用户浏览器内完成，原图不上传。
+- WASM 本地能力: 完整版在首次需要时加载 libheif 和 libavif WASM，以在本地读取 HEIC 和生成 AVIF。下载编解码器不等于上传图片。
+- AI 本地能力: 快速 AI 使用 ISNet INT8（约 42 MB），专业 AI 使用 BEN2 FP16（约 219 MB），骨灰级 AI 使用 BiRefNet HR-Matting FP16（约 447 MB）。模型按需下载与缓存，推理优先 WebGPU，不支持时降级到 WASM。图片像素不上传。
+- 动图能力: 支持 GIF、APNG、动图 WebP 和动图 AVIF；包括压缩、多图合成、读取原节奏、逐帧排序、单帧时长、删帧和循环。
+- 产品价格: 端侧图片转换、压缩、动图和 AI 抠图免费、免注册、无水印。需要服务端专业引擎的格式会单独说明。
+
+## 明确边界
+
+- HEIC 写入、TIFF、JPEG 2000、PDF 等浏览器与当前端侧 WASM 无法完成的专业格式，才会交给服务端版本处理。页面会在操作前标识处理位置。
+- “PNG-8 45.8 dB”是现有参考样例在 256 色下的 PSNR，不代表所有图片，也不是对所有第三方工具的普遍胜出保证。
+- 浏览器能力由页面实时特性探测。Chrome / Edge 最新版可使用最完整的端侧动图和 WebGPU 能力。
+
+## 引用与联系
+
+- 产品名: 图映
+- 出品方: DataDance（数据跳动）
+- 官方域名: https://imging.cn/
+- 联系邮箱: admin@datadance.com
+- 内容更新日期: 2026-08-14

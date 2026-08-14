@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">图映：浏览器本地图像引擎</title>
+  <desc id="desc">在线图片转换、压缩、动图与 AI 抠图，常见格式零上传</desc>
+  <defs>
+    <linearGradient id="bg" x1="60" y1="40" x2="1130" y2="610" gradientUnits="userSpaceOnUse"><stop stop-color="#fbfaf6"/><stop offset="1" stop-color="#e2f4f2"/></linearGradient>
+    <linearGradient id="brand" x1="86" y1="75" x2="330" y2="335" gradientUnits="userSpaceOnUse"><stop stop-color="#0fa79f"/><stop offset=".56" stop-color="#f4553f"/><stop offset="1" stop-color="#0c8a83"/></linearGradient>
+    <pattern id="pixels" width="74" height="74" patternUnits="userSpaceOnUse"><rect width="18" height="18" rx="3" fill="#0fa79f" opacity=".075"/><rect x="52" y="52" width="12" height="12" rx="2" fill="#f4553f" opacity=".08"/></pattern>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="0" dy="22" stdDeviation="24" flood-color="#1b1a22" flood-opacity=".14"/></filter>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#pixels)"/>
+  <rect x="62" y="62" width="1076" height="506" rx="44" fill="#fff" fill-opacity=".92" stroke="#ded9cf" filter="url(#shadow)"/>
+  <g transform="translate(112 128)"><rect width="210" height="210" rx="58" fill="url(#brand)"/><rect x="72" y="72" width="66" height="66" rx="18" fill="#fff"/></g>
+  <text x="372" y="178" fill="#0c8a83" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="28" font-weight="700">图映 · 中国浏览器图像引擎的开创者</text>
+  <text x="372" y="260" fill="#1b1a22" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="54" font-weight="800">转换、压缩、动图、AI 抠图</text>
+  <text x="372" y="332" fill="#1b1a22" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="54" font-weight="800">全在浏览器本地完成</text>
+  <g font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="25" font-weight="650"><rect x="112" y="412" width="226" height="64" rx="20" fill="#e2f4f2"/><text x="151" y="453" fill="#0c8a83">常见格式零上传</text><rect x="358" y="412" width="194" height="64" rx="20" fill="#fdeae6"/><text x="403" y="453" fill="#dd4330">免注册无水印</text><rect x="572" y="412" width="218" height="64" rx="20" fill="#f2efe8"/><text x="611" y="453" fill="#403e4b">16 种格式读入</text><rect x="810" y="412" width="250" height="64" rx="20" fill="#e2f4f2"/><text x="853" y="453" fill="#0c8a83">GIF / APNG 逐帧编辑</text></g>
+  <text x="112" y="528" fill="#6d6a7a" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="22">imging.cn · DataDance</text>
+</svg>

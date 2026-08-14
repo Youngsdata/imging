@@ -10,6 +10,9 @@ COPY codecs/ /usr/share/nginx/html/codecs/
 COPY ai/ /usr/share/nginx/html/ai/
 COPY models/ /usr/share/nginx/html/models/
 COPY licenses/ /usr/share/nginx/html/licenses/
+COPY assets/ /usr/share/nginx/html/assets/
+COPY seo/ /usr/share/nginx/html/
+COPY robots.txt sitemap.xml llms.txt /usr/share/nginx/html/
 
 EXPOSE 80 443
 
