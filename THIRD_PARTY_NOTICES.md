@@ -29,6 +29,46 @@
 
 本发行包中的 `libheif-bundle.mjs` 是上述版本的未修改发行文件，可由使用者用同版本上游文件替换。
 
+## ISNet General ONNX INT8
+
+- 用途：浏览器本地通用主体识别与背景蒙版生成
+- 许可证：MIT License
+- 上游模型：<https://huggingface.co/xrds/isnet-general-onnx-int8>
+- 许可证副本：`licenses/ISNet-General-ONNX-INT8-LICENSE.txt`
+- 模型文件：`models/background-removal/isnet-general-int8.onnx`
+- 模型 SHA-256：`3b21a6706dc8d6e4ba9f5b31ebc6940f6c785b58862e27bb25daa9dd4424b87f`
+
+## ONNX Runtime Web 1.27.0
+
+- 用途：在浏览器 WebGPU / WASM 中运行本地抠图模型
+- 许可证：MIT License
+- 上游项目：<https://github.com/microsoft/onnxruntime>
+- 许可证副本：`licenses/ONNX-Runtime-LICENSE.txt`
+- WASM 文件 SHA-256：`7e83cd6cee77e478bc96a7e91b198144fb5e4126287daf1f9b54bb195ebcd55a`
+
+## BEN2 FP16 ONNX
+
+- 用途：浏览器本地高精度主体蒙版生成，用于发丝、半透明材质与复杂边缘
+- 许可证：MIT License
+- 上游项目：<https://github.com/PramaLLC/BEN2>
+- 浏览器 ONNX 模型：<https://huggingface.co/onnx-community/BEN2-ONNX>
+- 许可证副本：`licenses/BEN2-LICENSE.txt`
+- 模型文件：`models/background-removal/ben2-fp16.onnx`
+- 模型 SHA-256：`dfdc25f421f32a0d1268e0f2ff2153d340e8f1d52d3dd16f5dc33c1ce85cedf1`
+
+## BiRefNet HR-Matting FP16 ONNX
+
+- 用途：浏览器本地 2048×2048 高分辨率蒙版生成，用于发丝、薄纱、玻璃与半透明边缘
+- 许可证：MIT License
+- 上游项目：<https://github.com/ZhengPeng7/BiRefNet>
+- 官方模型：<https://huggingface.co/ZhengPeng7/BiRefNet_HR-matting>
+- 官方模型版本：`5d6b6f8adcb5b417c871b1d84ceaae9871355b7f`
+- 官方 FP16 权重 SHA-256：`a5a4de698739ea5e0e8bbab28e1b293dde95092b87a442d566cbc585c53cef55`
+- 许可证副本：`licenses/BiRefNet-LICENSE.txt`
+- 模型文件：`models/background-removal/birefnet-hr-matting-fp16.onnx`
+- 浏览器 ONNX SHA-256：`0d3bdc77d5e83133e169ac9b6e2850a10a8e8fbbf9c76d2cf86caca77611b2fe`
+- 转换说明：保留官方 FP16 权重和 2048×2048 输入；仅将推理态 BatchNorm 等价折叠为仿射运算，并将 DeformConv 等价展开为标准 ONNX `GridSample` + `MatMul`，便于 ONNX Runtime Web 执行
+
 ## Nginx
 
 容器镜像基于 Nginx 官方镜像。其软件及基础镜像中的第三方组件按照镜像内附带的各自许可证提供：

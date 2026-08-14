@@ -11,6 +11,12 @@
 !图映-加密版-本地codecs.html
 !codecs/
 !codecs/**
+!ai/
+!ai/**
+!models/
+!models/**
+!licenses/
+!licenses/**
 
 codecs/.DS_Store
 codecs/**/*.d.ts

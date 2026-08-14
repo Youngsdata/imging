@@ -7,6 +7,9 @@ COPY --chmod=755 docker/nginx/40-enable-ssl.sh /docker-entrypoint.d/40-enable-ss
 COPY --chmod=755 docker/nginx/41-inject-beian.sh /docker-entrypoint.d/41-inject-beian.sh
 COPY 图映-加密版-本地codecs.html /usr/share/nginx/html/index.html
 COPY codecs/ /usr/share/nginx/html/codecs/
+COPY ai/ /usr/share/nginx/html/ai/
+COPY models/ /usr/share/nginx/html/models/
+COPY licenses/ /usr/share/nginx/html/licenses/
 
 EXPOSE 80 443
 

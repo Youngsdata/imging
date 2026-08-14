@@ -3,13 +3,14 @@
 
 # imging · Client-side image and animation toolkit
 
-imging brings image compression, format conversion, and an animation workshop into one self-hostable page. Common formats such as PNG, JPEG, and WebP are processed locally in the browser. The bundled WASM codecs also encode AVIF and decode HEIC on the client side, without uploading the image.
+imging brings image compression, format conversion, background removal, and an animation workshop into one self-hostable page. Common formats such as PNG, JPEG, and WebP are processed locally in the browser. Bundled WASM codecs encode AVIF and decode HEIC on the client, while self-hosted ISNet, BEN2, and BiRefNet HR-Matting models provide quick, professional, or maximum-fidelity AI cutouts without uploading the image.
 
 **Live demo: <https://imging.cn>**
 
 ## Why imging
 
 - **Privacy first**: common formats, AVIF encoding, and HEIC decoding can all run locally on the user's device.
+- **Professional local background removal**: quick mode auto-detects or accepts any boundary background color, removes only connected outer regions, and decontaminates matte-colored fringes. AI mode offers a roughly 42 MB ISNet quick model, a roughly 219 MB BEN2 professional model, and a roughly 447 MB BiRefNet HR-Matting maximum-fidelity model. The latter runs at 2048×2048 for hair, veils, glass, semi-transparent edges, and source-contour fidelity. Each model is downloaded on demand from the same site and cached independently. Masks contract by 1 px and remove background-color halos by default, with feathering and brush refinement before WebP, PNG, or AVIF export.
 - **More than static images**: compress and create GIF, APNG, animated WebP, and animated AVIF, with per-frame reordering, deletion, and duration controls.
 - **One-command self-hosting**: Docker images are available for `linux/amd64` and `linux/arm64`, including private-network deployments.
 - **Transparent capability fallback**: only professional or legacy formats that the browser cannot handle are sent to the optional server-side decoder. Server processing is never presented as local processing.
@@ -40,6 +41,7 @@ This is the public imging distribution repository. It contains only deployable b
 
 - The obfuscated single-page app `图映-加密版-本地codecs.html`
 - Browser-side AVIF / HEIC runtime codecs
+- Browser-side AI runtime and self-hosted ISNet / BEN2 / BiRefNet HR-Matting cutout models
 - Nginx Docker image configuration and the one-command deployment script
 - Third-party software licenses and notices
 
