@@ -1,7 +1,7 @@
 <!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>图映｜浏览器本地图像引擎 - 压缩、转换、动图与 AI 抠图</title>
-<meta name="description" content="图映是一款专业浏览器本地图像处理引擎，支持图片压缩、格式转换、动图制作与逐帧编辑、AI 智能抠图；常见格式直接在设备端完成，图片无需上传。">
+<meta name="description" content="图映，中国浏览器图像引擎的开创者。提供图片压缩、格式转换、AI 智能抠图、动图制作与逐帧编辑；常见格式直接在设备端完成，图片无需上传。">
 <meta name="application-name" content="图映"><meta name="theme-color" content="#0fa79f">
-<meta property="og:type" content="website"><meta property="og:locale" content="zh_CN"><meta property="og:site_name" content="图映"><meta property="og:title" content="图映｜浏览器本地图像引擎"><meta property="og:description" content="图片压缩、格式转换、动图与 AI 抠图，常见格式直接在浏览器本地完成。">
+<meta property="og:type" content="website"><meta property="og:locale" content="zh_CN"><meta property="og:site_name" content="图映"><meta property="og:title" content="图映｜中国浏览器图像引擎的开创者"><meta property="og:description" content="图片压缩、格式转换、AI 抠图与动图全链路处理，常见格式直接在浏览器本地完成。">
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Cdefs%3E%3ClinearGradient%20id='g'%20x1='0'%20y1='0'%20x2='1'%20y2='1'%3E%3Cstop%20offset='0'%20stop-color='%230fa79f'/%3E%3Cstop%20offset='.55'%20stop-color='%23f4553f'/%3E%3Cstop%20offset='1'%20stop-color='%230fa79f'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20x='8'%20y='8'%20width='84'%20height='84'%20rx='24'%20fill='url(%23g)'/%3E%3Crect%20x='39'%20y='39'%20width='22'%20height='22'%20rx='6'%20fill='%23fff'/%3E%3C/svg%3E">
 </head><body>
 <style>
@@ -90,28 +90,46 @@
   .herogrid{position:relative; z-index:1; display:grid; grid-template-columns:1fr 1.04fr; gap:46px; align-items:stretch;}
   @media(max-width:940px){ .herogrid{grid-template-columns:1fr; gap:34px; align-items:start;} }
   .herol{display:flex; flex-direction:column; min-width:0;}
-  .hero h1{font-size:clamp(32px,4.6vw,48px); line-height:1.06; font-weight:850;}
+  .hero h1{font-size:clamp(34px,4.1vw,46px); line-height:1.05; font-weight:850; letter-spacing:-.035em;}
+  .hero-title-line{display:block;white-space:nowrap;}
   .hero h1 .hl{color:var(--teal-2); position:relative; white-space:nowrap;}
-  .lead{margin-top:16px; font-size:17px; color:var(--ink-2); line-height:1.6; max-width:38ch;}
+  .hero .eyebrow{display:flex;align-items:center;gap:8px;margin-bottom:9px;}
+  .hero .eyebrow::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--teal);box-shadow:0 0 0 5px color-mix(in srgb,var(--teal) 13%,transparent);}
+  .brandclaim{position:relative;margin-top:17px;padding:14px 16px 14px 18px;border:1px solid color-mix(in srgb,var(--teal) 28%,var(--line));border-radius:12px;background:linear-gradient(105deg,var(--teal-bg),color-mix(in srgb,var(--surface) 82%,transparent));overflow:hidden;}
+  .brandclaim::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:linear-gradient(var(--teal),var(--coral));}
+  .brandclaim-label{display:block;font:700 9.5px var(--mono);letter-spacing:.16em;color:var(--teal-2);text-transform:uppercase;}
+  .brandclaim strong{display:block;margin-top:4px;font-size:16px;line-height:1.35;letter-spacing:-.01em;color:var(--ink);}
+  .brandclaim small{display:block;margin-top:5px;font-size:11.5px;color:var(--muted);}
+  .lead{margin:15px 0 0;font-size:15px;color:var(--ink-2);line-height:1.65;max-width:50ch;}
   .lead b{color:var(--ink); font-weight:700;}
-  .trust{display:flex; flex-wrap:wrap; gap:9px; margin-top:22px;}
-  .chip{display:inline-flex; align-items:center; gap:7px; font-size:13px; font-weight:600; color:var(--ink-2); background:var(--surface); border:1px solid var(--line); border-radius:999px; padding:7px 13px;}
-  .chip svg{width:15px; height:15px; color:var(--teal-2);}
-  .stats{display:flex; gap:28px; margin-top:26px;}
-  .stat .n{font-family:var(--mono); font-size:26px; font-weight:700; color:var(--ink); letter-spacing:-.02em;}
-  .stat .l{font-size:12.5px; color:var(--muted); margin-top:2px;}
-  /* DataDance 品牌区(用 .dbrand 独立类名,避免与头部 .brand 撞车):桌面推到左列底部,与右侧转换器底对齐 */
-  .dbrand{display:block; margin-top:28px; padding-top:20px; border-top:1px solid var(--line); text-decoration:none; color:inherit; transition:opacity .15s ease;}
-  @media(min-width:941px){ .dbrand{margin-top:auto;} }
-  .dbrand-head{display:flex; align-items:baseline; gap:10px;}
-  .dbrand-name{font-family:var(--mono); font-size:24px; font-weight:800; letter-spacing:-.01em; line-height:1; background:linear-gradient(96deg,var(--teal) 8%,var(--coral) 92%); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; color:transparent;}
-  .dbrand-by{font-family:var(--mono); font-size:12px; font-weight:700; color:var(--muted); letter-spacing:.14em;}
-  .dbrand-slogan{font-size:13.5px; font-weight:650; color:var(--ink-2); margin-top:8px; letter-spacing:.01em;}
-  .dbrand-note{font-size:12px; color:var(--muted); margin:7px 0 0; line-height:1.55;}
+  .hero-steps{list-style:none;padding:0;margin:18px 0 0;display:grid;gap:8px;}
+  .hero-step{display:grid;grid-template-columns:42px minmax(0,1fr);gap:12px;align-items:start;padding:11px 12px;border:1px solid var(--line);border-radius:11px;background:color-mix(in srgb,var(--surface) 92%,transparent);box-shadow:0 8px 24px -24px rgba(27,26,34,.4);}
+  .hero-step-no{display:grid;place-items:center;width:38px;height:38px;border-radius:9px;background:var(--bg-2);color:var(--teal-2);font:750 13px var(--mono);letter-spacing:.03em;}
+  .hero-step:nth-child(2) .hero-step-no{color:var(--coral-2);background:var(--coral-bg);}
+  .hero-step b{display:block;font-size:13.5px;line-height:1.35;color:var(--ink);}
+  .hero-step p{margin:3px 0 0;font-size:11.8px;line-height:1.52;color:var(--muted);}
+  .hero-step p strong{color:var(--ink-2);font-weight:650;}
+  .hero-proof{display:grid;grid-template-columns:1fr 1fr 1.45fr;gap:1px;margin-top:13px;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--line);}
+  .hero-proof-item{min-width:0;padding:9px 11px;background:var(--surface-2);}
+  .hero-proof-item b{font:750 16px var(--mono);color:var(--ink);}
+  .hero-proof-item small{display:block;margin-top:1px;font-size:9.8px;line-height:1.35;color:var(--muted);}
+  /* DataDance 品牌区：首屏只保留克制的公司署名与联系入口。 */
+  .dbrand{display:flex;align-items:center;gap:10px;margin-top:13px;padding-top:12px;border-top:1px solid var(--line);text-decoration:none;color:inherit;transition:opacity .15s ease;}
+  .dbrand-head{display:flex;align-items:baseline;gap:7px;flex:0 0 auto;}
+  .dbrand-name{font-family:var(--mono);font-size:16px;font-weight:800;letter-spacing:-.01em;line-height:1;background:linear-gradient(96deg,var(--teal) 8%,var(--coral) 92%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;}
+  .dbrand-by{font-family:var(--mono);font-size:9px;font-weight:700;color:var(--muted);letter-spacing:.12em;}
+  .dbrand-copy{min-width:0;margin-left:auto;text-align:right;}
+  .dbrand-slogan{font-size:11px;font-weight:650;color:var(--ink-2);letter-spacing:.01em;}
+  .dbrand-note{font-size:10px;color:var(--muted);margin:2px 0 0;line-height:1.4;}
   .dbrand-note b{color:var(--coral-2); font-weight:700;}
   .dbrand-mail{color:var(--teal-2); font-weight:600;}
   .dbrand:hover{opacity:.86;}
   .dbrand:hover .dbrand-mail{text-decoration:underline;}
+  @media(max-width:520px){
+    .hero{padding-top:18px}.hero h1{font-size:31px}.brandclaim{padding:13px 14px 13px 16px}.brandclaim strong{font-size:15px}
+    .hero-step{grid-template-columns:36px minmax(0,1fr);gap:10px}.hero-step-no{width:34px;height:34px}.hero-proof{grid-template-columns:1fr 1fr}.hero-proof-item:last-child{grid-column:1/-1}
+    .dbrand{align-items:flex-start}.dbrand-copy{text-align:left;margin-left:0}.dbrand-note{display:none}
+  }
 
   /* ============ 转换器 ============ */
   .converter{background:var(--surface); border:1px solid var(--line); border-radius:var(--r-lg); box-shadow:var(--shadow-lg); overflow:hidden;}
@@ -283,8 +301,8 @@
   .blackpreview-h b{font-size:12.5px; color:var(--ink-2);}
   .blackpreview-actions{display:flex;align-items:center;justify-content:flex-end;gap:8px;min-width:0}.blackpreview-actions>span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .blackpreview-canvas{min-height:120px; max-height:220px; border:1px solid var(--line-2); border-radius:9px; overflow:hidden; display:grid; place-items:center; background:repeating-conic-gradient(var(--bg-2) 0 25%,var(--surface) 0 50%) 0 0/18px 18px;}
-  .blackpreview-empty{grid-area:1/1;max-width:260px;padding:18px;text-align:center;font-size:12px;line-height:1.55;color:var(--muted);background:color-mix(in srgb,var(--surface) 88%,transparent);border:1px dashed var(--line-2);border-radius:9px}.blackpreview-empty[hidden]{display:none}
-  .blackpreview canvas{display:block; max-width:100%; max-height:220px; width:auto; height:auto;}
+  .blackpreview-canvas[hidden],.blackpreview canvas[hidden]{display:none!important}.blackpreview canvas{display:block;max-width:100%;max-height:220px;width:auto;height:auto}
+  .previewstat{display:inline-flex;align-items:center;gap:5px;max-width:190px;border-radius:999px;padding:4px 8px;background:var(--bg-2);color:var(--muted);font:650 10.5px var(--sans);line-height:1}.previewstat.waiting{background:var(--teal-bg);color:var(--teal-2)}.previewstat.waiting::before{content:'';width:6px;height:6px;flex:0 0 auto;border-radius:50%;background:currentColor;box-shadow:0 0 0 3px color-mix(in srgb,currentColor 14%,transparent)}
   .bgmethod{display:flex; align-items:center; justify-content:space-between; gap:12px;}
   .bgmethod>label{font-size:13.5px; font-weight:650; color:var(--ink-2);}
   .bgfast,.bgai{display:flex; flex-direction:column; gap:9px;}
@@ -329,14 +347,16 @@
   .probody{min-height:0;display:grid;grid-template-columns:278px minmax(0,1fr);}
   .probody.no-tools{grid-template-columns:minmax(0,1fr)}
   .protools{overflow:auto;padding:17px 15px;background:#17181e;border-right:1px solid #2b2d35;}
-  .protools[hidden]{display:none}.protoolgroup{padding:0 0 16px;margin:0 0 16px;border-bottom:1px solid #2d3038}.protoolgroup:last-child{border:0}.protooltitle{font:700 10.5px var(--mono);letter-spacing:.12em;color:#8e929e;text-transform:uppercase;margin-bottom:10px}.proseg,.prohistory{display:grid;grid-template-columns:1fr 1fr;gap:7px}.proseg button{height:38px;border:1px solid #373a44;border-radius:8px;background:#24262d;color:#d6d8df;font:650 12px var(--sans);cursor:pointer}.proseg button.on{border-color:#24c6bd;background:#153d39;color:#70eee5;box-shadow:inset 0 0 0 1px #24c6bd}.proctrl{display:grid;grid-template-columns:74px minmax(0,1fr) 39px;align-items:center;gap:8px;margin-top:10px;font-size:12px;color:#c5c7cf}.proctrl input[type=range]{width:100%;accent-color:#24c6bd}.proctrl output{font:11px var(--mono);text-align:right;color:#6ce9e1}.procheck{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:12px;font-size:12px;color:#c5c7cf}.procheck input{accent-color:#24c6bd}.prowide{width:100%;height:36px;border:1px solid #383b46;background:#24262d;color:#e8e9ed;border-radius:8px;font:650 12px var(--sans);cursor:pointer;margin-top:7px}.prowide:hover{border-color:#24c6bd;color:#6ce9e1}.prowide:disabled{opacity:.4;cursor:default}.protips{font-size:11px;line-height:1.65;color:#8e929e}.protips kbd{font:10px var(--mono);border:1px solid #41444f;border-bottom-width:2px;border-radius:4px;background:#262831;padding:1px 5px;color:#dfe1e7}
+  .protools[hidden]{display:none}.protoolgroup{padding:0 0 16px;margin:0 0 16px;border-bottom:1px solid #2d3038}.protoolgroup:last-child{border:0}.protooltitle{font:700 10.5px var(--mono);letter-spacing:.12em;color:#8e929e;text-transform:uppercase;margin-bottom:10px}.proseg,.prohistory{display:grid;grid-template-columns:1fr 1fr;gap:7px}.proseg button{height:38px;border:1px solid #373a44;border-radius:8px;background:#24262d;color:#d6d8df;font:650 12px var(--sans);cursor:pointer}.proseg button.on{border-color:#24c6bd;background:#153d39;color:#70eee5;box-shadow:inset 0 0 0 1px #24c6bd}.proctrl{display:grid;grid-template-columns:74px minmax(0,1fr) 39px;align-items:center;gap:8px;margin-top:10px;font-size:12px;color:#c5c7cf}.proctrl input[type=range]{width:100%;accent-color:#24c6bd}.proctrl output{font:11px var(--mono);text-align:right;color:#6ce9e1}.procheck{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:12px;font-size:12px;color:#c5c7cf}.procheck small{display:block;margin-top:2px;color:#858a97;font-size:10px}.procheck input{accent-color:#24c6bd}.prowide{width:100%;height:36px;border:1px solid #383b46;background:#24262d;color:#e8e9ed;border-radius:8px;font:650 12px var(--sans);cursor:pointer;margin-top:7px}.prowide:hover{border-color:#24c6bd;color:#6ce9e1}.prowide:disabled{opacity:.4;cursor:default}.protips{font-size:11px;line-height:1.65;color:#8e929e}.protips kbd{font:10px var(--mono);border:1px solid #41444f;border-bottom-width:2px;border-radius:4px;background:#262831;padding:1px 5px;color:#dfe1e7}
   .prostage{position:relative;min-width:0;min-height:0;overflow:hidden;background-color:#17181d;background-image:linear-gradient(45deg,#25272e 25%,transparent 25%),linear-gradient(-45deg,#25272e 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#25272e 75%),linear-gradient(-45deg,transparent 75%,#25272e 75%);background-size:24px 24px;background-position:0 0,0 12px,12px -12px,-12px 0;cursor:default;touch-action:none;user-select:none;}
   .prostage.bg-black{background:#000;background-image:none}.prostage.bg-white{background:#fff;background-image:none}
   .prostage.panning{cursor:grabbing}.proloading{position:absolute;inset:0;display:grid;place-items:center;color:#b4b7c1;font-size:13px;letter-spacing:.02em;background:rgba(17,18,23,.82);z-index:4}.proloading[hidden]{display:none}
   .prostage.panning #proAICanvas{cursor:grabbing}.prostage.panning .probrushcursor,.prostage.proof .probrushcursor{display:none!important}
-  .protransform{position:absolute;left:50%;top:50%;transform-origin:center center;will-change:transform;box-shadow:0 18px 52px rgba(0,0,0,.42)}.protransform[hidden]{display:none}
-  #proAICanvas,#proProofImage{display:block;width:100%;height:100%;background:transparent}#proAICanvas{cursor:none}#proProofImage{object-fit:fill;image-rendering:auto}.procompare{position:relative;width:100%;height:100%;overflow:visible;background:#101116}.procompare[hidden],#proAICanvas[hidden],#proProofImage[hidden]{display:none}
-  .procompare img{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none}.proafter{position:absolute;inset:0;overflow:hidden;background-color:#17181d;background-image:linear-gradient(45deg,#2b2e36 25%,transparent 25%),linear-gradient(-45deg,#2b2e36 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#2b2e36 75%),linear-gradient(-45deg,transparent 75%,#2b2e36 75%);background-size:24px 24px;background-position:0 0,0 12px,12px -12px,-12px 0}.prostage.bg-black .proafter{background:#000;background-image:none}.prostage.bg-white .proafter{background:#fff;background-image:none}.proafter img{width:100%;height:100%;max-width:none}.prodivider{position:absolute;top:0;bottom:0;left:50%;width:2px;transform:translateX(-1px);background:#fff;box-shadow:0 0 0 1px rgba(0,0,0,.28),0 0 18px rgba(0,0,0,.35);cursor:ew-resize;z-index:2}.prodivider::after{content:'↔';position:absolute;left:50%;top:50%;width:38px;height:38px;display:grid;place-items:center;transform:translate(-50%,-50%);border-radius:50%;background:#fff;color:#202127;font:700 16px var(--sans);box-shadow:0 4px 16px rgba(0,0,0,.4)}.prolabel{position:absolute;top:14px;z-index:3;border-radius:999px;padding:5px 10px;background:rgba(16,17,22,.76);backdrop-filter:blur(8px);color:#fff;font:700 11px var(--sans);pointer-events:none}.prolabel.before{left:14px}.prolabel.after{right:14px;color:#79eee6}
+  .protransform{position:absolute;left:50%;top:50%;transform-origin:center center;will-change:transform;contain:layout paint style;backface-visibility:hidden;box-shadow:0 18px 52px rgba(0,0,0,.42)}.protransform[hidden]{display:none}
+  #proAICanvas,#proProofImage{display:block;width:100%;height:100%;background:transparent}#proAICanvas{cursor:none}#proProofImage{object-fit:fill;image-rendering:auto}.procompare{--split-point:50%;--image-width:1px;--image-height:1px;--image-transform:translate3d(-50%,-50%,0) scale(1);position:absolute;inset:0;overflow:hidden;contain:layout paint style;isolation:isolate}.procompare[hidden],#proAICanvas[hidden],#proProofImage[hidden]{display:none}
+  .procomparelayer{position:absolute;inset:0;overflow:hidden;contain:strict;will-change:clip-path;transform:translateZ(0)}.procomparelayer.before{clip-path:inset(0 calc(100% - var(--split-point)) 0 0)}.procomparelayer.after{clip-path:inset(0 0 0 var(--split-point));background-color:#17181d;background-image:linear-gradient(45deg,#2b2e36 25%,transparent 25%),linear-gradient(-45deg,#2b2e36 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#2b2e36 75%),linear-gradient(-45deg,transparent 75%,#2b2e36 75%);background-size:24px 24px;background-position:0 0,0 12px,12px -12px,-12px 0}.prostage.bg-black .procomparelayer.after{background:#000;background-image:none}.prostage.bg-white .procomparelayer.after{background:#fff;background-image:none}
+  .procompare img{position:absolute;left:50%;top:50%;width:var(--image-width);height:var(--image-height);max-width:none;display:block;pointer-events:none;transform:var(--image-transform);transform-origin:center center;will-change:transform;backface-visibility:hidden;image-rendering:auto}.prodivider{position:absolute;top:0;bottom:0;left:0;width:30px;transform:translate3d(var(--split-point),0,0) translateX(-50%);will-change:transform;touch-action:none;cursor:ew-resize;z-index:5}.prodivider::before{content:'';display:block;height:100%;width:3px;margin:0 auto;background:rgba(0,0,0,.72);box-shadow:0 0 0 1px rgba(255,255,255,.38),0 0 16px rgba(0,0,0,.25)}.prodivider::after{content:'↔';position:absolute;left:50%;top:50%;width:48px;height:48px;display:grid;place-items:center;transform:translate(-50%,-50%);border-radius:50%;background:#090a0d;color:#66e7df;border:2px solid rgba(255,255,255,.88);font:800 19px var(--sans);box-shadow:0 5px 20px rgba(0,0,0,.5)}.prolabel{position:absolute;top:16px;z-index:6;border:1px solid rgba(255,255,255,.2);border-radius:999px;padding:7px 12px;background:rgba(10,11,15,.88);backdrop-filter:blur(10px);box-shadow:0 5px 18px rgba(0,0,0,.32);color:#fff;font:750 13.5px var(--sans);line-height:1;letter-spacing:.01em;pointer-events:none}.prolabel.before{left:16px}.prolabel.after{right:16px;color:#7cf3eb}
+  .procompareframe{position:absolute;left:50%;top:50%;width:var(--image-width);height:var(--image-height);transform:var(--image-transform);transform-origin:center center;will-change:transform;pointer-events:none;z-index:3;border:1px solid rgba(255,255,255,.68);box-shadow:0 18px 52px rgba(0,0,0,.48),0 0 0 1px rgba(0,0,0,.32);backface-visibility:hidden}
   .probrushcursor{position:absolute;width:32px;height:32px;border:1.5px solid #fff;border-radius:50%;box-shadow:0 0 0 1px rgba(0,0,0,.75);pointer-events:none;z-index:5;transform:translate(-50%,-50%);display:none}.prostage.brush .probrushcursor{display:block}
   .profoot{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:0 14px;border-top:1px solid #2b2d35;background:#191a20;color:#8f929d;font:10.5px var(--mono);white-space:nowrap;overflow:hidden}.profoot span{overflow:hidden;text-overflow:ellipsis}.profoot b{color:#61ddd5;font-weight:600}
   .result-compare{width:100%;display:grid;grid-template-columns:70px minmax(0,1fr) auto;align-items:center;gap:10px;margin:2px 0 9px;padding:7px;border:1px solid color-mix(in srgb,var(--teal) 42%,var(--line));border-radius:10px;background:color-mix(in srgb,var(--surface) 76%,var(--teal-bg));color:var(--ink-2);font-family:var(--sans);text-align:left;cursor:pointer}.result-compare:hover{border-color:var(--teal)}.result-thumbs{position:relative;width:70px;height:42px;border-radius:7px;overflow:hidden;background:repeating-conic-gradient(var(--bg-2) 0 25%,var(--surface) 0 50%) 0 0/12px 12px}.result-thumbs>img,.result-thumb-after img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.result-thumb-after{position:absolute;inset:0;clip-path:inset(0 0 0 50%);border-left:1px solid #fff;background:repeating-conic-gradient(var(--bg-2) 0 25%,var(--surface) 0 50%) 0 0/12px 12px}.result-compare b{display:block;font-size:12px}.result-compare small{display:block;font-size:10.5px;color:var(--muted);margin-top:1px}.result-compare>em{font-style:normal;font-size:18px;color:var(--teal-2);padding:0 5px}
@@ -583,7 +603,7 @@
   <div class="wrap topin">
     <div class="brand">
       <span class="logo" aria-hidden="true"></span>
-      <span>图映<small>&nbsp;· 在线图片转换</small></span>
+      <span>图映<small>&nbsp;· 浏览器图像引擎</small></span>
     </div>
     <nav class="navlinks">
       <a href="#convert">转换</a>
@@ -611,23 +631,36 @@
         <span id="capbannerTxt"></span>
         <button class="x" id="capbannerX" aria-label="关闭" type="button">×</button>
       </div>
-      <span class="eyebrow">端侧图像引擎 · 常见格式零上传</span>
-      <h1>任何图片,<br>一步压成<span class="hl">你要的样子</span>。</h1>
-      <p class="lead">常见格式<b>不出你的设备</b> —— 用<b>自研专业引擎</b>在本地、靠你设备的算力直接完成:不上传、不排队、秒出。PNG 能压成 <b>PNG-8</b>(8 位索引色,画质反超 pngquant),连 <b>GIF / APNG 动图</b>都能压小、合成、逐帧编辑。就连 <b>AVIF 生成、HEIC 读取</b>也做进了设备本地(完整版按需加载 WASM 引擎,零上传);只有 <b>HEIC 写</b>、TIFF、JPEG 2000 这类才交服务端,用完即弃、不留存。</p>
-      <div class="trust">
-        <span class="chip"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2 4 6v6c0 4 3 7 8 8 5-1 8-4 8-8V6z"/><path d="m9 12 2 2 4-4"/></svg>常见格式零上传 · 本地处理</span>
-        <span class="chip"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z"/></svg>自研专业引擎 · 非套壳</span>
-        <span class="chip"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M13 2 4 14h6l-1 8 9-12h-6z"/></svg>秒级出图 · 用设备算力</span>
+      <span class="eyebrow">图映 · 浏览器端专业图像基础设施</span>
+      <h1><span class="hero-title-line">任何图片，</span><span class="hero-title-line">一步处理成<span class="hl">你要的样子</span>。</span></h1>
+      <div class="brandclaim">
+        <span class="brandclaim-label">Brand Positioning</span>
+        <strong>图映，中国浏览器图像引擎的开创者</strong>
+        <small>DataDance 自研 · 把专业图像能力真正带进每一台浏览器</small>
       </div>
-      <div class="stats">
-        <div class="stat"><div class="n">16</div><div class="l">可读入格式</div></div>
-        <div class="stat"><div class="n">10</div><div class="l">可输出格式</div></div>
-        <div class="stat"><div class="n">45.8<span style="font-size:.5em">dB</span></div><div class="l">PNG-8 画质 · 反超 pngquant</div></div>
+      <p class="lead">从<b>压缩、转换</b>，到 <b>AI 抠图、动图制作与逐帧编辑</b>，图映把完整的专业图像工作流放进浏览器。能在设备端完成的，绝不上传；需要高级引擎的，按需加载；只有浏览器确实无法处理的极少数格式，才安全交给服务端。</p>
+      <ol class="hero-steps" aria-label="图映三大核心能力">
+        <li class="hero-step">
+          <span class="hero-step-no">01</span>
+          <div><b>端侧优先，图片不离开设备</b><p><strong>JPG、PNG、WebP、GIF、APNG</strong> 等常见格式直接调用设备算力；<strong>AVIF 生成、HEIC 读取</strong>通过 WASM 按需加载后仍在本地完成。</p></div>
+        </li>
+        <li class="hero-step">
+          <span class="hero-step-no">02</span>
+          <div><b>专业压缩、转换与 AI 抠图</b><p>PNG-8 自研减色达到 <strong>45.8 dB</strong>；支持高清缩放、格式转换、三档本地 AI 模型、蒙版精修，以及 Squoosh 式原图/结果拖动对比。</p></div>
+        </li>
+        <li class="hero-step">
+          <span class="hero-step-no">03</span>
+          <div><b>动图全链路与专业格式兜底</b><p><strong>GIF、APNG、动图 WebP、动图 AVIF</strong>均可压缩、合成、逐帧编辑；HEIC 写、TIFF、JPEG 2000 等专业格式按需服务端处理，用完即弃、不留存。</p></div>
+        </li>
+      </ol>
+      <div class="hero-proof" aria-label="图映能力数据">
+        <div class="hero-proof-item"><b>16</b><small>种格式可读入</small></div>
+        <div class="hero-proof-item"><b>10</b><small>种格式可输出</small></div>
+        <div class="hero-proof-item"><b>45.8 dB</b><small>PNG-8 实测画质 · 反超 pngquant</small></div>
       </div>
       <a class="dbrand" href="mailto:admin@datadance.com" aria-label="DataDance 出品,联系 admin@datadance.com">
         <div class="dbrand-head"><span class="dbrand-name">DataDance</span><span class="dbrand-by">出品</span></div>
-        <div class="dbrand-slogan">数据跳动出品,必是精品</div>
-        <p class="dbrand-note">服务端处理能力为<b>付费版本</b>,请联系: <span class="dbrand-mail">admin@datadance.com</span></p>
+        <div class="dbrand-copy"><div class="dbrand-slogan">数据跳动出品，必是精品</div><p class="dbrand-note">专业服务端格式为<b>付费版本</b> · <span class="dbrand-mail">admin@datadance.com</span></p></div>
       </a>
     </div>
 
@@ -793,7 +826,7 @@
         <div class="protooltitle">边缘效果</div>
         <label class="proctrl"><span>边缘收缩</span><input id="proEdge" type="range" min="-4" max="4" step="1"><output id="proEdgeV"></output></label>
         <label class="proctrl"><span>蒙版柔化</span><input id="proFeather" type="range" min="0" max="4" step="1"><output id="proFeatherV"></output></label>
-        <label class="procheck"><span>净化背景色边</span><input id="proDecontam" type="checkbox"></label>
+        <label class="procheck"><span>去除背景色边 <small>可选 · 会改变 AI 原始边缘</small></span><input id="proDecontam" type="checkbox"></label>
       </div>
       <div class="protoolgroup">
         <div class="protooltitle">历史</div>
@@ -806,10 +839,13 @@
       <div class="protransform" id="proTransform" hidden>
         <canvas id="proAICanvas" aria-label="AI 蒙版专业编辑画布" hidden></canvas>
         <img id="proProofImage" alt="实际下载文件像素" hidden>
-        <div class="procompare" id="proCompare" hidden>
-          <img id="proBefore" alt="左侧原图"><div class="proafter" id="proAfterClip"><img id="proAfter" alt="右侧处理后"></div>
-          <span class="prolabel before">左 · 原图</span><span class="prolabel after">右 · 处理后</span><div class="prodivider" id="proDivider" role="slider" aria-label="左侧原图，右侧处理后；拖动分界线比较" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" tabindex="0"></div>
-        </div>
+      </div>
+      <div class="procompare" id="proCompare" hidden>
+        <div class="procomparelayer before"><img id="proBefore" alt="左侧原图"></div>
+        <div class="procomparelayer after" id="proAfterClip"><img id="proAfter" alt="右侧处理后"></div>
+        <div class="procompareframe" aria-hidden="true"></div>
+        <span class="prolabel before">左 · 原图</span><span class="prolabel after">右 · 处理后</span>
+        <div class="prodivider" id="proDivider" role="slider" aria-label="左侧原图，右侧处理后；拖动分界线比较" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" tabindex="0"></div>
       </div>
       <div class="probrushcursor" id="proBrushCursor"></div>
     </main>
@@ -1206,7 +1242,7 @@
   var imageWorkspaces={img:null,compress:null,blackedge:null}, animWorkspaces={anim:null,compress:null};
   var cancelCompressRoute=null;
   var blackPreviewRAF=0;
-  var aiCachedModels={quick:false,professional:false,ultimate:false},aiCacheChecked=false,aiWarmPromises={},aiFullJob=null,aiFullJobSeq=0;
+  var aiCachedModels={quick:false,hd:false,professional:false,ultimate:false},aiCacheChecked=false,aiWarmPromises={},aiFullJob=null,aiFullJobSeq=0;
   function defaultBlackSettings(){ return {method:'fast',tolerance:36,feather:2,autoColor:true,color:'#000000',aiModel:'quick',aiResultModel:'',aiModelLabel:'',aiMask:null,aiBaseMask:null,aiWidth:0,aiHeight:0,aiBackend:'',aiBusy:false,aiQueued:false,aiRevision:0,aiFullResult:null,edgeShift:0,aiFeather:0,decontaminate:false,brushMode:'remove',brushSize:32,brushHardness:72,brushOpacity:100,undo:[],redo:[]}; }
   var blackSettings=defaultBlackSettings();
   function aiEdgeModeLabel(){
@@ -1220,9 +1256,11 @@
     if(window.TYBG&&typeof TYBG.getModel==='function') return TYBG.getModel(id);
     if(id==='ultimate') return {id:'ultimate',label:'骨灰级 AI',technicalName:'BiRefNet HR-Matting FP16',description:'2048 高分辨率；发丝、薄纱、玻璃与半透明边缘；最稳、最接近原始效果',sizeText:'约 447 MB',bytes:447261189};
     if(id==='professional') return {id:'professional',label:'专业 AI',technicalName:'BEN2 FP16',description:'发丝、半透明材质与复杂边缘',sizeText:'约 219 MB',bytes:219121675};
+    if(id==='hd') return {id:'hd',label:'高清 AI',technicalName:'ISNet FP16',description:'边缘与半透明层次更细腻，支持 WebGPU 的设备推荐',sizeText:'约 88 MB',bytes:88141111};
     return {id:'quick',label:'快速 AI',technicalName:'ISNet INT8',description:'通用主体识别，下载小、速度快',sizeText:'约 42 MB',bytes:44229662};
   }
   function invalidateAIFullResult(){
+    var oldFull=blackSettings.aiFullResult;if(oldFull&&oldFull.bitmap&&oldFull.bitmap.close)oldFull.bitmap.close();
     aiFullJobSeq++;aiFullJob=null;blackSettings.aiRevision=(blackSettings.aiRevision||0)+1;blackSettings.aiFullResult=null;outBlob=null;if(result)result.classList.remove('show');
   }
   function clearAIMask(){ invalidateAIFullResult();blackSettings.aiMask=null;blackSettings.aiBaseMask=null;blackSettings.aiWidth=blackSettings.aiHeight=0;blackSettings.aiBackend='';blackSettings.aiResultModel='';blackSettings.aiModelLabel='';blackSettings.undo=[];blackSettings.redo=[]; }
@@ -1409,9 +1447,9 @@
         '<button type="button" class="aimodel '+(aiModel.id==='professional'?'on':'')+'" data-model="professional"'+(blackSettings.aiBusy?' disabled':'')+'><b>'+proModel.label+'</b><small>'+proModel.technicalName+' · '+proModel.sizeText+' · '+proModel.description+(aiCachedModels.professional?'<span class="modelcached"> · 已下载</span>':'')+'</small></button>'+
         '<button type="button" class="aimodel ultimate '+(aiModel.id==='ultimate'?'on':'')+'" data-model="ultimate"'+(blackSettings.aiBusy?' disabled':'')+'><b>'+ultimateModel.label+' <em>原始效果优先</em></b><small>'+ultimateModel.technicalName+' · '+ultimateModel.sizeText+' · '+ultimateModel.description+(aiCachedModels.ultimate?'<span class="modelcached"> · 已下载</span>':'')+'</small></button></div>'+
         '<div class="aibox'+(aiPending?' busy':'')+'" id="aiActionBox" aria-busy="'+(aiPending?'true':'false')+'"><div class="txt"><b id="aiStatus">'+aiStatusText+'</b><span id="aiStatusSub">'+aiSubText+'</span><div class="aiprog" id="aiProgress"><i></i></div></div><button type="button" class="codec-btn" id="aiCutBtn"'+(aiPending?' disabled':'')+'>'+aiButtonText+'</button></div>'+
-        '<div id="aiFine"'+(aiReady?'':' hidden')+'><p class="animsum">默认 100% 保留 AI 输出的透明通道；以下边缘修饰只在你主动调整后才会应用。</p><div class="opt"><label>边缘收缩</label><input type="range" id="aiEdge" min="-4" max="4" step="1" value="'+blackSettings.edgeShift+'"><span class="val" id="aiEdgeV">'+(blackSettings.edgeShift>0?'+':'')+blackSettings.edgeShift+'</span></div>'+
+        '<div id="aiFine"'+(aiReady?'':' hidden')+'><p class="animsum">默认逐像素直接使用 AI 输出，不改透明度、不改边缘颜色；以下修饰只在你主动调整后才会应用。</p><div class="opt"><label>边缘收缩</label><input type="range" id="aiEdge" min="-4" max="4" step="1" value="'+blackSettings.edgeShift+'"><span class="val" id="aiEdgeV">'+(blackSettings.edgeShift>0?'+':'')+blackSettings.edgeShift+'</span></div>'+
         '<div class="opt"><label>蒙版柔化</label><input type="range" id="aiFeather" min="0" max="4" step="1" value="'+blackSettings.aiFeather+'"><span class="val" id="aiFeatherV">'+blackSettings.aiFeather+' px</span></div>'+
-        '<div class="opt2"><span class="k">去除背景色边 <small style="color:var(--muted)">类似 PS 净化颜色</small></span><label class="switch"><input type="checkbox" id="aiDecontam"'+(blackSettings.decontaminate?' checked':'')+'><span class="slider"></span></label></div></div>'+
+        '<div class="opt2"><span class="k">去除背景色边 <small style="color:var(--muted)">可选 · 会改变 AI 原始边缘</small></span><label class="switch"><input type="checkbox" id="aiDecontam"'+(blackSettings.decontaminate?' checked':'')+'><span class="slider"></span></label></div></div>'+
         '<div class="masktools" id="maskTools"'+(aiReady?'':' hidden')+'><button type="button" id="brushRemove" class="'+(blackSettings.brushMode==='remove'?'on':'')+'">擦除背景</button><button type="button" id="brushKeep" class="'+(blackSettings.brushMode==='keep'?'on':'')+'">保留主体</button><button type="button" id="maskUndo"'+(blackSettings.undo.length?'':' disabled')+'>撤销</button><button type="button" id="maskRedo"'+(blackSettings.redo.length?'':' disabled')+'>重做</button><button type="button" id="maskReset">恢复 AI 原始透明通道</button><span class="brush">画笔 <input type="range" id="brushSize" min="1" max="120" step="1" value="'+blackSettings.brushSize+'"><b id="brushSizeV">'+blackSettings.brushSize+'</b></span></div></div></div>');
     }
     if(o.id==='jpg'||o.id==='webp'||o.id==='avif'||o.id==='heic'||o.id==='jp2'){
@@ -1429,7 +1467,7 @@
         '</div>');
     }
     rows.push('<div class="opt"><label>缩放</label><input type="range" id="scale" min="20" max="100" value="100"><span class="val" id="sv">100%</span></div>');
-    if(isBlackEdgeMode()) rows.push('<div class="blackpreview'+(blackSettings.method==='ai'&&blackSettings.aiMask?' ai-ready':'')+'"><div class="blackpreview-h"><b>透明效果预览</b><span class="blackpreview-actions"><span id="blackPreviewStat">'+(blackSettings.method==='ai'&&!blackSettings.aiMask?'等待 AI 结果':'处理中…')+'</span><button class="previewmax" id="openBlackPro" type="button"'+(blackSettings.method==='ai'&&!blackSettings.aiMask?' hidden':'')+'>'+(blackSettings.method==='ai'&&blackSettings.aiMask?'⛶ 专业精修':'⛶ 最大化对比')+'</button></span></div><div class="blackpreview-canvas"><div class="blackpreview-empty" id="blackPreviewEmpty"'+(blackSettings.method==='ai'&&!blackSettings.aiMask?'':' hidden')+'>运行 AI 抠图后，这里才会显示透明效果；选择模型不会自动处理图片。</div><canvas id="blackPreviewCanvas" aria-label="去背景透明预览"'+(blackSettings.method==='ai'&&!blackSettings.aiMask?' hidden':'')+'></canvas></div></div>');
+    if(isBlackEdgeMode()){var previewWaiting=blackSettings.method==='ai'&&!blackSettings.aiMask;rows.push('<div class="blackpreview'+(blackSettings.method==='ai'&&blackSettings.aiMask?' ai-ready':'')+'"><div class="blackpreview-h"><b>透明效果预览</b><span class="blackpreview-actions"><span class="previewstat'+(previewWaiting?' waiting':'')+'" id="blackPreviewStat">'+(previewWaiting?'等待运行 AI 抠图':'处理中…')+'</span><button class="previewmax" id="openBlackPro" type="button"'+(previewWaiting?' hidden':'')+'>'+(blackSettings.method==='ai'&&blackSettings.aiMask?'⛶ 专业精修':'⛶ 最大化对比')+'</button></span></div><div class="blackpreview-canvas" id="blackPreviewStage"'+(previewWaiting?' hidden':'')+'><canvas id="blackPreviewCanvas" aria-label="去背景透明预览"'+(previewWaiting?' hidden':'')+'></canvas></div></div>');}
     opts.innerHTML=rows.join('');
     if(rows.length) opts.classList.add('show');
 
@@ -1473,25 +1511,38 @@
     var owner=curFile,img=curImg,revision=blackSettings.aiRevision||0,W=img.naturalWidth||img.width,H=img.naturalHeight||img.height,cached=blackSettings.aiFullResult;
     if(cached&&cached.owner===owner&&cached.revision===revision&&cached.width===W&&cached.height===H)return Promise.resolve(cached);
     if(aiFullJob&&aiFullJob.owner===owner&&aiFullJob.revision===revision)return aiFullJob.promise;
-    var seq=++aiFullJobSeq,promise=new Promise(function(resolve){requestAnimationFrame(resolve);}).then(function(){
+    var seq=++aiFullJobSeq,promise=new Promise(function(resolve){requestAnimationFrame(resolve);}).then(async function(){
       if(seq!==aiFullJobSeq||owner!==curFile||img!==curImg||revision!==(blackSettings.aiRevision||0))throw new Error('AI_FULL_RESULT_STALE');
       var sourceCanvas=document.createElement('canvas');sourceCanvas.width=W;sourceCanvas.height=H;var sg=sourceCanvas.getContext('2d',{willReadFrequently:true});sg.drawImage(img,0,0,W,H);
-      var cut=applyAlphaMask(sg.getImageData(0,0,W,H),blackSettings.aiMask,blackSettings.aiWidth,blackSettings.aiHeight,{edgeShift:blackSettings.edgeShift,feather:blackSettings.aiFeather,decontaminate:blackSettings.decontaminate});
-      var finalCanvas=document.createElement('canvas');finalCanvas.width=W;finalCanvas.height=H;finalCanvas.getContext('2d').putImageData(cut.imageData,0,0);
-      var full={owner:owner,revision:revision,width:W,height:H,canvas:finalCanvas,ratio:cut.ratio,removed:cut.removed,softened:cut.softened,decontaminated:cut.decontaminated,backgroundColor:cut.backgroundColor,matteUniformity:cut.matteUniformity};
-      if(seq!==aiFullJobSeq||owner!==curFile||img!==curImg||revision!==(blackSettings.aiRevision||0))throw new Error('AI_FULL_RESULT_STALE');
+      var finalCanvas=document.createElement('canvas');finalCanvas.width=W;finalCanvas.height=H;var fg=finalCanvas.getContext('2d',{willReadFrequently:true}),cut=null,removed=0,softened=0,mask=blackSettings.aiMask;
+      if(!blackSettings.edgeShift&&!blackSettings.aiFeather&&!blackSettings.decontaminate){
+        // AI 原始模式只做一次全尺寸 destination-in。专业预览、紧凑预览和下载都复用
+        // 这张画布，避免“小画布先缩蒙版”和“全尺寸先应用蒙版”产生不同的半透明边缘。
+        var maskCanvas=document.createElement('canvas'),mw=blackSettings.aiWidth,mh=blackSettings.aiHeight;maskCanvas.width=mw;maskCanvas.height=mh;
+        var mg=maskCanvas.getContext('2d'),mi=mg.createImageData(mw,mh),md=mi.data;
+        for(var i=0,j=0;i<mask.length;i++,j+=4){var a=mask[i];md[j]=md[j+1]=md[j+2]=255;md[j+3]=a;if(a<1)removed++;else if(a<254)softened++;}
+        mg.putImageData(mi,0,0);fg.drawImage(sourceCanvas,0,0);fg.save();fg.globalCompositeOperation='destination-in';fg.imageSmoothingEnabled=true;fg.imageSmoothingQuality='high';fg.drawImage(maskCanvas,0,0,W,H);fg.restore();
+      }else{
+        cut=applyAlphaMask(sg.getImageData(0,0,W,H),mask,blackSettings.aiWidth,blackSettings.aiHeight,{edgeShift:blackSettings.edgeShift,feather:blackSettings.aiFeather,decontaminate:blackSettings.decontaminate});
+        fg.putImageData(cut.imageData,0,0);removed=cut.removed;softened=cut.softened;
+      }
+      var total=cut?cut.total:mask.length,full={owner:owner,revision:revision,width:W,height:H,canvas:finalCanvas,bitmap:null,ratio:total?removed/total:0,removed:removed,softened:softened,decontaminated:cut?cut.decontaminated:0,backgroundColor:cut&&cut.backgroundColor,matteUniformity:cut&&cut.matteUniformity};
+      // 预览统一从 ImageBitmap 读取，和真正 WEBP/PNG 解码后的显示路径一致；
+      // 避免浏览器对“活 Canvas”与“已解码图片”采用不同的预乘 Alpha 缩放实现。
+      if(typeof createImageBitmap==='function')try{full.bitmap=await createImageBitmap(finalCanvas,{premultiplyAlpha:'premultiply'});}catch(_e){}
+      if(seq!==aiFullJobSeq||owner!==curFile||img!==curImg||revision!==(blackSettings.aiRevision||0)){if(full.bitmap&&full.bitmap.close)full.bitmap.close();throw new Error('AI_FULL_RESULT_STALE');}
       blackSettings.aiFullResult=full;return full;
     }).finally(function(){if(aiFullJob&&aiFullJob.seq===seq)aiFullJob=null;});
     aiFullJob={seq:seq,owner:owner,revision:revision,promise:promise};return promise;
   }
   function paintAIFullResult(c,full,maxW,maxH){
-    var s=Math.min(1,maxW/full.width,maxH/full.height),w=Math.max(1,Math.round(full.width*s)),h=Math.max(1,Math.round(full.height*s));c.width=w;c.height=h;var g=c.getContext('2d');g.clearRect(0,0,w,h);g.drawImage(full.canvas,0,0,w,h);return {width:w,height:h};
+    var s=Math.min(1,maxW/full.width,maxH/full.height),w=Math.max(1,Math.round(full.width*s)),h=Math.max(1,Math.round(full.height*s));c.width=w;c.height=h;var g=c.getContext('2d');g.clearRect(0,0,w,h);g.drawImage(full.bitmap||full.canvas,0,0,w,h);return {width:w,height:h};
   }
   function renderBlackPreview(){
     if(!isBlackEdgeMode()||!curImg) return;
-    var c=opts.querySelector('#blackPreviewCanvas'), stat=opts.querySelector('#blackPreviewStat'),empty=opts.querySelector('#blackPreviewEmpty'); if(!c) return;
-    if(blackSettings.method==='ai'&&!blackSettings.aiMask){c.hidden=true;if(empty)empty.hidden=false;if(stat)stat.textContent='等待 AI 结果';return;}
-    c.hidden=false;if(empty)empty.hidden=true;
+    var c=opts.querySelector('#blackPreviewCanvas'),stat=opts.querySelector('#blackPreviewStat'),stage=opts.querySelector('#blackPreviewStage');if(!c)return;
+    if(blackSettings.method==='ai'&&!blackSettings.aiMask){c.hidden=true;if(stage)stage.hidden=true;if(stat){stat.textContent='等待运行 AI 抠图';stat.classList.add('waiting');}return;}
+    c.hidden=false;if(stage)stage.hidden=false;if(stat)stat.classList.remove('waiting');
     if(blackSettings.method==='ai'&&blackSettings.aiMask){
       var revision=blackSettings.aiRevision||0;if(stat)stat.textContent='正在校准全尺寸最终像素…';
       ensureAIFullResult().then(function(full){if(!isBlackEdgeMode()||blackSettings.method!=='ai'||revision!==(blackSettings.aiRevision||0)||c!==opts.querySelector('#blackPreviewCanvas'))return;paintAIFullResult(c,full,440,210);if(stat)stat.textContent=(blackSettings.aiModelLabel||aiModelInfo(blackSettings.aiModel).label)+'全尺寸结果 · '+aiEdgeModeLabel()+' · 透明 '+(full.ratio*100).toFixed(1)+'%';bindMaskPainting(c);}).catch(function(e){if(e&&e.message!=='AI_FULL_RESULT_STALE'&&stat)stat.textContent='全尺寸预览生成失败';});return;
@@ -1594,7 +1645,7 @@
     if(b){b.disabled=!undo.length;b.textContent='撤销'+(undo.length?' '+undo.length:'');}if(r){r.disabled=!redo.length;r.textContent='重做'+(redo.length?' '+redo.length:'');}
     if(p){p.disabled=!undo.length;p.textContent='撤销'+(undo.length?' ('+undo.length+')':'');}if(pr){pr.disabled=!redo.length;pr.textContent='重做'+(redo.length?' ('+redo.length+')':'');}
   }
-  function scheduleAllMaskPreviews(){ scheduleBlackPreview(); if(proState&&proState.open&&proState.mode==='ai') scheduleProAIRender(); }
+  function scheduleAllMaskPreviews(){ if(proState&&proState.open&&proState.mode==='ai')scheduleProAIRender('hq');else scheduleBlackPreview(); }
   function pushMaskHistory(stack,mask){stack.push(mask.slice());if(stack.length>20)stack.shift();}
   function pushMaskUndo(){ if(!blackSettings.aiMask)return;pushMaskHistory(blackSettings.undo,blackSettings.aiMask);blackSettings.redo=[];syncUndoButton(); }
   function undoMask(){ if(!blackSettings.undo.length)return;pushMaskHistory(blackSettings.redo,blackSettings.aiMask);blackSettings.aiMask=blackSettings.undo.pop();syncUndoButton();markAIEdit(); }
@@ -1857,8 +1908,8 @@
   /* —— 引擎已外置到 dist/engine.min.js —— */
   async function renderEncodedBlackPreview(blob,workOwner,workTop,label){
     if(!isBlackEdgeMode()||!blob||typeof createImageBitmap!=='function')return;
-    var bitmap=null;try{bitmap=await createImageBitmap(blob);if(workOwner!==activeImageKey||workTop!==activeTopMode||blob!==outBlob)return;
-      var c=opts.querySelector('#blackPreviewCanvas'),empty=opts.querySelector('#blackPreviewEmpty'),stat=opts.querySelector('#blackPreviewStat');if(!c)return;c.hidden=false;if(empty)empty.hidden=true;
+    var bitmap=null;try{bitmap=await createImageBitmap(blob,{premultiplyAlpha:'premultiply'});if(workOwner!==activeImageKey||workTop!==activeTopMode||blob!==outBlob)return;
+      var c=opts.querySelector('#blackPreviewCanvas'),stage=opts.querySelector('#blackPreviewStage'),stat=opts.querySelector('#blackPreviewStat');if(!c)return;c.hidden=false;if(stage)stage.hidden=false;if(stat)stat.classList.remove('waiting');
       var s=Math.min(1,440/bitmap.width,210/bitmap.height),w=Math.max(1,Math.round(bitmap.width*s)),h=Math.max(1,Math.round(bitmap.height*s));c.width=w;c.height=h;var g=c.getContext('2d');g.clearRect(0,0,w,h);g.drawImage(bitmap,0,0,w,h);
       if(stat)stat.textContent=(label||'导出文件')+' · 已解码核对真正下载像素';
     }catch(_e){}finally{if(bitmap&&bitmap.close)bitmap.close();}
@@ -1939,7 +1990,7 @@
       proCanvas=document.getElementById('proAICanvas'),proProofImage=document.getElementById('proProofImage'),proCompare=document.getElementById('proCompare'),proBefore=document.getElementById('proBefore'),proAfter=document.getElementById('proAfter'),proAfterClip=document.getElementById('proAfterClip'),proDivider=document.getElementById('proDivider'),
       proLoading=document.getElementById('proLoading'),proCursor=document.getElementById('proBrushCursor'),proOriginal=document.getElementById('proOriginal'),proProof=document.getElementById('proProof'),proStatus=document.getElementById('proStatus'),proZoomText=document.getElementById('proZoomText'),
       proBgChecker=document.getElementById('proBgChecker'),proBgBlack=document.getElementById('proBgBlack'),proBgWhite=document.getElementById('proBgWhite');
-  var proState={open:false,mode:'',zoom:1,panX:0,panY:0,fitZoom:1,contentW:1,contentH:1,split:50,space:false,showOriginal:false,background:'checker',aiOriginal:null,aiFastData:null,aiRAF:0,aiRenderMode:'',urls:[],lastFocus:null};
+  var proState={open:false,mode:'',zoom:1,panX:0,panY:0,fitZoom:1,contentW:1,contentH:1,split:50,space:false,showOriginal:false,background:'checker',aiSourceCanvas:null,aiMaskCanvas:null,aiPreviewScale:0,aiResizeTimer:0,aiDirty:null,aiRAF:0,aiRenderMode:'',urls:[],lastFocus:null};
   var resultPreviewURL='';
 
   function updateResultComparePreview(blob){
@@ -1956,30 +2007,32 @@
   function openProShell(mode,title,subtitle){
     releaseProURLs();proState.open=true;proState.mode=mode;proState.panX=proState.panY=0;proState.split=50;proState.showOriginal=false;proState.lastFocus=document.activeElement;
     proView.hidden=false;document.body.classList.add('pro-open');document.getElementById('proTitle').textContent=title;document.getElementById('proSubtitle').textContent=subtitle||'图片仅在本地浏览器处理';
-    var ai=mode==='ai';proTools.hidden=!ai;proBody.classList.toggle('no-tools',!ai);proOriginal.hidden=!ai;proProof.hidden=!ai;proProof.textContent='校验下载效果';proProofImage.hidden=true;proCanvas.hidden=!ai;proCompare.hidden=ai;proStage.classList.remove('proof');proStage.classList.toggle('brush',ai);setProBackground(ai?'black':'checker');setProLoading(ai?'正在准备高分辨率蒙版画布…':'正在生成本地处理效果…');
+    var ai=mode==='ai';proTools.hidden=!ai;proBody.classList.toggle('no-tools',!ai);proOriginal.hidden=!ai;proProof.hidden=!ai;proProof.textContent='校验下载效果';proProofImage.hidden=true;proCanvas.hidden=!ai;proCompare.hidden=ai;proStage.classList.remove('proof');proStage.classList.toggle('brush',ai);setProBackground('checker');setProLoading(ai?'正在准备高分辨率蒙版画布…':'正在生成本地处理效果…');
     requestAnimationFrame(function(){if(proState.open)proStage.focus({preventScroll:true});});
   }
   function closeProView(){
-    if(!proState.open)return;proState.open=false;if(proState.aiRAF)cancelAnimationFrame(proState.aiRAF);proState.aiRAF=0;proState.aiRenderMode='';proState.aiOriginal=null;proState.aiFastData=null;proProofImage.hidden=true;releaseProURLs();proView.hidden=true;document.body.classList.remove('pro-open');proStage.classList.remove('brush','panning','proof');scheduleBlackPreview();
+    if(!proState.open)return;proState.open=false;if(proState.aiRAF)cancelAnimationFrame(proState.aiRAF);if(proState.aiResizeTimer)clearTimeout(proState.aiResizeTimer);proState.aiRAF=0;proState.aiResizeTimer=0;proState.aiRenderMode='';proState.aiDirty=null;[proState.aiSourceCanvas,proState.aiMaskCanvas].forEach(function(c){if(c){c.width=0;c.height=0;}});proState.aiSourceCanvas=null;proState.aiMaskCanvas=null;proState.aiPreviewScale=0;proProofImage.hidden=true;releaseProURLs();proView.hidden=true;document.body.classList.remove('pro-open');proStage.classList.remove('brush','panning','proof');scheduleBlackPreview();
     if(proState.lastFocus&&proState.lastFocus.focus)try{proState.lastFocus.focus();}catch(_e){}
   }
   function applyProTransform(){
-    proTransform.style.width=proState.contentW+'px';proTransform.style.height=proState.contentH+'px';proTransform.style.transform='translate(calc(-50% + '+proState.panX+'px),calc(-50% + '+proState.panY+'px)) scale('+proState.zoom+')';
+    var transform='translate3d(calc(-50% + '+proState.panX+'px),calc(-50% + '+proState.panY+'px),0) scale('+proState.zoom+')';
+    if(proState.mode==='compare'){proCompare.style.setProperty('--image-width',proState.contentW+'px');proCompare.style.setProperty('--image-height',proState.contentH+'px');proCompare.style.setProperty('--image-transform',transform);setCompareSplit(proState.split);}
+    else{proTransform.style.width=proState.contentW+'px';proTransform.style.height=proState.contentH+'px';proTransform.style.transform=transform;}
     proZoomText.textContent=Math.round(proState.zoom*100)+'%';
   }
   function fitProView(){
     if(!proState.open||!proState.contentW||!proState.contentH)return;var w=proStage.clientWidth,h=proStage.clientHeight;if(!w||!h)return;
-    proState.fitZoom=Math.max(.03,Math.min(4,(w-56)/proState.contentW,(h-56)/proState.contentH));proState.zoom=proState.fitZoom;proState.panX=proState.panY=0;applyProTransform();
+    proState.fitZoom=Math.max(.03,Math.min(4,(w-56)/proState.contentW,(h-56)/proState.contentH));proState.zoom=proState.fitZoom;proState.panX=proState.panY=0;applyProTransform();scheduleProAIPreviewResolution();
   }
-  function setProZoom(z){proState.zoom=Math.max(.03,Math.min(8,z));applyProTransform();}
-  function setCompareSplit(p){proState.split=Math.max(0,Math.min(100,p));proAfterClip.style.clipPath='inset(0 0 0 '+proState.split+'%)';proDivider.style.left=proState.split+'%';proDivider.setAttribute('aria-valuenow',Math.round(proState.split));}
+  function setProZoom(z){proState.zoom=Math.max(.03,Math.min(8,z));applyProTransform();scheduleProAIPreviewResolution();}
+  function setCompareSplit(p){proState.split=Math.max(0,Math.min(100,p));var px=Math.max(1,proStage.clientWidth)*proState.split/100;proCompare.style.setProperty('--split-point',px+'px');proDivider.setAttribute('aria-valuenow',Math.round(proState.split));}
   function canvasBlob(c,type,quality){return new Promise(function(resolve,reject){c.toBlob(function(b){if(b)resolve(b);else reject(new Error('浏览器未能生成预览图片'));},type||'image/png',quality);});}
   async function currentSourceBlob(){var W=curImg.naturalWidth||curImg.width,H=curImg.naturalHeight||curImg.height,c=document.createElement('canvas');c.width=W;c.height=H;c.getContext('2d').drawImage(curImg,0,0);return canvasBlob(c,'image/png');}
   function waitProImage(img,src){return new Promise(function(resolve,reject){img.onload=function(){resolve(img);};img.onerror=function(){reject(new Error('预览图片解码失败'));};img.src=src;if(img.complete&&img.naturalWidth)resolve(img);});}
   async function showProComparison(beforeBlob,afterBlob,title,status){
     if(!proState.open||proState.mode!=='compare')return;var bu=proURL(beforeBlob),au=proURL(afterBlob);await Promise.all([waitProImage(proBefore,bu),waitProImage(proAfter,au)]);if(!proState.open||proState.mode!=='compare')return;
     proState.contentW=proBefore.naturalWidth||proAfter.naturalWidth;proState.contentH=proBefore.naturalHeight||proAfter.naturalHeight;document.getElementById('proTitle').textContent=title||'原图 / 处理后对比';proStatus.textContent=status||('左侧原图 '+fmtBytes(beforeBlob.size)+' · 右侧处理后 '+fmtBytes(afterBlob.size)+' · 拖动中线查看差异');
-    setCompareSplit(50);proLoading.hidden=true;proTransform.hidden=false;requestAnimationFrame(fitProView);
+    setCompareSplit(50);proLoading.hidden=true;proTransform.hidden=true;proCompare.hidden=false;requestAnimationFrame(fitProView);
   }
   async function openImageCompare(existingBlob){
     if(!curImg||!curFile)return;var owner=activeImageKey,top=activeTopMode,title=isBlackEdgeMode()?'去背景效果对比':(imgLockFmt?'图片压缩效果对比':'图片处理效果对比');openProShell('compare',title,'左侧原图 / 右侧处理后 · Squoosh 式拖动对比 · 全程本地');
@@ -2004,33 +2057,59 @@
     if(e)e.value=blackSettings.edgeShift;if(ev)ev.textContent=(blackSettings.edgeShift>0?'+':'')+blackSettings.edgeShift;if(f)f.value=blackSettings.aiFeather;if(fv)fv.textContent=blackSettings.aiFeather+' px';if(d)d.checked=blackSettings.decontaminate;if(s)s.value=blackSettings.brushSize;if(sv)sv.textContent=blackSettings.brushSize;
   }
   function leaveAIExportProof(refit){
-    if(proProofImage.hidden)return;proProofImage.hidden=true;proCanvas.hidden=false;proStage.classList.remove('proof');proProof.textContent='校验下载效果';proState.contentW=proCanvas.width;proState.contentH=proCanvas.height;if(refit!==false)requestAnimationFrame(fitProView);
+    if(proProofImage.hidden)return;proProofImage.hidden=true;proCanvas.hidden=false;proStage.classList.remove('proof');proProof.textContent='校验下载效果';proState.contentW=curImg.naturalWidth||curImg.width;proState.contentH=curImg.naturalHeight||curImg.height;if(refit!==false)requestAnimationFrame(fitProView);
   }
   function markAIEdit(deferRender){leaveAIExportProof();invalidateAIFullResult();syncCompactAIEffects();if(!deferRender)scheduleAllMaskPreviews();}
-  function scheduleProAIRender(mode){
-    if(!proState.open||proState.mode!=='ai')return;if(mode==='hq'||!proState.aiRenderMode)proState.aiRenderMode=mode||'hq';if(proState.aiRAF)return;
-    proState.aiRAF=requestAnimationFrame(function(){var renderMode=proState.aiRenderMode||'hq';proState.aiRAF=0;proState.aiRenderMode='';if(renderMode==='fast')renderProAIFast();else renderProAI();});
+  function proAIPreviewSize(){
+    var W=curImg.naturalWidth||curImg.width,H=curImg.naturalHeight||curImg.height,dpr=Math.max(1,Math.min(2,window.devicePixelRatio||1)),memory=Math.max(1,+navigator.deviceMemory||4);
+    // 缩放到 100% 时优先一个原图像素对应一个画布像素；小缩略图则不浪费大画布。
+    var scale=Math.min(1,Math.max(.04,(proState.zoom||proState.fitZoom||1)*dpr)),pixelBudget=memory>=8?28000000:(memory>=4?18000000:10000000);
+    scale=Math.min(scale,Math.sqrt(pixelBudget/Math.max(1,W*H)),16384/Math.max(1,W),16384/Math.max(1,H));
+    return {width:Math.max(1,Math.round(W*scale)),height:Math.max(1,Math.round(H*scale)),scale:scale};
   }
-  function renderProAIFast(){
-    if(!proState.open||proState.mode!=='ai'||!proState.aiOriginal||!proState.aiFastData||!blackSettings.aiMask)return;var g=proCanvas.getContext('2d');
-    if(proState.showOriginal){g.putImageData(proState.aiOriginal,0,0);proStatus.textContent='正在查看原图 · 松开后返回透明效果';return;}
-    var src=proState.aiOriginal.data,out=proState.aiFastData.data,mask=blackSettings.aiMask,mw=blackSettings.aiWidth,mh=blackSettings.aiHeight,w=proCanvas.width,h=proCanvas.height;
-    for(var y=0;y<h;y++){var my=Math.min(mh-1,Math.floor((y+.5)*mh/h));for(var x=0;x<w;x++){var mx=Math.min(mw-1,Math.floor((x+.5)*mw/w)),p=(y*w+x)*4;out[p+3]=Math.round(src[p+3]*mask[my*mw+mx]/255);}}
-    g.putImageData(proState.aiFastData,0,0);proStatus.textContent='实时画笔预览 · 松开鼠标后自动完成高质量边缘重算';
+  function rebuildProAIPreview(force){
+    if(!proState.open||proState.mode!=='ai'||!curImg)return false;var size=proAIPreviewSize();
+    if(!force&&proCanvas.width===size.width&&proCanvas.height===size.height)return false;
+    proCanvas.width=size.width;proCanvas.height=size.height;var source=proState.aiSourceCanvas||(proState.aiSourceCanvas=document.createElement('canvas'));source.width=size.width;source.height=size.height;
+    var sg=source.getContext('2d',{willReadFrequently:true});sg.imageSmoothingEnabled=true;sg.imageSmoothingQuality='high';sg.clearRect(0,0,size.width,size.height);sg.drawImage(curImg,0,0,size.width,size.height);proState.aiPreviewScale=size.scale;return true;
+  }
+  function scheduleProAIPreviewResolution(){
+    if(!proState.open||proState.mode!=='ai'||!proProofImage.hidden)return;if(proState.aiResizeTimer)clearTimeout(proState.aiResizeTimer);
+    proState.aiResizeTimer=setTimeout(function(){proState.aiResizeTimer=0;if(rebuildProAIPreview(false))scheduleProAIRender('hq');},90);
+  }
+  function mergeProAIDirty(a,b){if(!a)return b;if(!b)return a;return{x0:Math.min(a.x0,b.x0),y0:Math.min(a.y0,b.y0),x1:Math.max(a.x1,b.x1),y1:Math.max(a.y1,b.y1)};}
+  function scheduleProAIRender(mode,dirty){
+    if(!proState.open||proState.mode!=='ai')return;if(dirty)proState.aiDirty=mergeProAIDirty(proState.aiDirty,dirty);if(mode==='hq'||!proState.aiRenderMode)proState.aiRenderMode=mode||'hq';if(proState.aiRAF)return;
+    proState.aiRAF=requestAnimationFrame(function(){var renderMode=proState.aiRenderMode||'hq',renderDirty=proState.aiDirty;proState.aiRAF=0;proState.aiRenderMode='';proState.aiDirty=null;if(renderMode==='fast')renderProAIFast(renderDirty);else renderProAI();});
+  }
+  function renderProAIFast(dirty){
+    if(!proState.open||proState.mode!=='ai'||!proState.aiSourceCanvas||!blackSettings.aiMask)return;if(!dirty){renderProAI();return;}var g=proCanvas.getContext('2d'),source=proState.aiSourceCanvas;
+    if(proState.showOriginal){g.clearRect(0,0,proCanvas.width,proCanvas.height);g.drawImage(source,0,0);proStatus.textContent='正在查看原图 · 松开后返回透明效果';return;}
+    var mask=blackSettings.aiMask,mw=blackSettings.aiWidth,mh=blackSettings.aiHeight,w=proCanvas.width,h=proCanvas.height,pad=2;
+    var x0=Math.max(0,Math.floor(dirty.x0/mw*w)-pad),y0=Math.max(0,Math.floor(dirty.y0/mh*h)-pad),x1=Math.min(w,Math.ceil(dirty.x1/mw*w)+pad),y1=Math.min(h,Math.ceil(dirty.y1/mh*h)+pad),pw=x1-x0,ph=y1-y0;if(pw<1||ph<1)return;
+    var patch=source.getContext('2d',{willReadFrequently:true}).getImageData(x0,y0,pw,ph),out=patch.data;
+    function sample(px,py){var fx=(px+.5)*mw/w-.5,fy=(py+.5)*mh/h-.5,sx=Math.max(0,Math.floor(fx)),sy=Math.max(0,Math.floor(fy)),sx1=Math.min(mw-1,sx+1),sy1=Math.min(mh-1,sy+1),tx=Math.max(0,fx-sx),ty=Math.max(0,fy-sy);return(mask[sy*mw+sx]*(1-tx)+mask[sy*mw+sx1]*tx)*(1-ty)+(mask[sy1*mw+sx]*(1-tx)+mask[sy1*mw+sx1]*tx)*ty;}
+    for(var py=0;py<ph;py++)for(var px=0;px<pw;px++){var p=(py*pw+px)*4;out[p+3]=Math.round(out[p+3]*sample(x0+px,y0+py)/255);if(out[p+3]===0)out[p]=out[p+1]=out[p+2]=0;}
+    g.putImageData(patch,x0,y0);proStatus.textContent='局部实时画笔预览 · 本帧只重算画笔触及的像素';
+  }
+  function updateProAIMaskCanvas(){
+    var mw=blackSettings.aiWidth,mh=blackSettings.aiHeight,c=proState.aiMaskCanvas||(proState.aiMaskCanvas=document.createElement('canvas'));if(c.width!==mw||c.height!==mh){c.width=mw;c.height=mh;}var mg=c.getContext('2d'),image=mg.createImageData(mw,mh),d=image.data,m=blackSettings.aiMask;for(var i=0,j=0;i<m.length;i++,j+=4)d[j]=d[j+1]=d[j+2]=255,d[j+3]=m[i];mg.putImageData(image,0,0);return c;
   }
   function renderProAI(){
-    if(!proState.open||proState.mode!=='ai'||!proState.aiOriginal)return;var g=proCanvas.getContext('2d');
-    if(proState.showOriginal){g.putImageData(proState.aiOriginal,0,0);proStatus.textContent='正在查看原图 · 松开后返回透明效果';return;}
-    var revision=blackSettings.aiRevision||0;proStatus.textContent='正在生成与下载共用的全尺寸最终像素…';
+    if(!proState.open||proState.mode!=='ai'||!blackSettings.aiMask)return;if(!proState.aiSourceCanvas)rebuildProAIPreview(true);var g=proCanvas.getContext('2d'),source=proState.aiSourceCanvas,w=proCanvas.width,h=proCanvas.height;
+    g.clearRect(0,0,w,h);if(proState.showOriginal){g.drawImage(source,0,0);proStatus.textContent='正在查看原图 · 松开后返回透明效果';return;}
+    var owner=curFile,revision=blackSettings.aiRevision||0,W=curImg.naturalWidth||curImg.width,H=curImg.naturalHeight||curImg.height,quality=proState.aiPreviewScale>=.999?'原图像素预览':'自适应高清预览 '+w+'×'+h;
+    proStatus.textContent='正在同步全尺寸最终透明通道…';
     ensureAIFullResult().then(function(full){
-      if(!proState.open||proState.mode!=='ai'||proState.showOriginal||revision!==(blackSettings.aiRevision||0))return;g.clearRect(0,0,proCanvas.width,proCanvas.height);g.drawImage(full.canvas,0,0,proCanvas.width,proCanvas.height);
-      proStatus.textContent=(blackSettings.aiModelLabel||aiModelInfo(blackSettings.aiModel).label)+' · '+blackSettings.aiBackend+' · '+aiEdgeModeLabel()+' · 全尺寸结果已缩放到 '+proCanvas.width+'×'+proCanvas.height+' 编辑画布 · 细边请点「校验下载效果」 · '+(blackSettings.brushMode==='keep'?'保留主体':'擦除背景')+'画笔';
-    }).catch(function(e){if(e&&e.message!=='AI_FULL_RESULT_STALE'&&proState.open)proStatus.textContent='全尺寸最终预览生成失败';});
+      if(!proState.open||proState.mode!=='ai'||proState.showOriginal||owner!==curFile||revision!==(blackSettings.aiRevision||0)||proCanvas.width!==w||proCanvas.height!==h)return;
+      g.clearRect(0,0,w,h);g.imageSmoothingEnabled=true;g.imageSmoothingQuality='high';g.drawImage(full.bitmap||full.canvas,0,0,w,h);
+      proStatus.textContent=(blackSettings.aiModelLabel||aiModelInfo(blackSettings.aiModel).label)+' · '+quality+' · 与下载共用全尺寸透明通道 · 当前缩放 '+Math.round(proState.zoom*100)+'% · '+(blackSettings.brushMode==='keep'?'保留主体':'擦除背景')+'画笔';
+    }).catch(function(e){if(e&&e.message!=='AI_FULL_RESULT_STALE'&&proState.open&&proState.mode==='ai')proStatus.textContent='全尺寸透明通道同步失败';});
   }
   function openAIEditor(){
-    if(!curImg||!blackSettings.aiMask)return;openProShell('ai','AI 专业蒙版精修',(blackSettings.aiModelLabel||aiModelInfo(blackSettings.aiModel).label)+' · 默认黑底验边，可切换白底/透明棋盘；图片不上传');syncProAIControls();
-    var W=curImg.naturalWidth||curImg.width,H=curImg.naturalHeight||curImg.height,s=Math.min(1,1100/Math.max(W,H)),w=Math.max(1,Math.round(W*s)),h=Math.max(1,Math.round(H*s));proCanvas.width=w;proCanvas.height=h;proState.contentW=w;proState.contentH=h;
-    var g=proCanvas.getContext('2d',{willReadFrequently:true});g.clearRect(0,0,w,h);g.drawImage(curImg,0,0,w,h);proState.aiOriginal=g.getImageData(0,0,w,h);proState.aiFastData=new ImageData(new Uint8ClampedArray(proState.aiOriginal.data),w,h);renderProAI();proLoading.hidden=true;proTransform.hidden=false;requestAnimationFrame(fitProView);
+    if(!curImg||!blackSettings.aiMask)return;openProShell('ai','AI 专业蒙版精修',(blackSettings.aiModelLabel||aiModelInfo(blackSettings.aiModel).label)+' · 默认透明棋盘，可切换黑底/白底验边；图片不上传');syncProAIControls();
+    var W=curImg.naturalWidth||curImg.width,H=curImg.naturalHeight||curImg.height;proState.contentW=W;proState.contentH=H;proTransform.hidden=false;
+    requestAnimationFrame(function(){fitProView();if(proState.aiResizeTimer)clearTimeout(proState.aiResizeTimer);proState.aiResizeTimer=0;rebuildProAIPreview(true);renderProAI();proLoading.hidden=true;});
   }
 
   // 专业画笔：一次按下形成一个历史节点；插值补点避免快速移动时出现断线。
@@ -2038,9 +2117,10 @@
     var drawing=false,last=null;
     function point(e){var r=proCanvas.getBoundingClientRect();return{x:(e.clientX-r.left)/r.width*blackSettings.aiWidth,y:(e.clientY-r.top)/r.height*blackSettings.aiHeight,r:Math.max(.5,blackSettings.brushSize/2)};}
     function stroke(a,b){var dx=b.x-a.x,dy=b.y-a.y,d=Math.sqrt(dx*dx+dy*dy),steps=Math.max(1,Math.ceil(d/Math.max(1,b.r*.25)));for(var i=1;i<=steps;i++)paintMaskAt(a.x+dx*i/steps,a.y+dy*i/steps,b.r);}
-    proCanvas.addEventListener('pointerdown',function(e){if(proState.space||e.button===1||!blackSettings.aiMask)return;e.preventDefault();e.stopPropagation();drawing=true;proCanvas.setPointerCapture(e.pointerId);pushMaskUndo();markAIEdit(true);last=point(e);paintMaskAt(last.x,last.y,last.r);scheduleProAIRender('fast');});
-    proCanvas.addEventListener('pointermove',function(e){if(!drawing)return;e.preventDefault();var p=point(e);stroke(last,p);last=p;scheduleProAIRender('fast');});
-    function end(e){if(!drawing)return;drawing=false;last=null;try{proCanvas.releasePointerCapture(e.pointerId);}catch(_e){}scheduleBlackPreview();scheduleProAIRender('hq');}
+    function brushDirty(a,b){var r=Math.max(a.r,b.r)+3;return{x0:Math.min(a.x,b.x)-r,y0:Math.min(a.y,b.y)-r,x1:Math.max(a.x,b.x)+r,y1:Math.max(a.y,b.y)+r};}
+    proCanvas.addEventListener('pointerdown',function(e){if(proState.space||e.button===1||!blackSettings.aiMask)return;e.preventDefault();e.stopPropagation();drawing=true;proCanvas.setPointerCapture(e.pointerId);pushMaskUndo();markAIEdit(true);last=point(e);paintMaskAt(last.x,last.y,last.r);scheduleProAIRender('fast',brushDirty(last,last));});
+    proCanvas.addEventListener('pointermove',function(e){if(!drawing)return;e.preventDefault();var p=point(e),dirty=brushDirty(last,p);stroke(last,p);last=p;scheduleProAIRender('fast',dirty);});
+    function end(e){if(!drawing)return;drawing=false;last=null;try{proCanvas.releasePointerCapture(e.pointerId);}catch(_e){}scheduleProAIRender('hq');}
     proCanvas.addEventListener('pointerup',end);proCanvas.addEventListener('pointercancel',end);
   })();
 
@@ -2056,10 +2136,11 @@
     proStage.addEventListener('pointerup',end);proStage.addEventListener('pointercancel',end);
   })();
   proStage.addEventListener('wheel',function(e){if(!proState.open)return;e.preventDefault();setProZoom(proState.zoom*(e.deltaY<0?1.12:.89));},{passive:false});
-  (function bindDivider(){var drag=false;
-    function move(e){var r=proTransform.getBoundingClientRect();setCompareSplit((e.clientX-r.left)/Math.max(1,r.width)*100);}
-    proDivider.addEventListener('pointerdown',function(e){e.preventDefault();e.stopPropagation();drag=true;proDivider.setPointerCapture(e.pointerId);move(e);});proDivider.addEventListener('pointermove',function(e){if(drag)move(e);});
-    function end(e){if(!drag)return;drag=false;try{proDivider.releasePointerCapture(e.pointerId);}catch(_e){}}proDivider.addEventListener('pointerup',end);proDivider.addEventListener('pointercancel',end);
+  (function bindDivider(){var drag=false,rect=null,pending=null,raf=0;
+    function flush(){raf=0;if(pending==null)return;setCompareSplit(pending);pending=null;}
+    function move(e){if(!rect)rect=proCompare.getBoundingClientRect();pending=(e.clientX-rect.left)/Math.max(1,rect.width)*100;if(!raf)raf=requestAnimationFrame(flush);}
+    proDivider.addEventListener('pointerdown',function(e){e.preventDefault();e.stopPropagation();drag=true;rect=proCompare.getBoundingClientRect();proDivider.setPointerCapture(e.pointerId);move(e);});proDivider.addEventListener('pointermove',function(e){if(drag)move(e);});
+    function end(e){if(!drag)return;drag=false;flush();rect=null;try{proDivider.releasePointerCapture(e.pointerId);}catch(_e){}}proDivider.addEventListener('pointerup',end);proDivider.addEventListener('pointercancel',end);
     proDivider.addEventListener('keydown',function(e){if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();setCompareSplit(proState.split+(e.key==='ArrowRight'?2:-2));}});
   })();
   function bindProRange(id,key,suffix,affectsImage){var i=document.getElementById(id),o=document.getElementById(id+'V');i.addEventListener('input',function(){blackSettings[key]=+i.value;o.value=(key==='edgeShift'&&+i.value>0?'+':'')+i.value+(suffix||'');if(affectsImage)markAIEdit();else if(key==='brushSize')syncCompactAIEffects();});}
@@ -2068,7 +2149,7 @@
   document.getElementById('proDecontam').addEventListener('change',function(e){blackSettings.decontaminate=e.target.checked;markAIEdit();});document.getElementById('proUndo').addEventListener('click',undoMask);document.getElementById('proRedo').addEventListener('click',redoMask);document.getElementById('proReset').addEventListener('click',resetMask);
   async function showAIExportProof(){
     if(proProof.disabled||!proState.open||proState.mode!=='ai')return;if(!proProofImage.hidden){leaveAIExportProof();scheduleProAIRender();return;}var owner=activeImageKey,top=activeTopMode;proProof.disabled=true;proProof.textContent='正在编码…';proStatus.textContent='正在用当前格式、质量与缩放参数生成真正下载文件…';
-    try{await doConvert(owner,top);if(!outBlob||!proState.open||proState.mode!=='ai'||owner!==activeImageKey||top!==activeTopMode)return;setProBackground('black');await waitProImage(proProofImage,proURL(outBlob));if(!proState.open||proState.mode!=='ai')return;proCanvas.hidden=true;proProofImage.hidden=false;proStage.classList.add('proof');proProof.textContent='返回精修';proState.contentW=proProofImage.naturalWidth;proState.contentH=proProofImage.naturalHeight;fitProView();proStatus.textContent=selFmt.name+' 实际下载像素 · '+proState.contentW+'×'+proState.contentH+(opts.querySelector('#q')?' · 质量 '+opts.querySelector('#q').value:'')+' · 已解码回读；可切换黑/白底，按 1 检查 100% 像素';}
+    try{await doConvert(owner,top);if(!outBlob||!proState.open||proState.mode!=='ai'||owner!==activeImageKey||top!==activeTopMode)return;await waitProImage(proProofImage,proURL(outBlob));if(!proState.open||proState.mode!=='ai')return;proCanvas.hidden=true;proProofImage.hidden=false;proStage.classList.add('proof');proProof.textContent='返回精修';proState.contentW=proProofImage.naturalWidth;proState.contentH=proProofImage.naturalHeight;fitProView();proStatus.textContent=selFmt.name+' 实际下载像素 · '+proState.contentW+'×'+proState.contentH+(opts.querySelector('#q')?' · 质量 '+opts.querySelector('#q').value:'')+' · 已解码回读；可切换黑/白底，按 1 检查 100% 像素';}
     catch(e){if(proState.open)proStatus.textContent='下载效果校验失败：'+((e&&e.message)||e);}
     finally{proProof.disabled=false;if(proProofImage.hidden)proProof.textContent='校验下载效果';}
   }

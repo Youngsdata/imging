@@ -46,6 +46,17 @@
 - 许可证副本：`licenses/ONNX-Runtime-LICENSE.txt`
 - WASM 文件 SHA-256：`7e83cd6cee77e478bc96a7e91b198144fb5e4126287daf1f9b54bb195ebcd55a`
 
+## ISNet General ONNX FP16
+
+- 用途：浏览器本地高清主体识别与半透明背景蒙版生成
+- 许可证：Apache License 2.0
+- 上游模型：<https://huggingface.co/Ko033/isnet-general-use-onnx>
+- 上游版本：`5349b617911fd60c619b52f32e2b593517b78df3`
+- 原始项目：<https://github.com/xuebinqin/DIS>
+- Apache-2.0 许可证全文：`licenses/wasm-feature-detect-Apache-2.0.txt`
+- 模型文件：`models/background-removal/isnet-general-fp16.onnx`
+- 模型 SHA-256：`0857167263ad816d67c26852b99c2861e46a86c9a889527061a5eb2a6f90d32c`
+
 ## BEN2 FP16 ONNX
 
 - 用途：浏览器本地高精度主体蒙版生成，用于发丝、半透明材质与复杂边缘

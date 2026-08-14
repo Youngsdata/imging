@@ -13,6 +13,12 @@
       url:new URL('../models/background-removal/isnet-general-int8.onnx',BASE).href,
       bytes:44229662,inputSize:1024,normalize:'isnet'
     },
+    hd:{
+      id:'hd',label:'高清 AI',technicalName:'ISNet FP16',
+      description:'边缘与半透明层次更细腻，支持 WebGPU 的设备推荐',sizeText:'约 88 MB',
+      url:new URL('../models/background-removal/isnet-general-fp16.onnx',BASE).href,
+      bytes:88141111,inputSize:1024,normalize:'isnet'
+    },
     professional:{
       id:'professional',label:'专业 AI',technicalName:'BEN2 FP16',
       description:'发丝、半透明材质与复杂边缘',sizeText:'约 219 MB',
@@ -99,6 +105,7 @@
         try{ options.executionProviders=['webgpu']; var gpu=await ort.InferenceSession.create(bytes,options); backends[model.id]='WebGPU'; return gpu; }
         catch(e){ emit(onProgress,{model:model.id,phase:'fallback',loaded:model.bytes,total:model.bytes,text:model.label+' WebGPU 不兼容，切换 WASM'}); }
       }
+      if(model.id==='hd') emit(onProgress,{model:model.id,phase:'fallback',loaded:model.bytes,total:model.bytes,text:'当前设备使用 CPU 运行高清 AI；轻量设备建议选择快速 AI'});
       options.executionProviders=['wasm']; var wasm=await ort.InferenceSession.create(bytes,options); backends[model.id]='WASM'; return wasm;
     })().catch(function(e){ delete sessionPromises[model.id]; throw e; });
     return sessionPromises[model.id];
