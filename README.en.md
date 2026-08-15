@@ -39,7 +39,7 @@ imging differs by combining **on-device privacy, animation compression and creat
 
 This is the public imging distribution repository. It contains only deployable build artifacts:
 
-- The obfuscated single-page app `图映-加密版-本地codecs.html`
+- The obfuscated production single-page app `dist/index.html`
 - Browser-side AVIF / HEIC runtime codecs
 - Browser-side AI runtime and self-hosted ISNet / BEN2 / BiRefNet HR-Matting cutout models
 - Nginx Docker image configuration and the one-command deployment script

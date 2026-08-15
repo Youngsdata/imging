@@ -8,7 +8,8 @@
 !docker/nginx/ssl.conf
 !docker/nginx/40-enable-ssl.sh
 !docker/nginx/41-inject-beian.sh
-!图映-加密版-本地codecs.html
+!dist/
+!dist/index.html
 !codecs/
 !codecs/**
 !ai/

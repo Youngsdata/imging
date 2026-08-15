@@ -39,7 +39,7 @@
 
 这是图映的公开发行仓库，只包含可直接部署的构建产物：
 
-- 混淆后的单页应用 `图映-加密版-本地codecs.html`
+- 混淆后的正式单页应用 `dist/index.html`
 - 浏览器端 AVIF / HEIC 运行时 codecs
 - 浏览器端 AI 运行时与自托管 ISNet / BEN2 / BiRefNet HR-Matting 抠图模型
 - Nginx Docker 镜像配置与一键启动脚本

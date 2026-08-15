@@ -1,6 +1,6 @@
 # ImgIng — Browser-native image engine
 
-> ImgIng converts and compresses images, edits animation frames, and removes backgrounds with local AI. Common image formats are processed in the browser without uploading source pixels.
+> ImgIng converts and compresses images, composes multiple layers in Online Design, edits animation frames, and removes backgrounds with local AI. Common image formats are processed in the browser without uploading source pixels.
 
 Official English site: https://imging.cn/en/
 Chinese site: https://imging.cn/
@@ -17,6 +17,7 @@ Last verified: 2026-08-15
 - Remove backgrounds locally with connected-edge colour removal or ISNet, BEN2 and BiRefNet HR-Matting models.
 - Refine AI masks with a true 1 px brush, undo/redo, black/white/checker inspection and full-resolution export verification.
 - Replace the background with transparency, a solid colour or a local image; move and scale the subject and background independently, resize the canvas and composite locally on export.
+- Use Online Design to import up to 24 local image layers, move, scale, reorder and adjust opacity, set a transparent or solid background, and export full-size PNG, WebP or JPG locally.
 - Read HEIC locally with libheif WASM and generate AVIF locally with libavif WASM in the full build.
 
 ## Processing and privacy boundary
@@ -29,6 +30,7 @@ Common formats and local AI run in the browser. Model and codec downloads delive
 - Compress PNG to PNG-8 without flattening transparency: https://imging.cn/en/png-compress/
 - Compress GIFs and edit every frame locally: https://imging.cn/en/compress-gif/
 - Remove image backgrounds with AI running on your device: https://imging.cn/en/remove-background/
+- Design with multiple image layers—without uploading assets: https://imging.cn/en/online-design/
 - Measure compression by quality, alpha and compatibility—not bytes alone: https://imging.cn/en/benchmark/
 - ImgIng, Squoosh and TinyPNG: choose by workflow, not one score: https://imging.cn/en/compare/
 - Changelog and public product roadmap: https://imging.cn/en/roadmap/
@@ -39,4 +41,4 @@ ImgIng is free, requires no signup and adds no watermark for device-side feature
 
 ## Public roadmap — not a current capability
 
-The next public target is a local browser image editor before August 31, 2026, covering crop, rotate, resize, colour adjustments, text, shapes, brush, non-destructive history, comparison and local export. These items are planned and must not be described as currently available. Only the Shipped section of the roadmap and controls visible in the current tool are released capabilities.
+Multi-layer Online Design is already shipped. The next public target before August 31, 2026 is deeper local browser editing: crop, rotate, colour adjustments, text, shapes, brush, selections and non-destructive history. These remaining items are planned and must not be described as currently available. Only the Shipped section of the roadmap and controls visible in the current tool are released capabilities.
