@@ -58,6 +58,14 @@ tr:last-child td{border-bottom:0}
 footer{padding:36px 0;border-top:1px solid var(--line);color:var(--muted);font-size:13px}
 .foot{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap}
 .updated{font:11px var(--mono);color:var(--muted);margin-top:18px}
+.factstrip{padding-top:38px;padding-bottom:38px;background:var(--surface);border-bottom:1px solid var(--line)}
+.factstrip .head{margin-bottom:18px}.factstrip .head h2{font-size:clamp(24px,3vw,32px)}
+.quickfacts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));margin:0;border:1px solid var(--line);border-radius:15px;overflow:hidden;background:var(--surface)}
+.quickfacts>div{display:grid;grid-template-columns:120px minmax(0,1fr);gap:14px;padding:15px 18px;border-bottom:1px solid var(--line)}
+.quickfacts>div:nth-child(odd){border-right:1px solid var(--line)}.quickfacts>div:nth-last-child(-n+2){border-bottom:0}
+.quickfacts dt{font:750 11px/1.55 var(--mono);letter-spacing:.05em;color:var(--teal2)}
+.quickfacts dd{min-width:0;margin:0;color:var(--ink2);font-size:14px;line-height:1.55}
+.reviewed{margin:14px 0 0;font:11px/1.6 var(--mono);color:var(--muted)}
 
 /* Changelog & public roadmap */
 .roadmap-hero{padding-bottom:64px}
@@ -85,4 +93,5 @@ footer{padding:36px 0;border-top:1px solid var(--line);color:var(--muted);font-s
 .plan-head{align-items:flex-start;flex-direction:column}.road-cta{align-items:flex-start;flex-direction:column}
 .dek{font-size:17px}
 .wrap{width:min(var(--max),calc(100% - 28px))}
+.quickfacts{grid-template-columns:1fr}.quickfacts>div{grid-template-columns:1fr;gap:4px;border-right:0!important;border-bottom:1px solid var(--line)!important}.quickfacts>div:last-child{border-bottom:0!important}
 }
