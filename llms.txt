@@ -10,7 +10,7 @@
 - [HEIC 转 JPG](https://imging.cn/heic-to-jpg/): HEIC 本地读取与通用格式转换说明。
 - [PNG 压缩](https://imging.cn/png-compress/): PNG-8 减色、抖动和多级透明。
 - [GIF 压缩与动图工坊](https://imging.cn/compress-gif/): GIF / APNG / WebP / AVIF 动图压缩、合成与逐帧编辑。
-- [AI 抠图去背景](https://imging.cn/remove-background/): 本地 AI 模型、透明通道与专业精修说明。
+- [AI 抠图去背景](https://imging.cn/remove-background/): 本地 AI 模型、透明通道、1px 精修、多背景图层与主体排版说明。
 - [压缩测试口径](https://imging.cn/benchmark/): PNG-8 参考测试与格式选型边界。
 - [工具对比](https://imging.cn/compare/): 图映、Squoosh、TinyPNG 与云转换工具的能力差异。
 - [版本记录与公开路线图](https://imging.cn/roadmap/): 按日期记录已交付能力，并将未来计划与当前功能明确区分。
@@ -20,6 +20,7 @@
 - 本地处理: JPG、PNG、WebP、GIF、APNG 等常见格式的读写、缩放和压缩直接在用户浏览器内完成，原图不上传。
 - WASM 本地能力: 完整版在首次需要时加载 libheif 和 libavif WASM，以在本地读取 HEIC 和生成 AVIF。下载编解码器不等于上传图片。
 - AI 本地能力: 快速 AI 使用 ISNet INT8（约 42 MB），专业 AI 使用 BEN2 FP16（约 219 MB），骨灰级 AI 使用 BiRefNet HR-Matting FP16（约 447 MB）。模型按需下载与缓存，推理优先 WebGPU，不支持时降级到 WASM。图片像素不上传。
+- 抠图后本地合成: 专业精修可设透明、纯色或最多 12 个本地背景图层；主体和每个背景层可独立拖动、缩放、精确定位与排序，画布可选常用比例或自定义尺寸。拖动阶段只更新图层变换，导出时才进行全尺寸本地合成。
 - 动图能力: 支持 GIF、APNG、动图 WebP 和动图 AVIF；包括压缩、多图合成、读取原节奏、逐帧排序、单帧时长、删帧和循环。
 - 产品价格: 端侧图片转换、压缩、动图和 AI 抠图免费、免注册、无水印。需要服务端专业引擎的格式会单独说明。
 

@@ -16,6 +16,7 @@ Last verified: 2026-08-15
 - Quantize PNG-8 with 2–256 colours, optional dithering and multi-level alpha.
 - Remove backgrounds locally with connected-edge colour removal or ISNet, BEN2 and BiRefNet HR-Matting models.
 - Refine AI masks with a true 1 px brush, undo/redo, black/white/checker inspection and full-resolution export verification.
+- Replace the background with transparency, a solid colour or a local image; move and scale the subject and background independently, resize the canvas and composite locally on export.
 - Read HEIC locally with libheif WASM and generate AVIF locally with libavif WASM in the full build.
 
 ## Processing and privacy boundary
