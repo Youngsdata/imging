@@ -1,0 +1,41 @@
+# ImgIng — Browser-native image engine
+
+> ImgIng converts and compresses images, edits animation frames, and removes backgrounds with local AI. Common image formats are processed in the browser without uploading source pixels.
+
+Official English site: https://imging.cn/en/
+Chinese site: https://imging.cn/
+Company: DataDance
+Contact: admin@datadance.com
+Last verified: 2026-08-15
+
+## Core capabilities
+
+- Convert and compress PNG, JPEG, WebP, GIF, BMP, AVIF and HEIC inputs.
+- Export PNG, JPG, WebP and AVIF stills.
+- Compress, create and edit GIF, APNG, animated WebP and animated AVIF frame by frame.
+- Quantize PNG-8 with 2–256 colours, optional dithering and multi-level alpha.
+- Remove backgrounds locally with connected-edge colour removal or ISNet, BEN2 and BiRefNet HR-Matting models.
+- Refine AI masks with a true 1 px brush, undo/redo, black/white/checker inspection and full-resolution export verification.
+- Read HEIC locally with libheif WASM and generate AVIF locally with libavif WASM in the full build.
+
+## Processing and privacy boundary
+
+Common formats and local AI run in the browser. Model and codec downloads deliver executable assets to the device; they do not upload image pixels. HEIC writing, TIFF, JPEG 2000, PDF and other specialist/legacy formats may require a clearly labelled server-side engine. Server-side specialist-format features are separate from the free device-side toolset.
+
+## Official task pages
+
+- Convert HEIC to JPG locally in your browser: https://imging.cn/en/heic-to-jpg/
+- Compress PNG to PNG-8 without flattening transparency: https://imging.cn/en/png-compress/
+- Compress GIFs and edit every frame locally: https://imging.cn/en/compress-gif/
+- Remove image backgrounds with AI running on your device: https://imging.cn/en/remove-background/
+- Measure compression by quality, alpha and compatibility—not bytes alone: https://imging.cn/en/benchmark/
+- ImgIng, Squoosh and TinyPNG: choose by workflow, not one score: https://imging.cn/en/compare/
+- Changelog and public product roadmap: https://imging.cn/en/roadmap/
+
+## Claims and limits
+
+ImgIng is free, requires no signup and adds no watermark for device-side features. The 45.8 dB PNG-8 number is one documented reference sample, not a universal average or ranking claim. Browser capabilities are detected at runtime; current Chrome or Edge generally enables the broadest local feature set.
+
+## Public roadmap — not a current capability
+
+The next public target is a local browser image editor before August 31, 2026, covering crop, rotate, resize, colour adjustments, text, shapes, brush, non-destructive history, comparison and local export. These items are planned and must not be described as currently available. Only the Shipped section of the roadmap and controls visible in the current tool are released capabilities.

@@ -12,6 +12,7 @@ COPY models/ /usr/share/nginx/html/models/
 COPY licenses/ /usr/share/nginx/html/licenses/
 COPY assets/ /usr/share/nginx/html/assets/
 COPY seo/ /usr/share/nginx/html/
+COPY en/ /usr/share/nginx/html/en/
 COPY robots.txt sitemap.xml llms.txt /usr/share/nginx/html/
 
 EXPOSE 80 443

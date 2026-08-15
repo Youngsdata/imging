@@ -5,29 +5,31 @@
   'use strict';
   var ownScript=document.currentScript;
   var BASE=new URL('./',ownScript&&ownScript.src||location.href).href;
+  var EN=(((document.documentElement&&document.documentElement.lang)||'').toLowerCase().indexOf('en')===0);
+  function copy(zh,en){ return EN?en:zh; }
   var CACHE_NAME='tuying-ai-model-v1'; // 保留 v1，避免已下载的快速模型在升级后重下。
   var MODELS={
     quick:{
-      id:'quick',label:'快速 AI',technicalName:'ISNet INT8',
-      description:'通用主体识别，下载小、速度快',sizeText:'约 42 MB',
+      id:'quick',label:copy('快速 AI','Fast AI'),technicalName:'ISNet INT8',
+      description:copy('通用主体识别，下载小、速度快','Fast general subject recognition; recommended for CPU and entry-level devices'),sizeText:copy('约 42 MB','About 42 MB'),
       url:new URL('../models/background-removal/isnet-general-int8.onnx',BASE).href,
       bytes:44229662,inputSize:1024,normalize:'isnet'
     },
     hd:{
-      id:'hd',label:'高清 AI',technicalName:'ISNet FP16',
-      description:'边缘与半透明层次更细腻，支持 WebGPU 的设备推荐',sizeText:'约 88 MB',
+      id:'hd',label:copy('高清 AI','HD AI'),technicalName:'ISNet FP16',
+      description:copy('边缘与半透明层次更细腻，支持 WebGPU 的设备推荐','More detailed edges and translucent layers; recommended for WebGPU devices'),sizeText:copy('约 88 MB','About 88 MB'),
       url:new URL('../models/background-removal/isnet-general-fp16.onnx',BASE).href,
       bytes:88141111,inputSize:1024,normalize:'isnet'
     },
     professional:{
-      id:'professional',label:'专业 AI',technicalName:'BEN2 FP16',
-      description:'发丝、半透明材质与复杂边缘',sizeText:'约 219 MB',
+      id:'professional',label:copy('专业 AI','Pro AI'),technicalName:'BEN2 FP16',
+      description:copy('发丝、半透明材质与复杂边缘','Hair, translucent materials and complex edges'),sizeText:copy('约 219 MB','About 219 MB'),
       url:new URL('../models/background-removal/ben2-fp16.onnx',BASE).href,
       bytes:219121675,inputSize:1024,normalize:'imagenet'
     },
     ultimate:{
-      id:'ultimate',label:'骨灰级 AI',technicalName:'BiRefNet HR-Matting FP16',
-      description:'2048 高分辨率；发丝、薄纱、玻璃与半透明边缘；最稳、最接近原始效果',sizeText:'约 447 MB',
+      id:'ultimate',label:copy('骨灰级 AI','Ultimate AI'),technicalName:'BiRefNet HR-Matting FP16',
+      description:copy('2048 高分辨率；发丝、薄纱、玻璃与半透明边缘；最稳、最接近原始效果','2048 resolution for hair, veils, glass and translucent edges; closest to original detail'),sizeText:copy('约 447 MB','About 447 MB'),
       url:new URL('../models/background-removal/birefnet-hr-matting-fp16.onnx',BASE).href,
       bytes:447261189,inputSize:2048,normalize:'imagenet'
     }
@@ -44,8 +46,8 @@
     if(runtimePromise) return runtimePromise;
     runtimePromise=new Promise(function(resolve,reject){
       var s=document.createElement('script'); s.src=new URL('ort.webgpu.min.js',BASE).href; s.async=true;
-      s.onload=function(){ if(!window.ort) reject(new Error('AI 运行时未正确加载')); else resolve(window.ort); };
-      s.onerror=function(){ reject(new Error('无法加载本地 AI 运行时')); }; document.head.appendChild(s);
+      s.onload=function(){ if(!window.ort) reject(new Error(copy('AI 运行时未正确加载','The AI runtime did not load correctly'))); else resolve(window.ort); };
+      s.onerror=function(){ reject(new Error(copy('无法加载本地 AI 运行时','Could not load the local AI runtime'))); }; document.head.appendChild(s);
     });
     return runtimePromise;
   }
@@ -62,7 +64,7 @@
         newBuffer.set(item.value,loaded);
       } else parts.push(item.value);
       loaded+=item.value.byteLength;
-      emit(onProgress,{model:model.id,phase:'download',loaded:loaded,total:total||model.bytes,text:'正在下载 '+model.label+'模型'});
+      emit(onProgress,{model:model.id,phase:'download',loaded:loaded,total:total||model.bytes,text:copy('正在下载 '+model.label+'模型','Downloading '+model.label+' model')});
     }
     if(known&&loaded===newBuffer.byteLength) return newBuffer.buffer;
     var merged=new Uint8Array(loaded),off=0;
@@ -76,20 +78,20 @@
     if(cache){
       var hit=await cache.match(model.url);
       if(hit){
-        emit(onProgress,{model:model.id,phase:'cache',loaded:model.bytes,total:model.bytes,text:'已从浏览器缓存读取 '+model.label+'模型'});
+        emit(onProgress,{model:model.id,phase:'cache',loaded:model.bytes,total:model.bytes,text:copy('已从浏览器缓存读取 '+model.label+'模型','Loaded '+model.label+' from the browser cache')});
         var cachedBuffer=await hit.arrayBuffer();
         if(cachedBuffer.byteLength>=model.bytes*.97) return cachedBuffer;
         await cache.delete(model.url);
       }
     }
-    emit(onProgress,{model:model.id,phase:'download',loaded:0,total:model.bytes,text:'首次下载 '+model.label+'模型'});
-    var res=await fetch(model.url,{credentials:'same-origin'}); if(!res.ok) throw new Error(model.label+'模型下载失败（HTTP '+res.status+'）');
+    emit(onProgress,{model:model.id,phase:'download',loaded:0,total:model.bytes,text:copy('首次下载 '+model.label+'模型','First download of the '+model.label+' model')});
+    var res=await fetch(model.url,{credentials:'same-origin'}); if(!res.ok) throw new Error(copy(model.label+'模型下载失败（HTTP '+res.status+'）',model.label+' model download failed (HTTP '+res.status+')'));
     var total=+(res.headers.get('content-length')||model.bytes);
     // Cache Storage 直接消费响应克隆，避免为数百 MB 模型再做一份 buffer.slice 拷贝。
     var cacheWrite=cache?cache.put(model.url,res.clone()).catch(function(){return false;}):Promise.resolve(false);
     var buffer=await responseBuffer(res,total,onProgress,model);
     await cacheWrite;
-    if(buffer.byteLength<model.bytes*.97){ if(cache) await cache.delete(model.url); throw new Error(model.label+' 模型文件不完整，请重试'); }
+    if(buffer.byteLength<model.bytes*.97){ if(cache) await cache.delete(model.url); throw new Error(copy(model.label+' 模型文件不完整，请重试',model.label+' model file is incomplete; please retry')); }
     return buffer;
   }
 
@@ -100,12 +102,12 @@
       var ort=await loadRuntime();
       ort.env.logLevel='error'; ort.env.wasm.wasmPaths=BASE; ort.env.wasm.numThreads=(self.crossOriginIsolated&&navigator.hardwareConcurrency)?Math.min(4,navigator.hardwareConcurrency):1;
       var bytes=await readModel(model,onProgress),options={graphOptimizationLevel:'all',executionMode:'sequential',logSeverityLevel:3};
-      emit(onProgress,{model:model.id,phase:'init',loaded:model.bytes,total:model.bytes,text:'正在初始化 '+model.label});
+      emit(onProgress,{model:model.id,phase:'init',loaded:model.bytes,total:model.bytes,text:copy('正在初始化 '+model.label,'Initialising '+model.label)});
       if(navigator.gpu){
         try{ options.executionProviders=['webgpu']; var gpu=await ort.InferenceSession.create(bytes,options); backends[model.id]='WebGPU'; return gpu; }
-        catch(e){ emit(onProgress,{model:model.id,phase:'fallback',loaded:model.bytes,total:model.bytes,text:model.label+' WebGPU 不兼容，切换 WASM'}); }
+        catch(e){ emit(onProgress,{model:model.id,phase:'fallback',loaded:model.bytes,total:model.bytes,text:copy(model.label+' WebGPU 不兼容，切换 WASM',model.label+' is not compatible with WebGPU; switching to WASM')}); }
       }
-      if(model.id==='hd') emit(onProgress,{model:model.id,phase:'fallback',loaded:model.bytes,total:model.bytes,text:'当前设备使用 CPU 运行高清 AI；轻量设备建议选择快速 AI'});
+      if(model.id==='hd') emit(onProgress,{model:model.id,phase:'fallback',loaded:model.bytes,total:model.bytes,text:copy('当前设备使用 CPU 运行高清 AI；轻量设备建议选择快速 AI','This device is running HD AI on the CPU; Fast AI is recommended for entry-level devices')});
       options.executionProviders=['wasm']; var wasm=await ort.InferenceSession.create(bytes,options); backends[model.id]='WASM'; return wasm;
     })().catch(function(e){ delete sessionPromises[model.id]; throw e; });
     return sessionPromises[model.id];
@@ -136,12 +138,12 @@
   async function segment(source,modelId,onProgress){
     if(typeof modelId==='function'){ onProgress=modelId; modelId='quick'; }
     var model=getModel(modelId),session=await createSession(model.id,onProgress),size=model.inputSize;
-    emit(onProgress,{model:model.id,phase:'prepare',loaded:model.bytes,total:model.bytes,text:model.label+'正在分析主体与背景'});
+    emit(onProgress,{model:model.id,phase:'prepare',loaded:model.bytes,total:model.bytes,text:copy(model.label+'正在分析主体与背景',model.label+' is analysing the subject and background')});
     var input=makeInput(source,model),tensor=new ort.Tensor('float32',input,[1,3,size,size]);
     var feeds={}; feeds[session.inputNames[0]]=tensor;
     var wanted=session.outputNames.indexOf('output')>=0?'output':session.outputNames[0];
     var results=await session.run(feeds,[wanted]),result=results[wanted],raw=result.data,dims=result.dims||[],mh=dims[dims.length-2]||size,mw=dims[dims.length-1]||size,count=mw*mh;
-    if(raw.length<count) throw new Error(model.label+' 返回的蒙版尺寸异常');
+    if(raw.length<count) throw new Error(copy(model.label+' 返回的蒙版尺寸异常',model.label+' returned an invalid mask size'));
     var isHalf=result.type==='float16',logits=false,min=Infinity,max=-Infinity;
     for(var k=0;k<count;k++){ var sample=isHalf?halfToFloat(raw[k]):raw[k]; if(sample<min)min=sample;if(sample>max)max=sample;if(sample<0||sample>1)logits=true; }
     var mask=new Uint8ClampedArray(count),span=max-min;
@@ -153,7 +155,7 @@
       mask[i]=Math.max(0,Math.min(255,Math.round(v*255)));
     }
     if(span<1e-7) mask.fill(max>.5?255:0);
-    emit(onProgress,{model:model.id,phase:'done',loaded:model.bytes,total:model.bytes,text:model.label+' 抠图完成'});
+    emit(onProgress,{model:model.id,phase:'done',loaded:model.bytes,total:model.bytes,text:copy(model.label+' 抠图完成',model.label+' background removal complete')});
     return {mask:mask,width:mw,height:mh,backend:backends[model.id],model:model.id,modelLabel:model.label};
   }
 

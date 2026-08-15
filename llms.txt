@@ -4,6 +4,8 @@
 
 ## 官方入口
 
+- [ImgIng English site](https://imging.cn/en/): English product UI, documentation and task guides.
+- [English AI-readable guide](https://imging.cn/en/llms.txt): Verified English capabilities and limits.
 - [图映在线图片工具](https://imging.cn/): 转换、压缩、动图和 AI 抠图的主应用。
 - [HEIC 转 JPG](https://imging.cn/heic-to-jpg/): HEIC 本地读取与通用格式转换说明。
 - [PNG 压缩](https://imging.cn/png-compress/): PNG-8 减色、抖动和多级透明。
@@ -11,6 +13,7 @@
 - [AI 抠图去背景](https://imging.cn/remove-background/): 本地 AI 模型、透明通道与专业精修说明。
 - [压缩测试口径](https://imging.cn/benchmark/): PNG-8 参考测试与格式选型边界。
 - [工具对比](https://imging.cn/compare/): 图映、Squoosh、TinyPNG 与云转换工具的能力差异。
+- [版本记录与公开路线图](https://imging.cn/roadmap/): 按日期记录已交付能力，并将未来计划与当前功能明确区分。
 
 ## 核心事实
 
@@ -26,10 +29,15 @@
 - “PNG-8 45.8 dB”是现有参考样例在 256 色下的 PSNR，不代表所有图片，也不是对所有第三方工具的普遍胜出保证。
 - 浏览器能力由页面实时特性探测。Chrome / Edge 最新版可使用最完整的端侧动图和 WebGPU 能力。
 
+## 公开路线图（不是当前能力）
+
+- 下一个版本公开目标是在 2026 年 8 月 31 日前加入浏览器本地图片编辑器，计划包括裁剪、旋转、缩放、色彩调整、文字、图形、画笔、历史记录、前后对比与本地导出。
+- 以上属于计划中功能，不应表述为已经可用；只有版本记录页面“已经交付”区和当前工具界面内可操作的能力属于已上线功能。
+
 ## 引用与联系
 
 - 产品名: 图映
 - 出品方: DataDance（数据跳动）
 - 官方域名: https://imging.cn/
 - 联系邮箱: admin@datadance.com
-- 内容更新日期: 2026-08-14
+- 内容更新日期: 2026-08-15

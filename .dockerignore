@@ -21,6 +21,8 @@
 !assets/**
 !seo/
 !seo/**
+!en/
+!en/**
 !robots.txt
 !sitemap.xml
 !llms.txt

@@ -58,11 +58,31 @@ tr:last-child td{border-bottom:0}
 footer{padding:36px 0;border-top:1px solid var(--line);color:var(--muted);font-size:13px}
 .foot{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap}
 .updated{font:11px var(--mono);color:var(--muted);margin-top:18px}
+
+/* Changelog & public roadmap */
+.roadmap-hero{padding-bottom:64px}
+.road-status{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:34px}
+.road-status article{position:relative;padding:20px 22px;border:1px solid color-mix(in srgb,var(--teal) 38%,var(--line));border-radius:16px;background:rgba(255,255,255,.78);box-shadow:0 12px 34px rgba(27,26,34,.06)}
+.road-status article.next{border-color:color-mix(in srgb,var(--coral) 38%,var(--line));background:linear-gradient(145deg,var(--coralbg),rgba(255,255,255,.86))}
+.road-status span{display:block;font:750 10px var(--mono);letter-spacing:.11em;color:var(--teal2)}
+.road-status .next span{color:#bd3b2c}.road-status b{display:block;margin-top:7px;font-size:18px}.road-status time{display:block;margin-top:4px;font:700 11px var(--mono);color:#bd3b2c}.road-status p{margin:8px 0 0;color:var(--muted);font-size:13.5px;line-height:1.6}
+.release-list{max-width:900px;border-top:1px solid var(--line)}
+.release-row{display:grid;grid-template-columns:145px 1fr;gap:32px;padding:30px 0;border-bottom:1px solid var(--line)}
+.release-date time{display:block;font:800 13px var(--mono);color:var(--ink)}.release-date span{display:inline-block;margin-top:8px;padding:3px 7px;border-radius:999px;background:var(--tealbg);color:var(--teal2);font:800 9px var(--mono);letter-spacing:.08em}
+.release-copy h3{margin-top:9px;font-size:22px}.release-copy p{margin:10px 0 0;color:var(--ink2);font-size:14.5px}.release-tags{display:flex;flex-wrap:wrap;gap:6px}.release-tags span{font:750 9px var(--mono);letter-spacing:.08em;color:var(--teal2)}
+.plan-head{display:flex;justify-content:space-between;align-items:flex-end;gap:28px;margin-bottom:28px}.plan-head>div{max-width:720px}.plan-head h2{margin-top:8px;font-size:clamp(29px,3.6vw,42px)}.plan-head p{margin:12px 0 0;color:var(--muted)}.plan-head time{flex:0 0 auto;padding:9px 12px;border:1px solid color-mix(in srgb,var(--coral) 35%,var(--line));border-radius:999px;background:var(--coralbg);color:#a9382a;font:800 11px var(--mono)}
+.road-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.road-card{padding:21px;border:1px solid var(--line);border-radius:15px;background:var(--surface)}.road-card .no{font:800 11px var(--mono);color:#bd3b2c}.road-card h3{margin-top:9px;font-size:17px}.road-card p{margin:9px 0 0;color:var(--muted);font-size:13.5px}.plan-notice{margin:17px 0 0;padding:16px 18px;border-left:4px solid var(--coral);border-radius:0 12px 12px 0;background:var(--coralbg);color:var(--ink2);font-size:13px}
+.principle-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.principle{padding:20px;border-top:3px solid var(--teal);border-radius:4px 4px 14px 14px;background:var(--surface);box-shadow:0 8px 25px rgba(27,26,34,.05)}.principle h3{font-size:17px}.principle p{margin:9px 0 0;color:var(--muted);font-size:13px}
+.research-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:13px}.research-card{padding:21px;border:1px dashed color-mix(in srgb,var(--muted) 38%,var(--line));border-radius:14px;background:color-mix(in srgb,var(--surface) 76%,transparent)}.research-card>span{font:800 9px var(--mono);letter-spacing:.09em;color:var(--muted)}.research-card h3{margin-top:8px;font-size:17px}.research-card p{margin:8px 0 0;color:var(--muted);font-size:13.5px}
+.road-cta{display:flex;align-items:center;gap:18px;margin-top:26px}.road-cta>a:last-child{color:var(--teal2);font-weight:700;font-size:13px}
 @media(max-width:760px){.top nav{display:none}
 .brand small{display:none}
 .topin>.btn{padding:10px 13px;font-size:13px}
 .hero{padding:52px 0 42px}
 .grid,.faq,.related{grid-template-columns:1fr}
+.road-status,.road-grid,.principle-grid,.research-grid{grid-template-columns:1fr}
+.release-row{grid-template-columns:1fr;gap:13px;padding:24px 0}
+.plan-head{align-items:flex-start;flex-direction:column}.road-cta{align-items:flex-start;flex-direction:column}
 .dek{font-size:17px}
 .wrap{width:min(var(--max),calc(100% - 28px))}
 }
