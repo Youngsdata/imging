@@ -38,7 +38,7 @@ ffc7972c9680b77ef03655e70462612b1a256bad2813ea055e1d2912cd4011ab  ./codecs/heic.
 7523750e8433bfa8d3ceff2e7939b8dba57815ee3ba1a14a4ef46e371fde83f5  ./dist/index.html
 14beb3fac411d73f2d4c9d47b7ab427b712813e888cb945c234200d1807d83e3  ./docker/nginx/40-enable-ssl.sh
 0a973d3ccb018f6f9240e5d8ce8373d99d0e93997fd4251579bb62b844db9c03  ./docker/nginx/41-inject-beian.sh
-1de301711dbece9e5d115c4ddfc3387a7592c821f3b88d0a0f68b9e6b2dc3da1  ./docker/nginx/app.conf
+66adbfff7be707e9f2eb205c985dbc37999a88d73d63e3909375a578eb1f8a58  ./docker/nginx/app.conf
 ca2692b1050eab9f62bd56e4c9114ed68b86c30e62e3fa23745b2ae28a89ff86  ./docker/nginx/default.conf
 678a8ac0e21b2f4fa5dfd7e3c8b032a773d766b2ed04bba83939e9a6cec1709b  ./docker/nginx/ssl.conf
 b04a6d8183def399f8c770f8afd80abbaf521866d9cdc7119fee5aed657fb063  ./en/benchmark/index.html
