@@ -19,6 +19,8 @@ const isRunningInNode = () => typeof process !== 'undefined' &&
     process.release.name === 'node';
 const isRunningInCloudflareWorker = () => { var _a; return ((_a = globalThis.caches) === null || _a === void 0 ? void 0 : _a.default) !== undefined; };
 export async function init(module, moduleOptionOverrides) {
+    if (emscriptenModule)
+        return emscriptenModule;
     let actualModule = module;
     let actualOptions = moduleOptionOverrides;
     // If only one argument is provided and it's not a WebAssembly.Module
@@ -30,11 +32,17 @@ export async function init(module, moduleOptionOverrides) {
         !isRunningInCloudflareWorker() &&
         (await threads())) {
         const avifEncoder = await import('./codec/enc/avif_enc_mt.js');
-        emscriptenModule = initEmscriptenModule(avifEncoder.default, actualModule, actualOptions);
+        emscriptenModule = Promise.resolve(initEmscriptenModule(avifEncoder.default, actualModule, actualOptions)).catch((error) => {
+            emscriptenModule = undefined;
+            throw error;
+        });
         return emscriptenModule;
     }
     const avifEncoder = await import('./codec/enc/avif_enc.js');
-    emscriptenModule = initEmscriptenModule(avifEncoder.default, actualModule, actualOptions);
+    emscriptenModule = Promise.resolve(initEmscriptenModule(avifEncoder.default, actualModule, actualOptions)).catch((error) => {
+        emscriptenModule = undefined;
+        throw error;
+    });
     return emscriptenModule;
 }
 export default async function encode(data, options = {}) {

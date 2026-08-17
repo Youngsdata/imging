@@ -18,6 +18,12 @@ async function getLib(){
   return _lib;
 }
 
+// 预先完成内联 WASM 的解码库初始化；之后界面显示“已就绪”时就真的可以开始解码。
+window.TYCODECS.onPrepare('heic', async function(onProgress){
+  if(onProgress) onProgress({name:'heic',phase:'wasm',text:'HEIC 模块下载完成，正在初始化本地解码核心'});
+  await getLib();
+});
+
 // arrayBuffer(HEIC 字节) → ImageData(RGBA)。约定:解码器返回 ImageData,页面自己 putImageData 到 canvas。
 async function decodeHeic(arrayBuffer){
   var lib = await getLib();

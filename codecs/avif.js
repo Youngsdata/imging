@@ -1,6 +1,12 @@
 /* 图映 · AVIF 浏览器端编解码(@jsquash/avif = libavif WASM,自托管) */
-import encode from './avif/encode.js';
+import encode, { init as initEncoder } from './avif/encode.js';
 import decode from './avif/decode.js';
+
+// “加载完成”必须包含真正的 libavif WASM 下载、编译与初始化，不能只代表胶水模块已注册。
+window.TYCODECS.onPrepare('avif', async function(onProgress){
+  if(onProgress) onProgress({name:'avif',phase:'wasm',text:'AVIF 模块下载完成，正在编译本地编码核心'});
+  await initEncoder();
+});
 
 window.TYCODECS.onEnc('image/avif', async function(imageData, quality){
   var ui = (quality != null ? quality : 0.62);                 // UI 质量,0~1

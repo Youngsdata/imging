@@ -1,5 +1,5 @@
 /* 图映 · 浏览器本地 AI 抠图加载器
- * 模型和 ONNX Runtime 均由当前站点提供；原图与蒙版只在浏览器内存中处理。
+ * 模型优先从固定版本 CDN 下载并由当前站点兜底；原图与蒙版只在浏览器内存中处理。
  */
 (function(){
   'use strict';
@@ -8,55 +8,106 @@
   var EN=(((document.documentElement&&document.documentElement.lang)||'').toLowerCase().indexOf('en')===0);
   function copy(zh,en){ return EN?en:zh; }
   var CACHE_NAME='tuying-ai-model-v1'; // 保留 v1，避免已下载的快速模型在升级后重下。
+  var MODEL_RELEASE='v1.0.0';
+  var MODEL_CDN_BASE='https://modelscope.cn/models/dragonsoar/imging-background-removal/resolve/'+MODEL_RELEASE+'/';
   var MODELS={
     quick:{
       id:'quick',label:copy('快速 AI','Fast AI'),technicalName:'ISNet INT8',
       description:copy('通用主体识别，下载小、速度快','Fast general subject recognition; recommended for CPU and entry-level devices'),sizeText:copy('约 42 MB','About 42 MB'),
-      url:new URL('../models/background-removal/isnet-general-int8.onnx',BASE).href,
+      file:'isnet-general-int8.onnx',sha256:'3b21a6706dc8d6e4ba9f5b31ebc6940f6c785b58862e27bb25daa9dd4424b87f',
       bytes:44229662,inputSize:1024,normalize:'isnet'
     },
     hd:{
       id:'hd',label:copy('高清 AI','HD AI'),technicalName:'ISNet FP16',
       description:copy('边缘与半透明层次更细腻，支持 WebGPU 的设备推荐','More detailed edges and translucent layers; recommended for WebGPU devices'),sizeText:copy('约 88 MB','About 88 MB'),
-      url:new URL('../models/background-removal/isnet-general-fp16.onnx',BASE).href,
+      file:'isnet-general-fp16.onnx',sha256:'0857167263ad816d67c26852b99c2861e46a86c9a889527061a5eb2a6f90d32c',
       bytes:88141111,inputSize:1024,normalize:'isnet'
     },
     professional:{
       id:'professional',label:copy('专业 AI','Pro AI'),technicalName:'BEN2 FP16',
       description:copy('发丝、半透明材质与复杂边缘','Hair, translucent materials and complex edges'),sizeText:copy('约 219 MB','About 219 MB'),
-      url:new URL('../models/background-removal/ben2-fp16.onnx',BASE).href,
+      file:'ben2-fp16.onnx',sha256:'dfdc25f421f32a0d1268e0f2ff2153d340e8f1d52d3dd16f5dc33c1ce85cedf1',
       bytes:219121675,inputSize:1024,normalize:'imagenet'
     },
     ultimate:{
       id:'ultimate',label:copy('骨灰级 AI','Ultimate AI'),technicalName:'BiRefNet HR-Matting FP16',
       description:copy('2048 高分辨率；发丝、薄纱、玻璃与半透明边缘；最稳、最接近原始效果','2048 resolution for hair, veils, glass and translucent edges; closest to original detail'),sizeText:copy('约 447 MB','About 447 MB'),
-      url:new URL('../models/background-removal/birefnet-hr-matting-fp16.onnx',BASE).href,
+      file:'birefnet-hr-matting-fp16.onnx',sha256:'0d3bdc77d5e83133e169ac9b6e2850a10a8e8fbbf9c76d2cf86caca77611b2fe',
       bytes:447261189,inputSize:2048,normalize:'imagenet'
     }
   };
-  var runtimePromise=null,sessionPromises={},backends={};
+  Object.keys(MODELS).forEach(function(id){
+    var model=MODELS[id];
+    model.url=MODEL_CDN_BASE+model.file;
+    model.localUrl=new URL('../models/background-removal/'+model.file,BASE).href;
+    model.sources=[
+      {id:'modelscope',label:copy('ModelScope CDN','ModelScope CDN'),url:model.url,credentials:'omit'},
+      {id:'local',label:copy('本站备用地址','site fallback'),url:model.localUrl,credentials:'same-origin'}
+    ];
+  });
+  var runtimePromise=null,runtimeScript=null,sessionPromises={},sessionBuildTails={},backends={},inferenceTail=Promise.resolve(),inferencePending=0;
 
   function emit(fn,data){ if(typeof fn==='function') fn(data); }
-  function getModel(id){ return MODELS[id]||MODELS.quick; }
-  function publicModel(model){ return {id:model.id,label:model.label,technicalName:model.technicalName,description:model.description,sizeText:model.sizeText,bytes:model.bytes,url:model.url}; }
-  function listModels(){ return Object.keys(MODELS).map(function(id){return publicModel(MODELS[id]);}); }
-
-  function loadRuntime(){
-    if(window.ort) return Promise.resolve(window.ort);
-    if(runtimePromise) return runtimePromise;
-    runtimePromise=new Promise(function(resolve,reject){
-      var s=document.createElement('script'); s.src=new URL('ort.webgpu.min.js',BASE).href; s.async=true;
-      s.onload=function(){ if(!window.ort) reject(new Error(copy('AI 运行时未正确加载','The AI runtime did not load correctly'))); else resolve(window.ort); };
-      s.onerror=function(){ reject(new Error(copy('无法加载本地 AI 运行时','Could not load the local AI runtime'))); }; document.head.appendChild(s);
+  function abortError(){ var e=new Error(copy('任务已停止','The task was stopped'));e.name='AbortError';return e; }
+  function throwIfAborted(signal){ if(signal&&signal.aborted)throw abortError(); }
+  function guarded(promise,ms,message,signal,onTimeout){
+    return new Promise(function(resolve,reject){
+      var done=false,t=ms>0?setTimeout(function(){if(done)return;done=true;cleanup();try{if(onTimeout)onTimeout();}catch(_e){}reject(new Error(message));},ms):null;
+      function cleanup(){if(t)clearTimeout(t);if(signal)signal.removeEventListener('abort',onAbort);}
+      function onAbort(){if(done)return;done=true;cleanup();reject(abortError());}
+      if(signal){if(signal.aborted){onAbort();return;}signal.addEventListener('abort',onAbort,{once:true});}
+      Promise.resolve(promise).then(function(v){if(done)return;done=true;cleanup();resolve(v);},function(e){if(done)return;done=true;cleanup();reject(e);});
     });
-    return runtimePromise;
+  }
+  function yieldToUI(){ return new Promise(function(resolve){var done=false,t=setTimeout(finish,120);function finish(){if(done)return;done=true;clearTimeout(t);resolve();}if(typeof requestAnimationFrame==='function')requestAnimationFrame(function(){requestAnimationFrame(finish);});else finish();}); }
+  function initTimeout(model){ return model.id==='ultimate'?600000:(model.id==='professional'?360000:240000); }
+  function inferenceTimeout(model){ return model.id==='ultimate'?360000:(model.id==='professional'?240000:180000); }
+  function buildOrtSession(ort,bytes,options,model,signal,message){
+    var expired=false,prior=sessionBuildTails[model.id]||Promise.resolve();
+    var raw=prior.catch(function(){}).then(async function(){throwIfAborted(signal);var session=await ort.InferenceSession.create(bytes,options);if(expired||(signal&&signal.aborted)){try{if(session&&session.release)await session.release();}catch(_e){}throw abortError();}return session;});
+    sessionBuildTails[model.id]=raw.then(function(){},function(){});
+    return guarded(raw,initTimeout(model),message,signal,function(){expired=true;});
+  }
+  function getModel(id){ return MODELS[id]||MODELS.quick; }
+  function publicModel(model){ return {id:model.id,label:model.label,technicalName:model.technicalName,description:model.description,sizeText:model.sizeText,bytes:model.bytes,sha256:model.sha256,release:MODEL_RELEASE,url:model.url,fallbackUrl:model.localUrl}; }
+  function listModels(){ return Object.keys(MODELS).map(function(id){return publicModel(MODELS[id]);}); }
+  function cacheKey(model){ return model.localUrl; }
+  function verifiedKey(model){ return CACHE_NAME+':verified:'+model.id; }
+  function isVerified(model){ try{return localStorage.getItem(verifiedKey(model))===model.sha256;}catch(_e){return false;} }
+  function markVerified(model,ok){ try{if(ok)localStorage.setItem(verifiedKey(model),model.sha256);else localStorage.removeItem(verifiedKey(model));}catch(_e){} }
+  function hex(bytes){return Array.prototype.map.call(new Uint8Array(bytes),function(v){return v.toString(16).padStart(2,'0');}).join('');}
+  async function verifyModel(buffer,model,onProgress,signal,sourceLabel){
+    throwIfAborted(signal);
+    emit(onProgress,{model:model.id,phase:'verify',loaded:buffer.byteLength,total:model.bytes,sourceLabel:sourceLabel,text:copy(model.label+' 下载完成，正在校验精确大小与 SHA-256','The '+model.label+' download is complete; verifying its exact size and SHA-256')});
+    if(buffer.byteLength!==model.bytes) throw new Error(copy(model.label+'模型大小不正确（应为 '+model.bytes+' 字节，实际 '+buffer.byteLength+' 字节）',model.label+' has the wrong size (expected '+model.bytes+' bytes, received '+buffer.byteLength+')'));
+    if(!(window.crypto&&window.crypto.subtle)) throw new Error(copy('当前浏览器不支持模型 SHA-256 完整性校验','This browser does not support SHA-256 model integrity checks'));
+    var digest=await guarded(window.crypto.subtle.digest('SHA-256',buffer),Math.max(120000,Math.ceil(model.bytes/1048576)*800),copy(model.label+'完整性校验超时，请重试',model.label+' integrity verification timed out; retry'),signal);
+    if(hex(digest)!==model.sha256) throw new Error(copy(model.label+'模型 SHA-256 校验失败，已拒绝使用该文件',model.label+' failed SHA-256 verification and was rejected'));
+    emit(onProgress,{model:model.id,phase:'verified',loaded:model.bytes,total:model.bytes,sourceLabel:sourceLabel,text:copy(model.label+' 模型完整性校验成功','The '+model.label+' model passed integrity verification')});
   }
 
-  async function responseBuffer(res,total,onProgress,model){
-    if(!(res.body&&res.body.getReader)) return res.arrayBuffer();
+  function loadRuntime(onProgress,signal){
+    throwIfAborted(signal);
+    if(window.ort){emit(onProgress,{phase:'runtime-ready',text:copy('本地 AI 运行时已就绪','The local AI runtime is ready')});return Promise.resolve(window.ort);}
+    emit(onProgress,{phase:'runtime',text:copy('正在加载本地 AI 运行时','Loading the local AI runtime')});
+    if(!runtimePromise){
+      runtimeScript=document.createElement('script');runtimeScript.src=new URL('ort.webgpu.min.js',BASE).href;runtimeScript.async=true;
+      var raw=new Promise(function(resolve,reject){
+        runtimeScript.onload=function(){if(!window.ort)reject(new Error(copy('AI 运行时未正确加载','The AI runtime did not load correctly')));else resolve(window.ort);};
+        runtimeScript.onerror=function(){reject(new Error(copy('无法加载本地 AI 运行时','Could not load the local AI runtime')));};document.head.appendChild(runtimeScript);
+      });
+      runtimePromise=guarded(raw,30000,copy('AI 运行时加载超时，请检查网络后重试','AI runtime loading timed out; check the network and retry'),null,function(){if(runtimeScript&&runtimeScript.parentNode)runtimeScript.parentNode.removeChild(runtimeScript);})
+        .catch(function(e){runtimePromise=null;if(runtimeScript&&runtimeScript.parentNode)runtimeScript.parentNode.removeChild(runtimeScript);runtimeScript=null;throw e;});
+    }
+    return guarded(runtimePromise,0,'',signal).then(function(ort){emit(onProgress,{phase:'runtime-ready',text:copy('本地 AI 运行时加载完成','The local AI runtime has loaded')});return ort;});
+  }
+
+  async function responseBuffer(res,total,onProgress,model,signal,onStall,source){
+    if(!(res.body&&res.body.getReader)) return guarded(res.arrayBuffer(),Math.max(120000,Math.ceil(model.bytes/1048576)*2500),copy(model.label+'模型下载超时，请重试',model.label+' model download timed out; retry'),signal,onStall);
     var reader=res.body.getReader(),loaded=0,known=total>0,newBuffer=known?new Uint8Array(total):null,parts=known?null:[];
-    while(true){
-      var item=await reader.read(); if(item.done) break;
+    try{while(true){
+      throwIfAborted(signal);
+      var item=await guarded(reader.read(),30000,copy(model.label+'模型下载长时间没有数据，请检查网络后重试',model.label+' model download stalled; check the network and retry'),signal,onStall); if(item.done) break;
       if(known){
         if(loaded+item.value.byteLength>newBuffer.byteLength){
           var grown=new Uint8Array(Math.max(loaded+item.value.byteLength,newBuffer.byteLength*2)); grown.set(newBuffer); newBuffer=grown;
@@ -64,8 +115,8 @@
         newBuffer.set(item.value,loaded);
       } else parts.push(item.value);
       loaded+=item.value.byteLength;
-      emit(onProgress,{model:model.id,phase:'download',loaded:loaded,total:total||model.bytes,text:copy('正在下载 '+model.label+'模型','Downloading '+model.label+' model')});
-    }
+      emit(onProgress,{model:model.id,phase:'download',loaded:loaded,total:total||model.bytes,source:source.id,sourceLabel:source.label,text:copy('正在从 '+source.label+' 下载 '+model.label+'模型','Downloading the '+model.label+' model from '+source.label)});
+    }}catch(e){try{await reader.cancel();}catch(_e){}throw e;}
     if(known&&loaded===newBuffer.byteLength) return newBuffer.buffer;
     var merged=new Uint8Array(loaded),off=0;
     if(known) merged.set(newBuffer.subarray(0,loaded));
@@ -73,44 +124,68 @@
     return merged.buffer;
   }
 
-  async function readModel(model,onProgress){
-    var cache=('caches' in window)?await caches.open(CACHE_NAME):null;
+  async function readModel(model,onProgress,signal){
+    throwIfAborted(signal);
+    emit(onProgress,{model:model.id,phase:'cache-check',loaded:0,total:model.bytes,text:copy('正在检查 '+model.label+'本地缓存','Checking the local '+model.label+' cache')});
+    var cache=null;
+    if('caches' in window)try{cache=await guarded(caches.open(CACHE_NAME),10000,copy('浏览器模型缓存响应超时','The browser model cache did not respond'),signal);}catch(e){if(e&&e.name==='AbortError')throw e;cache=null;}
     if(cache){
-      var hit=await cache.match(model.url);
+      var hit=null;try{hit=await guarded(cache.match(cacheKey(model)),10000,copy('读取模型缓存超时','Reading the model cache timed out'),signal);}catch(e){if(e&&e.name==='AbortError')throw e;}
       if(hit){
         emit(onProgress,{model:model.id,phase:'cache',loaded:model.bytes,total:model.bytes,text:copy('已从浏览器缓存读取 '+model.label+'模型','Loaded '+model.label+' from the browser cache')});
-        var cachedBuffer=await hit.arrayBuffer();
-        if(cachedBuffer.byteLength>=model.bytes*.97) return cachedBuffer;
-        await cache.delete(model.url);
+        try{
+          var cachedBuffer=await guarded(hit.arrayBuffer(),Math.max(120000,Math.ceil(model.bytes/1048576)*1500),copy('读取缓存模型超时，将重新下载','Reading the cached model timed out; it will be downloaded again'),signal);
+          if(cachedBuffer.byteLength===model.bytes&&isVerified(model)) return cachedBuffer;
+          await verifyModel(cachedBuffer,model,onProgress,signal,copy('浏览器缓存','browser cache'));
+          markVerified(model,true);return cachedBuffer;
+        }catch(e){if(e&&e.name==='AbortError')throw e;}
+        markVerified(model,false);try{await cache.delete(cacheKey(model));}catch(_e){}
       }
     }
-    emit(onProgress,{model:model.id,phase:'download',loaded:0,total:model.bytes,text:copy('首次下载 '+model.label+'模型','First download of the '+model.label+' model')});
-    var res=await fetch(model.url,{credentials:'same-origin'}); if(!res.ok) throw new Error(copy(model.label+'模型下载失败（HTTP '+res.status+'）',model.label+' model download failed (HTTP '+res.status+')'));
-    var total=+(res.headers.get('content-length')||model.bytes);
-    // Cache Storage 直接消费响应克隆，避免为数百 MB 模型再做一份 buffer.slice 拷贝。
-    var cacheWrite=cache?cache.put(model.url,res.clone()).catch(function(){return false;}):Promise.resolve(false);
-    var buffer=await responseBuffer(res,total,onProgress,model);
-    await cacheWrite;
-    if(buffer.byteLength<model.bytes*.97){ if(cache) await cache.delete(model.url); throw new Error(copy(model.label+' 模型文件不完整，请重试',model.label+' model file is incomplete; please retry')); }
-    return buffer;
+    var errors=[];
+    for(var sourceIndex=0;sourceIndex<model.sources.length;sourceIndex++){
+      var source=model.sources[sourceIndex],controller=new AbortController(),relay=function(){controller.abort();};if(signal)signal.addEventListener('abort',relay,{once:true});
+      var cacheResponse=null;
+      try{
+        emit(onProgress,{model:model.id,phase:'download',loaded:0,total:model.bytes,source:source.id,sourceLabel:source.label,text:copy('正在连接 '+source.label+' 下载 '+model.label+'模型','Connecting to '+source.label+' for the '+model.label+' model')});
+        var res=await guarded(fetch(source.url,{credentials:source.credentials,mode:'cors',signal:controller.signal}),30000,copy(source.label+'连接超时','Connection to '+source.label+' timed out'),signal,function(){controller.abort();});
+        if(!res.ok)throw new Error(copy(source.label+'返回 HTTP '+res.status,source.label+' returned HTTP '+res.status));
+        var total=+(res.headers.get('content-length')||model.bytes);cacheResponse=cache?res.clone():null;
+        var buffer=await responseBuffer(res,total,onProgress,model,signal,function(){controller.abort();},source);
+        await verifyModel(buffer,model,onProgress,signal,source.label);
+        if(cache&&cacheResponse){
+          emit(onProgress,{model:model.id,phase:'cache-save',loaded:model.bytes,total:model.bytes,source:source.id,sourceLabel:source.label,text:copy('校验成功，正在保存浏览器缓存','Verification succeeded; saving the browser cache')});
+          try{await guarded(cache.put(cacheKey(model),cacheResponse),Math.max(30000,Math.ceil(model.bytes/1048576)*700),copy('保存模型缓存超时','Saving the model cache timed out'),signal);markVerified(model,true);}catch(e){if(e&&e.name==='AbortError')throw e;markVerified(model,false);}
+        }
+        return buffer;
+      }catch(e){
+        if(e&&e.name==='AbortError')throw e;
+        errors.push(source.label+': '+(e&&e.message||e));markVerified(model,false);
+        if(cache)try{await cache.delete(cacheKey(model));}catch(_e){}
+        if(cacheResponse&&cacheResponse.body)try{await cacheResponse.body.cancel();}catch(_e){}
+        if(sourceIndex+1<model.sources.length)emit(onProgress,{model:model.id,phase:'source-fallback',loaded:0,total:model.bytes,source:source.id,text:copy(source.label+' 不可用，正在自动切换本站备用地址',source.label+' is unavailable; switching automatically to the site fallback')});
+      }finally{if(signal)signal.removeEventListener('abort',relay);}
+    }
+    throw new Error(copy(model.label+'模型下载或校验失败：',model.label+' model download or verification failed: ')+errors.join('；'));
   }
 
-  async function createSession(modelId,onProgress){
+  async function createSession(modelId,onProgress,options){
     var model=getModel(modelId);
-    if(sessionPromises[model.id]) return sessionPromises[model.id];
+    var signal=options&&options.signal;throwIfAborted(signal);
+    if(sessionPromises[model.id]) return guarded(sessionPromises[model.id],0,'',signal);
     sessionPromises[model.id]=(async function(){
-      var ort=await loadRuntime();
+      var ort=await loadRuntime(onProgress,signal);
       ort.env.logLevel='error'; ort.env.wasm.wasmPaths=BASE; ort.env.wasm.numThreads=(self.crossOriginIsolated&&navigator.hardwareConcurrency)?Math.min(4,navigator.hardwareConcurrency):1;
-      var bytes=await readModel(model,onProgress),options={graphOptimizationLevel:'all',executionMode:'sequential',logSeverityLevel:3};
+      var bytes=await readModel(model,onProgress,signal),sessionOptions={graphOptimizationLevel:'all',executionMode:'sequential',logSeverityLevel:3};
       emit(onProgress,{model:model.id,phase:'init',loaded:model.bytes,total:model.bytes,text:copy('正在初始化 '+model.label,'Initialising '+model.label)});
       if(navigator.gpu){
-        try{ options.executionProviders=['webgpu']; var gpu=await ort.InferenceSession.create(bytes,options); backends[model.id]='WebGPU'; return gpu; }
-        catch(e){ emit(onProgress,{model:model.id,phase:'fallback',loaded:model.bytes,total:model.bytes,text:copy(model.label+' WebGPU 不兼容，切换 WASM',model.label+' is not compatible with WebGPU; switching to WASM')}); }
+        try{ sessionOptions.executionProviders=['webgpu']; var gpu=await buildOrtSession(ort,bytes,sessionOptions,model,signal,copy(model.label+' WebGPU 初始化超时',model.label+' WebGPU initialisation timed out')); backends[model.id]='WebGPU'; return gpu; }
+        catch(e){ if(e&&e.name==='AbortError')throw e;emit(onProgress,{model:model.id,phase:'fallback',loaded:model.bytes,total:model.bytes,text:copy(model.label+' WebGPU 不兼容，切换 WASM',model.label+' is not compatible with WebGPU; switching to WASM')}); }
       }
       if(model.id==='hd') emit(onProgress,{model:model.id,phase:'fallback',loaded:model.bytes,total:model.bytes,text:copy('当前设备使用 CPU 运行高清 AI；轻量设备建议选择快速 AI','This device is running HD AI on the CPU; Fast AI is recommended for entry-level devices')});
-      options.executionProviders=['wasm']; var wasm=await ort.InferenceSession.create(bytes,options); backends[model.id]='WASM'; return wasm;
+      sessionOptions.executionProviders=['wasm']; var wasm=await buildOrtSession(ort,bytes,sessionOptions,model,signal,copy(model.label+' WASM 初始化超时，请重试',model.label+' WASM initialisation timed out; retry')); backends[model.id]='WASM'; return wasm;
     })().catch(function(e){ delete sessionPromises[model.id]; throw e; });
-    return sessionPromises[model.id];
+    return guarded(sessionPromises[model.id],0,'',signal);
   }
 
   function makeInput(source,model){
@@ -135,14 +210,22 @@
     return s*Math.pow(2,e-15)*(1+f/1024);
   }
 
-  async function segment(source,modelId,onProgress){
+  async function segment(source,modelId,onProgress,options){
     if(typeof modelId==='function'){ onProgress=modelId; modelId='quick'; }
-    var model=getModel(modelId),session=await createSession(model.id,onProgress),size=model.inputSize;
-    emit(onProgress,{model:model.id,phase:'prepare',loaded:model.bytes,total:model.bytes,text:copy(model.label+'正在分析主体与背景',model.label+' is analysing the subject and background')});
+    var signal=options&&options.signal;throwIfAborted(signal);
+    var model=getModel(modelId),session=await createSession(model.id,onProgress,options),size=model.inputSize;
+    emit(onProgress,{model:model.id,phase:'prepare',loaded:model.bytes,total:model.bytes,text:copy(model.label+' 正在分析主体与背景',model.label+' is analysing the subject and background')});
+    await yieldToUI();throwIfAborted(signal);
     var input=makeInput(source,model),tensor=new ort.Tensor('float32',input,[1,3,size,size]);
     var feeds={}; feeds[session.inputNames[0]]=tensor;
     var wanted=session.outputNames.indexOf('output')>=0?'output':session.outputNames[0];
-    var results=await session.run(feeds,[wanted]),result=results[wanted],raw=result.data,dims=result.dims||[],mh=dims[dims.length-2]||size,mw=dims[dims.length-1]||size,count=mw*mh;
+    if(inferencePending>0)emit(onProgress,{model:model.id,phase:'queue',loaded:model.bytes,total:model.bytes,text:copy('正在等待上一项本地 AI 计算结束','Waiting for the previous local AI task to finish')});
+    inferencePending++;
+    var scheduled=inferenceTail.then(async function(){throwIfAborted(signal);emit(onProgress,{model:model.id,phase:'infer',loaded:model.bytes,total:model.bytes,text:copy(model.label+' 正在运行本地推理',model.label+' is running local inference')});await yieldToUI();return session.run(feeds,[wanted]);}).finally(function(){inferencePending--;});
+    inferenceTail=scheduled.catch(function(){});
+    var results=await guarded(scheduled,inferenceTimeout(model),copy(model.label+'推理超时，请重试或改用快速 AI',model.label+' inference timed out; retry or use Fast AI'),signal),result=results[wanted],raw=result.data,dims=result.dims||[],mh=dims[dims.length-2]||size,mw=dims[dims.length-1]||size,count=mw*mh;
+    emit(onProgress,{model:model.id,phase:'mask',loaded:model.bytes,total:model.bytes,text:copy('推理完成，正在生成透明蒙版','Inference is complete; generating the transparency mask')});
+    await yieldToUI();throwIfAborted(signal);
     if(raw.length<count) throw new Error(copy(model.label+' 返回的蒙版尺寸异常',model.label+' returned an invalid mask size'));
     var isHalf=result.type==='float16',logits=false,min=Infinity,max=-Infinity;
     for(var k=0;k<count;k++){ var sample=isHalf?halfToFloat(raw[k]):raw[k]; if(sample<min)min=sample;if(sample>max)max=sample;if(sample<0||sample>1)logits=true; }
@@ -159,9 +242,9 @@
     return {mask:mask,width:mw,height:mh,backend:backends[model.id],model:model.id,modelLabel:model.label};
   }
 
-  async function isCached(modelId){ var model=getModel(modelId); if(!('caches' in window)) return false; var c=await caches.open(CACHE_NAME); return !!(await c.match(model.url)); }
+  async function isCached(modelId){ var model=getModel(modelId); if(!('caches' in window)) return false;try{var c=await guarded(caches.open(CACHE_NAME),10000,copy('模型缓存响应超时','The model cache timed out'));return !!(await guarded(c.match(cacheKey(model)),10000,copy('读取模型缓存超时','Reading the model cache timed out')));}catch(_e){return false;} }
   async function cachedModels(){ var out={}; await Promise.all(Object.keys(MODELS).map(async function(id){out[id]=await isCached(id);})); return out; }
-  async function removeCached(modelId){ var model=getModel(modelId); if(!('caches' in window)) return false; var c=await caches.open(CACHE_NAME); return c.delete(model.url); }
+  async function removeCached(modelId){ var model=getModel(modelId);markVerified(model,false);if(!('caches' in window)) return false;try{var c=await guarded(caches.open(CACHE_NAME),10000,copy('模型缓存响应超时','The model cache timed out'));return await guarded(c.delete(cacheKey(model)),10000,copy('删除模型缓存超时','Removing the model cache timed out'));}catch(_e){return false;} }
   function status(modelId){ var model=getModel(modelId); return {model:model.id,sessionReady:!!sessionPromises[model.id],backend:backends[model.id]||''}; }
-  window.TYBG={segment:segment,load:createSession,isCached:isCached,cachedModels:cachedModels,removeCached:removeCached,status:status,getModel:function(id){return publicModel(getModel(id));},models:listModels(),modelBytes:MODELS.quick.bytes,modelUrl:MODELS.quick.url};
+  window.TYBG={segment:segment,load:createSession,isCached:isCached,cachedModels:cachedModels,removeCached:removeCached,status:status,getModel:function(id){return publicModel(getModel(id));},models:listModels(),modelRelease:MODEL_RELEASE,modelBytes:MODELS.quick.bytes,modelUrl:MODELS.quick.url};
 })();

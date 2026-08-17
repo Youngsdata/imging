@@ -6,7 +6,7 @@ b0dd3ee7c86bf0c9001d1a9e0261e110a91d7f5261ccf3f384a1f1e17daf6641  ./Dockerfile
 0d07e57afeb006771b5ead6201efe6034752221425216267e305c0514edb4c55  ./README.en.md
 92640103d9492515e9211e4045663b3ae9803dbed978f68c641b2dcfa5c86e5b  ./README.md
 e3f2d13369a3c66d75f9a36c96d980315393959ce14e38042e2865b54bce7585  ./THIRD_PARTY_NOTICES.md
-373a8318c9b62d009f2466bd2d78d4c633173470649952e7cadb3184d4d9db51  ./ai/background-removal.js
+12536985161c6937a13282f173fddcf72513801f3e7087d6926ab00abbd9775b  ./ai/background-removal.js
 7236653b8565da4046e459cd0e274123419a1d9f1f8f18fd36c28058346ca655  ./ai/ort-wasm-simd-threaded.asyncify.mjs
 7e83cd6cee77e478bc96a7e91b198144fb5e4126287daf1f9b54bb195ebcd55a  ./ai/ort-wasm-simd-threaded.asyncify.wasm
 a3f348c2fec54c8c4ac503967c33c1943a79e96dba40fb867ab0f501be94bf84  ./ai/ort.webgpu.min.js
@@ -16,7 +16,7 @@ ea846bbc28a979d24600fa3e2bbfbdafd46091e6e589eef60b52df9d7faf13a7  ./assets/og-co
 3e0aaf761ac3f2859f32dc5c133cbb529e64b72b83245bdb51fb52877fe8a999  ./assets/og-cover.png
 b015b8c69b080f9fb0a2e4050d937a5e5ebe080a622bb23124929b6c9834c7ff  ./assets/og-cover.svg
 a2f9042cda2b11ec0e89eab129231036c613c539d5b596ad54d490dd8852c9b0  ./assets/seo-pages.css
-b555b2c26c430dd74fd9fcaab82529fca358caf2fab7c5721dbdb0d10e005607  ./codecs/avif.js
+70a1b4a89f0662f9a32632c957d786dc64a10acbd21bd76515dc5d89d622f326  ./codecs/avif.js
 8c3690b09c168f196446cf5904332023bbc15eb92b6a7cee470ac829e6a65d20  ./codecs/avif/LICENSE
 65d0fd2b2e415bf2712c329694dc2bc257fc54f02572c29d5c46212ae6dc6c3c  ./codecs/avif/codec/dec/avif_dec.js
 5c35dde23dfd862088a49a6b8a9fe81f9f9a1a46aaa27de7efd7baa7611c4b47  ./codecs/avif/codec/dec/avif_dec.wasm
@@ -27,15 +27,15 @@ b2fbada547e79de2b436a63c5eafcd000f169a6a2e6fc02b80ab8e8926db6ed9  ./codecs/avif/
 89a64cae14ec07dec00cdd6df943fad039501e9eef1748fb1504508d4252bafe  ./codecs/avif/codec/enc/avif_enc_mt.worker.mjs
 b4d7da800804a2390eefa7805bb5f4e20cf349681334eb9a1715d2c58a1822b2  ./codecs/avif/codec/pre.js
 a459aad75db44a7e2834b954539de55e90a83e0f953d80129d24e2d2d47db1e5  ./codecs/avif/decode.js
-b12efc4bf99688b9a203e78db5ec0411653b195ecb8c84ad1c2cdbe724ac60d5  ./codecs/avif/encode.js
+ef99c35a007b61d0c05fbfa1c864983bbbf3f2d155edb44815aa876d30f05cbe  ./codecs/avif/encode.js
 281f1d048db337aaa2412503423b2ca99eeb8ec104b471618ee3845930a27688  ./codecs/avif/index.js
 d062b5f127754c61cebd2a9bf3ad381ad06494502eb931636561132c207a8570  ./codecs/avif/meta.js
 e71535eeee820d68b68ece7c8af761c39f3ddec93d3d957d2f83b19191339e0d  ./codecs/avif/utils.js
-ffc7972c9680b77ef03655e70462612b1a256bad2813ea055e1d2912cd4011ab  ./codecs/heic.js
+52ff3a2b97b04c2aa863d1cc06b2db19e176109642a496e3e5adfc612de1a627  ./codecs/heic.js
 8363e27add6c587b20f183fb746a583f97f28e8641f12955a1a550c38a4f9969  ./codecs/heic/libheif-bundle.mjs
 879dd39c8d9ebd5a3c64d1f18955b047907c677ca3b71865e2497264107e3aef  ./codecs/vendor/wasm-feature-detect.js
 12686e209637031cd00832e6fd8bdffd7ff450a136ecc2aec28ce4f28c237046  ./deploy.sh
-4641d69d0f7b8f3e95973aeaead4717c97ad09d030d8e232343cf270d8e0d3bf  ./dist/index.html
+bf44eda987dc38441fd159f52bb3adb1efc4f143a5b4283a579472733666c345  ./dist/index.html
 14beb3fac411d73f2d4c9d47b7ab427b712813e888cb945c234200d1807d83e3  ./docker/nginx/40-enable-ssl.sh
 0a973d3ccb018f6f9240e5d8ce8373d99d0e93997fd4251579bb62b844db9c03  ./docker/nginx/41-inject-beian.sh
 66adbfff7be707e9f2eb205c985dbc37999a88d73d63e3909375a578eb1f8a58  ./docker/nginx/app.conf
@@ -47,7 +47,7 @@ d5ed9ba4ec9ceb1551741b37c9582d71aae278017e3e16c8a760dd536504b46b  ./docs/imging-
 040ec70adae8d1522ee58257b44f1f42fb43ea96eb8d960ef67150ba6767b5d9  ./en/compare/index.html
 8f0d6f99301087c78d8928fae0345c92284ddfe8826ce15612a5520fc828f40b  ./en/compress-gif/index.html
 47d963530aa002e794dbe7c3c046a416f10b9603fd1f6749b0e3f090f6663109  ./en/heic-to-jpg/index.html
-dff83612991e05191b65047653ebf361f75428c82107ffac2f21d76b9e0af784  ./en/index.html
+f0eefc8d0109497d1307120a460b5ae5b22ddbac5447690fb5064eb7ef06ac96  ./en/index.html
 84c2a168445cdece01d8f3fc685155df8fa4cd492270607a918455e65e0dc23a  ./en/llms.txt
 f7874192985e808442f995e0b23887514a19dc0522f0d14268eebd4b98603656  ./en/online-design/index.html
 af86f330df2ff131e7ed7904275f05179ccdb9acd6854108e7fb47c7228fa081  ./en/png-compress/index.html
