@@ -20,6 +20,8 @@
 !licenses/**
 !assets/
 !assets/**
+!docs/
+!docs/imging-project-v1.schema.json
 !seo/
 !seo/**
 !en/
