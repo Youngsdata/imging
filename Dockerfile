@@ -11,6 +11,7 @@ COPY ai/ /usr/share/nginx/html/ai/
 COPY models/ /usr/share/nginx/html/models/
 COPY licenses/ /usr/share/nginx/html/licenses/
 COPY assets/ /usr/share/nginx/html/assets/
+COPY docs/imging-project-v1.schema.json /usr/share/nginx/html/schemas/imging-project-v1.schema.json
 COPY seo/ /usr/share/nginx/html/
 COPY en/ /usr/share/nginx/html/en/
 COPY robots.txt sitemap.xml llms.txt /usr/share/nginx/html/

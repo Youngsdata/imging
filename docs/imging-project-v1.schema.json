@@ -1,0 +1,115 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://imging.cn/schemas/imging-project-v1.schema.json",
+  "title": "图映开放工程格式 v1",
+  "type": "object",
+  "required": ["format", "formatVersion", "mimeType", "generator", "document", "canvas", "assets", "layers"],
+  "properties": {
+    "format": { "const": "imging-project" },
+    "formatVersion": { "const": 1 },
+    "mimeType": { "const": "application/vnd.imging.project+zip" },
+    "generator": {
+      "type": "object",
+      "required": ["name", "id"],
+      "properties": {
+        "name": { "type": "string" },
+        "id": { "const": "imging" },
+        "url": { "type": "string", "format": "uri" }
+      },
+      "additionalProperties": true
+    },
+    "document": {
+      "type": "object",
+      "required": ["id", "title", "createdAt", "modifiedAt"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 200 },
+        "title": { "type": "string", "maxLength": 200 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "modifiedAt": { "type": "string", "format": "date-time" }
+      },
+      "additionalProperties": true
+    },
+    "canvas": {
+      "type": "object",
+      "required": ["unit", "width", "height", "coordinateSystem", "background"],
+      "properties": {
+        "unit": { "const": "px" },
+        "width": { "type": "integer", "minimum": 64, "maximum": 8192 },
+        "height": { "type": "integer", "minimum": 64, "maximum": 8192 },
+        "coordinateSystem": {
+          "type": "object",
+          "required": ["origin", "xAxis", "yAxis"],
+          "properties": {
+            "origin": { "const": "center" },
+            "xAxis": { "const": "right" },
+            "yAxis": { "const": "down" }
+          },
+          "additionalProperties": false
+        },
+        "background": {
+          "type": "object",
+          "required": ["type", "color"],
+          "properties": {
+            "type": { "enum": ["transparent", "color"] },
+            "color": { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$" }
+          },
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": true
+    },
+    "assets": {
+      "type": "array",
+      "maxItems": 24,
+      "items": {
+        "type": "object",
+        "required": ["id", "path", "fileName", "mediaType", "byteLength", "pixelWidth", "pixelHeight", "crc32"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "path": { "type": "string", "pattern": "^assets/[A-Za-z0-9._/-]+$" },
+          "fileName": { "type": "string", "maxLength": 512 },
+          "mediaType": { "type": "string", "pattern": "^image/" },
+          "byteLength": { "type": "integer", "minimum": 0 },
+          "pixelWidth": { "type": "integer", "minimum": 1 },
+          "pixelHeight": { "type": "integer", "minimum": 1 },
+          "crc32": { "type": "string", "pattern": "^[0-9a-f]{8}$" },
+          "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+        },
+        "additionalProperties": true
+      }
+    },
+    "layers": {
+      "type": "array",
+      "maxItems": 24,
+      "items": {
+        "type": "object",
+        "required": ["id", "type", "name", "assetId", "visible", "opacity", "transform"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "type": { "const": "image" },
+          "name": { "type": "string", "maxLength": 512 },
+          "assetId": { "type": "string", "minLength": 1 },
+          "visible": { "const": true },
+          "opacity": { "type": "number", "minimum": 0, "maximum": 1 },
+          "transform": {
+            "type": "object",
+            "required": ["origin", "x", "y", "scale", "rotation"],
+            "properties": {
+              "origin": { "const": "canvas-center" },
+              "x": { "type": "number", "minimum": -32768, "maximum": 32768 },
+              "y": { "type": "number", "minimum": -32768, "maximum": 32768 },
+              "scale": { "type": "number", "minimum": 0.01, "maximum": 5 },
+              "rotation": { "type": "number", "minimum": -180, "maximum": 180 }
+            },
+            "additionalProperties": true
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "editor": { "type": "object" },
+    "exportSettings": { "type": "object" },
+    "preview": { "type": "object" }
+  },
+  "additionalProperties": true
+}

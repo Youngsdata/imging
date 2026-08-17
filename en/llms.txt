@@ -6,7 +6,7 @@ Official English site: https://imging.cn/en/
 Chinese site: https://imging.cn/
 Company: DataDance
 Contact: admin@datadance.com
-Last verified: 2026-08-15
+Last verified: 2026-08-17
 
 ## Core capabilities
 
@@ -52,4 +52,4 @@ This file is a machine-readable product summary. The canonical HTML task pages a
 
 ## Public roadmap — not a current capability
 
-Multi-layer Online Design is already shipped. The next public target before August 31, 2026 is deeper local browser editing: crop, rotate, colour adjustments, text, shapes, brush, selections and non-destructive history. These remaining items are planned and must not be described as currently available. Only the Shipped section of the roadmap and controls visible in the current tool are released capabilities.
+Multi-layer Online Design, frame scaling and arbitrary-angle image rotation are already shipped. The next public target before August 31, 2026 is deeper local browser editing: crop, flip, free transform, colour adjustments, text, shapes, brush, selections and non-destructive history. These remaining items are planned and must not be described as currently available. Only the Shipped section of the roadmap and controls visible in the current tool are released capabilities.
