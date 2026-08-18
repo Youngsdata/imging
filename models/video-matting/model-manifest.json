@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "release": "rvm-v1.0.0-imging-web-2",
+  "upstream": "https://github.com/PeterL1n/RobustVideoMatting/releases/tag/v1.0.0",
+  "license": "GPL-3.0",
+  "models": [
+    {
+      "id": "balanced",
+      "file": "rvm-mobilenetv3-fp16.onnx",
+      "architecture": "Robust Video Matting MobileNetV3 FP16",
+      "bytes": 7503483,
+      "sha256": "6a0d5ce6cc17702613be548559879b4521ed424cfe14ddc48d1acaa44d616f64"
+    },
+    {
+      "id": "quality",
+      "file": "rvm-resnet50-fp16.onnx",
+      "architecture": "Robust Video Matting ResNet50 FP16",
+      "bytes": 53752558,
+      "sha256": "6ab2e8530a3f5decb3d7b2b40e09e213b0f0cd0e138570284b83654500848b5e"
+    }
+  ]
+}

@@ -80,6 +80,26 @@
 - 浏览器 ONNX SHA-256：`0d3bdc77d5e83133e169ac9b6e2850a10a8e8fbbf9c76d2cf86caca77611b2fe`
 - 转换说明：保留官方 FP16 权重和 2048×2048 输入；仅将推理态 BatchNorm 等价折叠为仿射运算，并将 DeformConv 等价展开为标准 ONNX `GridSample` + `MatMul`，便于 ONNX Runtime Web 执行
 
+## Robust Video Matting v1.0.0
+
+- 用途：浏览器本地视频时序抠像，利用循环状态保持前后帧边缘稳定
+- 许可证：GNU General Public License v3.0
+- 上游项目：<https://github.com/PeterL1n/RobustVideoMatting>
+- 许可证副本：`licenses/Robust-Video-Matting-GPL-3.0.txt`
+- 模型文件：`models/video-matting/rvm-mobilenetv3-fp16.onnx`、`models/video-matting/rvm-resnet50-fp16.onnx`
+- MobileNetV3 SHA-256：`6a0d5ce6cc17702613be548559879b4521ed424cfe14ddc48d1acaa44d616f64`
+- ResNet50 浏览器版 SHA-256：`6ab2e8530a3f5decb3d7b2b40e09e213b0f0cd0e138570284b83654500848b5e`
+- ResNet50 浏览器兼容说明：保留官方 FP16 权重和计算图，仅给四组不同缩放的循环输入 / 输出分配唯一 ONNX 符号尺寸，避免 ONNX Runtime Web 把不同尺寸误判为必须相同
+
+## Mediabunny 1.55.1
+
+- 用途：浏览器本地视频拆帧、WebCodecs 编码、音频保留和 MP4 / WebM 重封装
+- 许可证：Mozilla Public License 2.0
+- 上游项目：<https://github.com/Vanilagy/mediabunny>
+- 许可证副本：`licenses/Mediabunny-MPL-2.0.txt`
+- 发行文件：`video/mediabunny-1.55.1.min.js`
+- 发行文件 SHA-256：`3c3bda64c0bf9a14b0dad219097818d5b2d8166749741315248e67b03d9399f4`
+
 ## Nginx
 
 容器镜像基于 Nginx 官方镜像。其软件及基础镜像中的第三方组件按照镜像内附带的各自许可证提供：

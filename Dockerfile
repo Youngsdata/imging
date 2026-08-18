@@ -10,10 +10,14 @@ COPY --link models/background-removal/isnet-general-int8.onnx /usr/share/nginx/h
 COPY --link models/background-removal/isnet-general-fp16.onnx /usr/share/nginx/html/models/background-removal/isnet-general-fp16.onnx
 COPY --link models/background-removal/ben2-fp16.onnx /usr/share/nginx/html/models/background-removal/ben2-fp16.onnx
 COPY --link models/background-removal/birefnet-hr-matting-fp16.onnx /usr/share/nginx/html/models/background-removal/birefnet-hr-matting-fp16.onnx
+COPY --link models/video-matting/rvm-mobilenetv3-fp16.onnx /usr/share/nginx/html/models/video-matting/rvm-mobilenetv3-fp16.onnx
+COPY --link models/video-matting/rvm-resnet50-fp16.onnx /usr/share/nginx/html/models/video-matting/rvm-resnet50-fp16.onnx
 COPY --link licenses/ /usr/share/nginx/html/licenses/
 COPY --link assets/ /usr/share/nginx/html/assets/
 COPY --link docs/imging-project-v1.schema.json /usr/share/nginx/html/schemas/imging-project-v1.schema.json
 COPY --link ai/background-removal.js /usr/share/nginx/html/ai/background-removal.js
+COPY --link ai/video-matting.js /usr/share/nginx/html/ai/video-matting.js
+COPY --link video/ /usr/share/nginx/html/video/
 COPY --link seo/ /usr/share/nginx/html/
 COPY --link en/ /usr/share/nginx/html/en/
 COPY --link dist/index.html /usr/share/nginx/html/index.html

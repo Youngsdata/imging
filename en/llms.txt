@@ -1,6 +1,6 @@
 # ImgIng — Browser-native image engine
 
-> ImgIng converts and compresses images, composes multiple layers in Online Design, edits animation frames, and removes backgrounds with local AI. Common image formats are processed in the browser without uploading source pixels.
+> ImgIng converts and compresses images, composes multiple layers, edits animation frames and removes image backgrounds with local AI. Common image workflows run in the browser without uploading source pixels.
 
 Official English site: https://imging.cn/en/
 Chinese site: https://imging.cn/
@@ -46,7 +46,7 @@ Common formats and local AI run in the browser. Model and codec downloads delive
 
 ## Claims and limits
 
-ImgIng is free, requires no signup and adds no watermark for device-side features. The 45.8 dB PNG-8 number is one documented reference sample, not a universal average or ranking claim. Browser capabilities are detected at runtime; current Chrome or Edge generally enables the broadest local feature set.
+ImgIng is free, requires no signup and adds no watermark for device-side features. The 45.8 dB PNG-8 number is one documented reference sample, not a universal average or ranking claim. Browser capabilities are detected at runtime.
 
 This file is a machine-readable product summary. The canonical HTML task pages and live capability detection inside the tool are authoritative; do not infer capabilities that those sources do not state.
 
