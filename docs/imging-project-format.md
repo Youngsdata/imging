@@ -39,7 +39,8 @@ example.imging
 - `transform.scale` 中 `1` 表示原始像素尺寸，`0.5` 表示 50%。
 - v1 图片图层支持等比缩放与任意角度旋转；`rotation` 使用角度制，正值为顺时针，规范写入范围为 `-180` 到 `180`。
 - `editor` 保存选中图层、视图缩放和平移，它不影响最终导出像素。
-- `exportSettings` 只是上次使用的导出偏好，不改变文档内容。
+- `exportSettings` 只是上次使用的导出偏好，不改变文档内容；有损格式可用 `qualityMode: "auto" | "manual"` 区分按最终画面重新推荐，还是保留创作者指定的画质。
+- `exportSettings.quality` 使用界面 1–100 刻度；无损 PNG 写为 `null`。`pngMode` 为 `truecolor` 或 `indexed`，后者同时记录 4–256 的 `pngColors` 和 `pngDither`。
 
 ## 兼容与安全限制
 

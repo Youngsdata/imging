@@ -108,7 +108,18 @@
       }
     },
     "editor": { "type": "object" },
-    "exportSettings": { "type": "object" },
+    "exportSettings": {
+      "type": "object",
+      "properties": {
+        "format": { "enum": ["png", "webp", "jpeg"] },
+        "quality": { "type": ["number", "null"], "minimum": 1, "maximum": 100 },
+        "qualityMode": { "enum": ["auto", "manual", null] },
+        "pngMode": { "enum": ["truecolor", "indexed"] },
+        "pngColors": { "type": "integer", "minimum": 4, "maximum": 256 },
+        "pngDither": { "type": "boolean" }
+      },
+      "additionalProperties": true
+    },
     "preview": { "type": "object" }
   },
   "additionalProperties": true
