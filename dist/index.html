@@ -9,6 +9,7 @@
 <style>
   /* ============ 设计令牌 ============ */
   :root{
+    color-scheme:light;
     --bg:#faf8f4; --bg-2:#f2efe8; --surface:#ffffff; --surface-2:#fbfaf7;
     --ink:#1b1a22; --ink-2:#403e4b; --muted:#6d6a7a; --faint:#9b98a7;
     --line:#e7e3da; --line-2:#d9d4c8;
@@ -20,9 +21,21 @@
     --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
     --sans:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",Roboto,sans-serif;
     --maxw:1140px;
+    /* 编辑工作区与首页共用同一套明暗主题，所有值都跟随上方站点令牌。 */
+    --editor-bg:var(--bg); --editor-bar:color-mix(in srgb,var(--surface) 94%,var(--bg-2));
+    --editor-panel:color-mix(in srgb,var(--surface-2) 88%,var(--bg)); --editor-card:color-mix(in srgb,var(--surface) 88%,var(--bg-2));
+    --editor-control:color-mix(in srgb,var(--surface) 90%,var(--bg-2)); --editor-control-strong:color-mix(in srgb,var(--surface-2) 88%,var(--ink) 12%);
+    --editor-text:var(--ink); --editor-text-2:var(--ink-2); --editor-muted:var(--muted); --editor-faint:var(--faint);
+    --editor-line:var(--line-2); --editor-line-soft:var(--line); --editor-accent:var(--teal-2); --editor-accent-bg:var(--teal-bg);
+    --editor-stage:color-mix(in srgb,var(--bg-2) 86%,var(--ink) 14%); --editor-stage-glow:color-mix(in srgb,var(--surface-2) 82%,var(--ink) 18%);
+    --editor-checker-a:color-mix(in srgb,var(--surface) 82%,var(--ink) 18%); --editor-checker-b:var(--surface);
+    --editor-scroll-track:color-mix(in srgb,var(--editor-panel) 90%,var(--ink) 10%);
+    --editor-scroll-thumb:color-mix(in srgb,var(--muted) 68%,var(--teal) 32%); --editor-scroll-hover:var(--teal-2);
+    --editor-shadow:0 16px 42px -28px color-mix(in srgb,var(--ink) 42%,transparent);
   }
   @media (prefers-color-scheme:dark){
     :root{
+      color-scheme:dark;
       --bg:#131218; --bg-2:#1a1922; --surface:#1e1d27; --surface-2:#232230;
       --ink:#f0eef5; --ink-2:#c8c5d4; --muted:#928fa2; --faint:#6c6980;
       --line:#2c2b38; --line-2:#3a3849;
@@ -33,6 +46,7 @@
     }
   }
   :root[data-theme="light"]{
+    color-scheme:light;
     --bg:#faf8f4; --bg-2:#f2efe8; --surface:#ffffff; --surface-2:#fbfaf7;
     --ink:#1b1a22; --ink-2:#403e4b; --muted:#6d6a7a; --faint:#9b98a7;
     --line:#e7e3da; --line-2:#d9d4c8;
@@ -42,6 +56,7 @@
     --shadow-lg:0 30px 70px -40px rgba(27,26,34,.4);
   }
   :root[data-theme="dark"]{
+    color-scheme:dark;
     --bg:#131218; --bg-2:#1a1922; --surface:#1e1d27; --surface-2:#232230;
     --ink:#f0eef5; --ink-2:#c8c5d4; --muted:#928fa2; --faint:#6c6980;
     --line:#2c2b38; --line-2:#3a3849;
@@ -395,13 +410,74 @@
   .videobar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:0 14px 0 20px;border-bottom:1px solid #2b2d35;background:#191a20;z-index:4}.videobrand{display:flex;align-items:center;gap:11px;min-width:0}.videobrand-icon{display:grid;place-items:center;width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#f4553f,#8567e8);color:#fff}.videobrand-icon svg{width:19px}.videobrand b{display:flex;align-items:center;gap:7px;font-size:14px}.videobeta{display:inline-flex;align-items:center;border:1px solid rgba(101,222,215,.45);border-radius:999px;padding:2px 6px;background:rgba(36,198,189,.12);color:#70eee5;font:800 8px var(--mono);letter-spacing:.08em}.videobrand small{display:block;margin-top:2px;color:#9296a2;font:10px var(--mono);white-space:nowrap}.videoactions{display:flex;align-items:center;gap:7px}
   .videobtn{height:35px;border:1px solid #393c47;border-radius:8px;background:#25272f;color:#e8e9ed;padding:0 12px;font:700 11.5px var(--sans);cursor:pointer;white-space:nowrap}.videobtn:hover{border-color:#41d2ca;color:#78eee7}.videobtn.primary{border-color:#24c6bd;background:#0fa79f;color:#fff}.videobtn.danger{border-color:#7f3d3a;color:#ff9a91}.videobtn.close{min-width:35px;padding:0;font-size:21px}.videobtn:disabled{opacity:.38;cursor:default}
   .videobody{min-height:0;display:grid;grid-template-columns:286px minmax(0,1fr) 306px}.videoside{min-height:0;overflow:auto;padding:15px 13px;background:#17181e}.videoside.left{border-right:1px solid #2b2d35}.videoside.right{border-left:1px solid #2b2d35}.videogroup{padding:0 0 15px;margin:0 0 15px;border-bottom:1px solid #2d3038}.videogroup:last-child{border:0}.videotitle{display:flex;align-items:center;justify-content:space-between;margin:0 0 9px;color:#9397a3;font:750 10px var(--mono);letter-spacing:.09em;text-transform:uppercase}.videotitle small{color:#65ded7;letter-spacing:0}.videowide{width:100%;min-height:37px;border:1px solid #3a3d47;border-radius:8px;background:#25272f;color:#e7e8ed;font:700 11.5px var(--sans);cursor:pointer}.videowide:hover{border-color:#24c6bd;color:#70eee5}.videowide.primary{border-color:#24c6bd;background:#153d39;color:#70eee5}.videofile{display:none}.videohint{margin:8px 0 0;color:#858a97;font-size:10px;line-height:1.55}
-  .videometa{display:grid;grid-template-columns:1fr 1fr;gap:6px}.videometa span{padding:8px;border:1px solid #30333d;border-radius:8px;background:#202229;color:#aeb2bd;font:10px var(--mono);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.videometa b{display:block;margin-bottom:3px;color:#f0f1f4;font-size:11px}.videomodels{display:grid;gap:7px}.videomodel{position:relative;padding:10px 11px;border:1px solid #383b45;border-radius:9px;background:#22242b;color:#d7d9df;text-align:left;cursor:pointer}.videomodel.on{border-color:#24c6bd;background:#153733}.videomodel b{display:block;font-size:11.5px}.videomodel small{display:block;margin-top:4px;color:#858b97;font-size:9.5px;line-height:1.4;padding-right:46px}.videomodel em{position:absolute;right:9px;top:9px;color:#6de6df;font:800 9px var(--mono);font-style:normal}.videomodel .cached{color:#75e6a2}
+  .videometa{display:grid;grid-template-columns:1fr 1fr;gap:6px}.videometa span{padding:8px;border:1px solid #30333d;border-radius:8px;background:#202229;color:#aeb2bd;font:10px var(--mono);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.videometa b{display:block;margin-bottom:3px;color:#f0f1f4;font-size:11px}.videomodels{display:grid;gap:7px}.videomodel{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:start;column-gap:8px;position:relative;padding:10px 11px;border:1px solid #383b45;border-radius:9px;background:#22242b;color:#d7d9df;text-align:left;cursor:pointer}.videomodel.on{border-color:#24c6bd;background:#153733}.videomodel b{display:block;grid-column:1;grid-row:1;min-width:0;font-size:11.5px;line-height:1.3}.videomodel small{display:block;grid-column:1/-1;grid-row:2;margin-top:4px;color:#858b97;font-size:9.5px;line-height:1.4}.videomodel em{position:static;grid-column:2;grid-row:1;max-width:112px;color:#6de6df;font:800 9px/1.25 var(--mono);font-style:normal;text-align:right;white-space:nowrap}.videomodel .cached{color:#75e6a2}
   .videoseg{display:grid;grid-template-columns:repeat(2,1fr);gap:6px}.videoseg.three{grid-template-columns:repeat(3,1fr)}.videoseg button{height:34px;border:1px solid #383b46;border-radius:7px;background:#24262d;color:#c9cbd2;font:650 10.5px var(--sans);cursor:pointer}.videoseg button.on{border-color:#24c6bd;background:#153d39;color:#70eee5}.videofield{display:grid;gap:5px;margin-top:8px;color:#9ba0ab;font-size:10.5px}.videofield input,.videofield select,.videoselect{width:100%;height:34px;border:1px solid #383b46;border-radius:7px;background:#24262d;color:#e8e9ed;padding:0 8px;font:10.5px var(--mono)}.videofield input[type=color]{padding:3px;cursor:pointer}.videorange{display:grid;grid-template-columns:72px minmax(0,1fr) 42px;align-items:center;gap:7px;margin-top:9px;color:#c4c7cf;font-size:10.5px}.videorange input{width:100%;accent-color:#24c6bd}.videorange output{text-align:right;color:#6ce9e1;font:10px var(--mono)}
   .videostage{position:relative;min-width:0;min-height:0;overflow:hidden;display:grid;place-items:center;padding:24px;background:#202229 radial-gradient(circle at 50% 44%,#2b2e37 0,#202229 64%)}.videochecker{position:relative;max-width:100%;max-height:100%;display:grid;place-items:center;border:1px solid #4a4e5b;border-radius:10px;overflow:hidden;background:repeating-conic-gradient(#d9dbe0 0 25%,#f1f2f4 0 50%) 0 0/24px 24px;box-shadow:0 22px 65px rgba(0,0,0,.42)}.videochecker video,.videochecker canvas{display:block;max-width:min(100%,1100px);max-height:calc(100vh - 150px);width:auto;height:auto}.videochecker canvas[hidden],.videochecker video[hidden]{display:none}.videoempty{display:grid;place-items:center;text-align:center;gap:9px;width:min(520px,80vw);min-height:300px;padding:32px;color:#8e939f}.videoempty b{font-size:20px;color:#e9eaf0}.videoempty span{max-width:430px;font-size:12px;line-height:1.65}.videochecker[hidden],.videoempty[hidden],.videofield[hidden],.videorange[hidden]{display:none!important}.videodrop{position:absolute;inset:16px;z-index:6;display:grid;place-items:center;border:2px dashed #5ce5dc;border-radius:15px;background:rgba(17,57,54,.9);color:#8ffff7;font-weight:800}.videodrop[hidden]{display:none}
   .videoprogress{padding:12px;border:1px solid #353945;border-radius:11px;background:#202229}.videoprogress-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}.videoprogress-head b{font-size:12px}.videoprogress-head span{color:#67e4dc;font:750 10px var(--mono)}.videoprogress p{margin:6px 0 0;color:#979ca7;font-size:10.5px;line-height:1.5}.videoprogress-track{height:8px;margin-top:10px;border-radius:999px;background:#343741;overflow:hidden}.videoprogress-track i{display:block;width:0;height:100%;border-radius:inherit;background:linear-gradient(90deg,#0fa79f,#51ddd4,#f4553f);transition:width .18s ease}.videoprogress-detail{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:9px}.videoprogress-detail span{padding:7px;border-radius:7px;background:#292c34;color:#aeb2bd;font:9.5px var(--mono)}.videoprogress-detail b{display:block;margin-bottom:2px;color:#f2f3f5;font-size:10px}.videosteps{display:grid;gap:6px;margin-top:9px}.videostep{display:grid;grid-template-columns:18px 1fr auto;align-items:center;gap:7px;color:#777d89;font-size:10px}.videostep i{display:grid;place-items:center;width:17px;height:17px;border:1px solid #3c404b;border-radius:50%;font:8px var(--mono);font-style:normal}.videostep.on{color:#e6e8ec}.videostep.on i{border-color:#24c6bd;color:#70eee5}.videostep.done i{border-color:#249b6a;background:#1d6347;color:#fff}.videoresult[hidden]{display:none}.videoresult{padding:12px;border:1px solid #2d765b;border-radius:10px;background:#17352c}.videoresult b{display:block;color:#89efbb;font-size:12px}.videoresult p{margin:5px 0 10px;color:#a9bdb4;font-size:10.5px;line-height:1.5}.videoresult video{width:100%;max-height:180px;border-radius:7px;background:#000}
   .videocap{display:grid;gap:6px}.videocap span{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:7px 8px;border-radius:7px;background:#22252c;color:#aeb2bd;font-size:10px}.videocap b{font:750 9px var(--mono)}.videocap .yes{color:#75e6a2}.videocap .warn{color:#ffc56c}.videofoot{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:0 14px;border-top:1px solid #2b2d35;background:#191a20;color:#8f929d;font:10px var(--mono);white-space:nowrap;overflow:hidden}.videofoot span{overflow:hidden;text-overflow:ellipsis}.videofoot b{color:#61ddd5;font-weight:600}
   @media(max-width:980px){.videobody{grid-template-columns:250px minmax(0,1fr)}.videoside.right{position:absolute;right:8px;top:68px;z-index:8;width:280px;max-height:calc(100vh - 116px);border:1px solid #353843;border-radius:12px;background:rgba(23,24,30,.97);box-shadow:0 18px 44px rgba(0,0,0,.4)}}
   @media(max-width:700px){.videoview{grid-template-rows:54px minmax(0,1fr) 28px}.videobar{padding:0 8px}.videobrand small,.videoactions .txt{display:none}.videobody{display:block;position:relative}.videostage{position:absolute;inset:0;padding:10px}.videoside.left{position:absolute;left:7px;bottom:7px;z-index:8;width:min(250px,62vw);max-height:45%;border:1px solid #353843;border-radius:12px;background:rgba(23,24,30,.97);box-shadow:0 12px 32px rgba(0,0,0,.35)}.videoside.right{top:7px;right:7px;width:min(244px,60vw);max-height:43%}.videofoot span:last-child{display:none}.videochecker video,.videochecker canvas{max-height:calc(100vh - 104px)}}
+  /* ===== 编辑工作区双主题：在线做图、在线视频与专业精修统一跟随站点主题 ===== */
+  .proview,.designview,.videoview{background:var(--editor-bg);color:var(--editor-text)}
+  .probar,.designbar,.videobar,.profoot,.designstatus,.videofoot{border-color:var(--editor-line-soft);background:var(--editor-bar);color:var(--editor-muted);box-shadow:var(--editor-shadow)}
+  .probar-title small,.designbrand small,.videobrand small{color:var(--editor-muted)}
+  .editortheme{display:inline-grid!important;place-items:center;min-width:34px;padding:0!important}
+  .editortheme svg{width:16px;height:16px}
+  .proicon,.designbtn,.videobtn,.proseg button,.prowide,.procomposefile button,.probgitem button,.designwide,.designseg button,.designfield input,.designfield select,.designselect,.videowide,.videoseg button,.videofield input,.videofield select,.videoselect{border-color:var(--editor-line);background:var(--editor-control);color:var(--editor-text-2)}
+  .proicon:hover,.proicon.on,.designbtn:hover,.designbtn.on,.videobtn:hover,.proseg button.on,.prowide:hover,.designwide:hover,.designseg button.on,.videowide:hover,.videoseg button.on{border-color:var(--teal);background:var(--editor-accent-bg);color:var(--editor-accent)}
+  .designbtn.primary,.videobtn.primary{border-color:var(--teal);background:var(--teal);color:#fff}
+  .designbtn.primary:hover,.videobtn.primary:hover{background:var(--teal-2);color:#fff}
+  .proicon.close,.designbtn.close,.videobtn.close{color:var(--editor-text)}
+  .protools,.designside,.videoside{border-color:var(--editor-line-soft);background:var(--editor-panel)}
+  .protoolgroup,.designgroup,.videogroup{border-color:var(--editor-line-soft)}
+  .protooltitle,.designtitle,.videotitle{color:var(--editor-muted)}
+  .designtitle small,.videotitle small,.proctrl output,.designrange output,.videorange output,.profoot b,.designstatus b,.videofoot b,.videoprogress-head span,.videomodel em{color:var(--editor-accent)}
+  .proctrl,.procheck,.designrange,.designcheck,.videorange{color:var(--editor-text-2)}
+  .procheck small,.protips,.procomposehint,.prolayerprompt,.designhint,.designcheck small,.designratio small,.videohint,.videoprogress p,.videoempty,.videostep{color:var(--editor-muted)}
+  .protips kbd{border-color:var(--editor-line);background:var(--editor-control-strong);color:var(--editor-text-2)}
+  .procompose-row input,.procompose-row select,.procompose-select,.prolayerxy input,.designnumber{border-color:var(--editor-line);background:var(--editor-control);color:var(--editor-text)}
+  .designnumber input{color:var(--editor-text)}
+  .designnumber em,.procomposefile span,.prolayerxy label,.designfield,.videofield{color:var(--editor-muted)}
+  .prolayerbox,.designpngopts,.designlayerrow,.videometa span,.videomodel,.videoprogress,.videocap span{border-color:var(--editor-line-soft);background:var(--editor-card);color:var(--editor-text-2)}
+  .prolayerhead b,.designlayername b,.videometa b,.videoprogress-detail b,.videoempty b{color:var(--editor-text)}
+  .prolayerbox.active,.designlayerrow.on,.videomodel.on{border-color:var(--teal);background:var(--editor-accent-bg);box-shadow:inset 3px 0 0 var(--teal)}
+  .prolayerprompt::before{background:var(--editor-accent-bg);color:var(--editor-accent)}
+  .prolayerhead button,.designratio>span{color:var(--editor-accent)}
+  .designlayername small,.videomodel small{color:var(--editor-muted)}
+  .designlayerrow button{border-color:var(--editor-line);background:var(--editor-control-strong);color:var(--editor-muted)}
+  .designlayerrow button:hover{border-color:var(--teal);color:var(--editor-accent)}
+  .designwide.danger{color:var(--coral-2)}
+  .videoprogress-detail span{background:var(--editor-control-strong);color:var(--editor-muted)}
+  .videoprogress-track{background:var(--editor-control-strong)}
+  .videostep.on{color:var(--editor-text)}
+  .videoresult{border-color:color-mix(in srgb,var(--teal) 55%,var(--editor-line));background:var(--editor-accent-bg)}
+  .videoresult b{color:var(--editor-accent)}.videoresult p{color:var(--editor-text-2)}
+  .prostage,.designstage,.videostage{background-color:var(--editor-stage);background-image:radial-gradient(circle at 50% 44%,var(--editor-stage-glow) 0,var(--editor-stage) 64%)}
+  .prostage{background-image:linear-gradient(45deg,var(--editor-stage-glow) 25%,transparent 25%),linear-gradient(-45deg,var(--editor-stage-glow) 25%,transparent 25%),linear-gradient(45deg,transparent 75%,var(--editor-stage-glow) 75%),linear-gradient(-45deg,transparent 75%,var(--editor-stage-glow) 75%)}
+  .procomparelayer.after{background-color:var(--editor-stage);background-image:linear-gradient(45deg,var(--editor-stage-glow) 25%,transparent 25%),linear-gradient(-45deg,var(--editor-stage-glow) 25%,transparent 25%),linear-gradient(45deg,transparent 75%,var(--editor-stage-glow) 75%),linear-gradient(-45deg,transparent 75%,var(--editor-stage-glow) 75%)}
+  .proloading{color:var(--editor-text-2);background:color-mix(in srgb,var(--editor-stage) 84%,transparent)}
+  .designempty{border-color:color-mix(in srgb,var(--editor-text) 24%,transparent);background:color-mix(in srgb,var(--editor-bar) 88%,transparent);color:var(--editor-text);box-shadow:var(--editor-shadow)}
+  .designempty span{color:var(--editor-muted)}
+  .videochecker{border-color:var(--editor-line);background:repeating-conic-gradient(var(--editor-checker-a) 0 25%,var(--editor-checker-b) 0 50%) 0 0/24px 24px;box-shadow:var(--editor-shadow)}
+  .editexit{background:color-mix(in srgb,var(--editor-bg) 72%,transparent)}
+  .editexit-card{border-color:var(--editor-line);background:var(--editor-bar);color:var(--editor-text);box-shadow:var(--shadow-lg)}
+  .editexit-card p{color:var(--editor-muted)}
+  .editexit-actions button{border-color:var(--editor-line);background:var(--editor-control);color:var(--editor-text-2)}
+  .editexit-actions .stay{border-color:var(--teal);background:var(--editor-accent-bg);color:var(--editor-accent)}
+  @media(max-width:980px){.designside.right,.videoside.right{border-color:var(--editor-line);background:color-mix(in srgb,var(--editor-panel) 96%,transparent);box-shadow:var(--editor-shadow)}}
+  @media(max-width:760px){.protools{border-color:var(--editor-line);background:color-mix(in srgb,var(--editor-panel) 96%,transparent)}.probar{padding:0 6px;gap:5px}.probar-actions{gap:3px}.proicon{height:30px;min-width:30px;padding:0 6px}}
+  @media(max-width:700px){.designside.left,.designside.right,.videoside.left,.videoside.right{border-color:var(--editor-line);background:color-mix(in srgb,var(--editor-panel) 96%,transparent);box-shadow:var(--editor-shadow)}.designbar,.videobar{padding:0 6px;gap:4px}.designactions,.videoactions{gap:4px}.videobtn{height:32px;min-width:32px;padding:0 7px}.videobrand{gap:6px}.videobrand-icon{width:30px;height:30px;flex:0 0 auto}}
+  @media(max-width:520px){.videobeta{display:none}}
+
+  /* Chromium / Safari 与 Firefox 均使用编辑器主题滚动条，暗色下不再出现亮白轨道。 */
+  .proview,.designview,.videoview{scrollbar-width:thin;scrollbar-color:var(--editor-scroll-thumb) var(--editor-scroll-track)}
+  :is(.proview,.designview,.videoview) *{scrollbar-width:thin;scrollbar-color:var(--editor-scroll-thumb) var(--editor-scroll-track)}
+  :is(.proview,.designview,.videoview) *::-webkit-scrollbar{width:10px;height:10px}
+  :is(.proview,.designview,.videoview) *::-webkit-scrollbar-track{background:var(--editor-scroll-track)}
+  :is(.proview,.designview,.videoview) *::-webkit-scrollbar-thumb{min-height:36px;border:2px solid var(--editor-scroll-track);border-radius:999px;background:linear-gradient(180deg,color-mix(in srgb,var(--editor-scroll-thumb) 78%,var(--teal) 22%),var(--editor-scroll-thumb))}
+  :is(.proview,.designview,.videoview) *::-webkit-scrollbar-thumb:hover{background:var(--editor-scroll-hover)}
+  :is(.proview,.designview,.videoview) *::-webkit-scrollbar-corner{background:var(--editor-scroll-track)}
+
   .fmtgrid.g4{grid-template-columns:repeat(4,1fr);}
   @media(max-width:520px){ .fmtgrid.g4{grid-template-columns:repeat(2,1fr);} }
   .fmt .rec{position:absolute; top:-8px; left:50%; transform:translateX(-50%); font-size:9px; font-family:var(--mono); font-weight:700; padding:2px 6px; border-radius:5px; white-space:nowrap; letter-spacing:.01em;}
@@ -922,6 +998,7 @@
       <button class="designbtn optional" id="designZoomIn" type="button" aria-label="放大画布">＋</button>
       <button class="designbtn primary" id="designProjectSaveTop" type="button">◇ <span class="txt">保存工程</span></button>
       <button class="designbtn" id="designExportTop" type="button">↓ <span class="txt">导出成品</span></button>
+      <button class="designbtn editortheme" data-editor-theme type="button" aria-label="切换深浅色" title="切换深浅色"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>
       <button class="designbtn close" id="designClose" type="button" aria-label="退出在线做图">×</button>
     </div>
   </header>
@@ -987,7 +1064,7 @@
         <div class="designrow"><label class="designfield">X<input id="designX" type="number" min="-32768" max="32768" step="1"></label><label class="designfield">Y<input id="designY" type="number" min="-32768" max="32768" step="1"></label></div>
         <div class="designrow"><button class="designwide" id="designCenter" type="button">居中</button><button class="designwide" id="designFitLayer" type="button">适合画布</button></div>
         <div class="designrow"><button class="designwide" id="designLayerUp" type="button">上移一层</button><button class="designwide" id="designLayerDown" type="button">下移一层</button></div>
-        <button class="designwide" id="designDelete" type="button" style="margin-top:7px;color:#ff8e82">删除当前图层</button>
+        <button class="designwide danger" id="designDelete" type="button" style="margin-top:7px">删除当前图层</button>
         <p class="designhint">拖动画面移动，拖动蓝色外框缩放，顶部圆点旋转；旋转时按住 Shift 可按 15° 吸附。</p>
       </section>
     </aside>
@@ -1002,6 +1079,7 @@
     <div class="videoactions">
       <button class="videobtn" id="videoAddTop" type="button">＋ <span class="txt">添加视频</span></button>
       <button class="videobtn primary" id="videoProcessTop" type="button" disabled>▶ <span class="txt">导出 MP4</span></button>
+      <button class="videobtn editortheme" data-editor-theme type="button" aria-label="切换深浅色" title="切换深浅色"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>
       <button class="videobtn close" id="videoClose" type="button" aria-label="退出在线视频编辑">×</button>
     </div>
   </header>
@@ -1079,6 +1157,7 @@
       <button class="proicon" id="proZoomOut" type="button" aria-label="缩小">−</button>
       <button class="proicon" id="proZoomFit" type="button">适合</button>
       <button class="proicon" id="proZoomIn" type="button" aria-label="放大">＋</button>
+      <button class="proicon editortheme" data-editor-theme type="button" aria-label="切换深浅色" title="切换深浅色"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>
       <button class="proicon close" id="proClose" type="button" aria-label="退出专业预览">×</button>
     </div>
   </div>
@@ -1473,18 +1552,18 @@
     <div class="relscroll">
       <div class="relcurrent">
         <time class="reldate" datetime="2026-08-19"><small>CURRENT</small><b>08.19</b></time>
-        <div><strong>当前构建 · 英文快捷入口布局修正版</strong><span>修复英文首页在线做图与在线视频入口因文案换行而重叠，改为按实际内容高度自动排列，并兼容桌面、窄屏与手机布局。</span></div>
+        <div><strong>当前构建 · 编辑工作区双主题与滚动条版</strong><span>在线做图、在线视频和专业精修现已完整跟随网站深浅主题，并为所有编辑区滚动容器提供协调一致的主题滚动条。</span></div>
       </div>
       <div class="relsection"><h3>已经交付</h3><span>VERIFIED RELEASES</span></div>
       <div class="reltimeline">
+        <article class="relitem"><time datetime="2026-08-19">2026-08-19</time><b>编辑工作区深浅主题与滚动条统一</b><p>三个编辑工作区完整支持深浅主题，新增工作区内主题切换并统一暗色与浅色滚动条。</p></article>
+        <article class="relitem"><time datetime="2026-08-19">2026-08-19</time><b>英文最高级视频模型状态重叠修复</b><p>修复英文 MatAnyone2 长标题与缓存状态重叠，统一三档视频模型卡片布局。</p></article>
         <article class="relitem"><time datetime="2026-08-19">2026-08-19</time><b>英文首页双入口重叠修复</b><p>修复英文首页两个工具入口的文案换行重叠，改为按实际高度自动排列。</p></article>
         <article class="relitem"><time datetime="2026-08-19">2026-08-19</time><b>图片与视频双语快捷路径</b><p>加入图片与视频中英文直达路径，并补齐 canonical、hreflang、robots、AI 可读说明和生产路由。</p></article>
         <article class="relitem"><time datetime="2026-08-19">2026-08-19</time><b>视频导出体积与码率修复</b><p>修复视频换背景后导出体积异常放大，加入参考原片与画面特征的自适应视频码率和音频复用。</p></article>
         <article class="relitem"><time datetime="2026-08-19">2026-08-19</time><b>在线视频编辑 Beta（测试版本）</b><p>公开 Beta 测试入口，加入三档时序抠像、比例自适应、CDN 模型分发、背景替换、音频保留与 MP4 / WebM 导出。</p></article>
         <article class="relitem"><time datetime="2026-08-18">2026-08-18</time><b>动图 WebP 残影修复与帧优化开关</b><p>清除后续帧的价格与文字残影；差分帧和完整帧现在是两条可明确选择、独立验证的编码路径。</p></article>
         <article class="relitem"><time datetime="2026-08-17">2026-08-17</time><b>图片外框缩放与任意角度旋转</b><p>Keynote 式八向缩放和旋转手柄、右侧精确角度与快捷旋转，并完整保留到工程和成品导出。</p></article>
-        <article class="relitem"><time datetime="2026-08-15">2026-08-15</time><b>在线做图与独立多图层工作台</b><p>最多 24 个本地图片图层，可拖动、缩放、排序、设背景、撤销重做并按真实画布尺寸导出。</p></article>
-        <article class="relitem"><time datetime="2026-08-15">2026-08-15</time><b>AI 抠图后本地多背景图层合成</b><p>支持透明、纯色或本地背景图，可独立拖动缩放主体和背景、调整画布并在导出时全尺寸合成。</p></article>
       </div>
       <div class="relsection"><h3>下一个版本</h3><span>PLANNED · NOT SHIPPED</span></div>
       <div class="relnext">
@@ -1562,7 +1641,9 @@
   /* ---------- 主题 ---------- */
   var root=document.documentElement, tbtn=document.getElementById('theme');
   function cur(){ var t=root.getAttribute('data-theme'); if(t) return t; return matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light'; }
-  tbtn.addEventListener('click', function(){ root.setAttribute('data-theme', cur()==='dark'?'light':'dark'); drawPixels(); });
+  function toggleTheme(){root.setAttribute('data-theme',cur()==='dark'?'light':'dark');drawPixels();}
+  tbtn.addEventListener('click',toggleTheme);
+  [].forEach.call(document.querySelectorAll('[data-editor-theme]'),function(button){button.addEventListener('click',toggleTheme);});
 
   /* ---------- 版本轨迹抽屉 + 意见反馈弹窗 ---------- */
   var fbModal=document.getElementById('fbModal'),releasePanel=document.getElementById('releasePanel'),releaseFab=document.querySelector('[data-release]'),overlayReturn=null;
