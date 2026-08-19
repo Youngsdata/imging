@@ -36,7 +36,7 @@ e71535eeee820d68b68ece7c8af761c39f3ddec93d3d957d2f83b19191339e0d  ./codecs/avif/
 8363e27add6c587b20f183fb746a583f97f28e8641f12955a1a550c38a4f9969  ./codecs/heic/libheif-bundle.mjs
 879dd39c8d9ebd5a3c64d1f18955b047907c677ca3b71865e2497264107e3aef  ./codecs/vendor/wasm-feature-detect.js
 12686e209637031cd00832e6fd8bdffd7ff450a136ecc2aec28ce4f28c237046  ./deploy.sh
-74e52fa2e78c902200d3b9fad731633e2ee6913baeaf3e949e2bdf7f1d6274b2  ./dist/index.html
+8ed7245db544cabd377f0b9e00b928ac03caf6a281c48a6bd4a0a1aa9d3393a6  ./dist/index.html
 14beb3fac411d73f2d4c9d47b7ab427b712813e888cb945c234200d1807d83e3  ./docker/nginx/40-enable-ssl.sh
 0a973d3ccb018f6f9240e5d8ce8373d99d0e93997fd4251579bb62b844db9c03  ./docker/nginx/41-inject-beian.sh
 0b1b12a3ea0e8e0655b426d049fbc11c6700700778e6452f9dddc522c1c41af0  ./docker/nginx/app.conf
@@ -48,13 +48,13 @@ e583e901c1e28aec387b819bac13aa7bd38302e9d34ad1c974f5f9b220162ade  ./docker/nginx
 669a2742d2dfed0cb863b507a059126b24286f88acbf1b0b489930f889845f58  ./en/compare/index.html
 ad93f808fc7c4699f7bb89a313b4d42c33f8ffa2d0e90008185b60766ca5876f  ./en/compress-gif/index.html
 e11aee00f0fc704ade5299c20c686ce373368b171f5e3cf8f087ffcbc9fd5a33  ./en/heic-to-jpg/index.html
-7b587bf863bb6a1aca57fa883686e138a961a47cea5c7b0cfef9b479ca18d020  ./en/index.html
+cf88ef686f142a7fcaac446b982a6d5bc3a5e7746b3d8da1b0d7ff38400f13d3  ./en/index.html
 53f46aa12c5335ddf8a24b62179b84bad3c9c7082212e951d734d72914963bc8  ./en/llms.txt
 76026cba0d3d2cf590d768610697282e12208f38ce09bb9fac6c15a9cffec291  ./en/online-design/index.html
 13a92e1b5d58cd26e8b7e2c817dcba1a627b63b24474db4a085466f7bbd7b3d6  ./en/png-compress/index.html
 8440f0ca8e7bf06f1d271a2c3966eca7bd0d4c0a07e950e2af6386a0e6bfc3c2  ./en/privacy/index.html
 2dc5368bf51e54c9121681595d0f7fbeb818a58a7e72523f4e6f7b86416c059d  ./en/remove-background/index.html
-55bf20bcd49d67127bdb1950a9a25170dfc5e2c46403c5dd49abed817bf71eb9  ./en/roadmap/index.html
+9b8deb9666da7193a1d1ad82580ca170862507a60e98bde60302472ea9b2a483  ./en/roadmap/index.html
 93633e4a9147641192e74bbca9a090b8a2e65c942a710f6082dd90aeaca135c7  ./en/video-editor/index.html
 a4843132cbd56c50f20ae008739d85b7563d38905fd692a337af52ad588c581a  ./licenses/BEN2-LICENSE.txt
 92a7089e0915fc32bc40067560b398f1e6a7a5958abd7d04eda393629a5acefb  ./licenses/BiRefNet-LICENSE.txt
@@ -83,7 +83,7 @@ bf7f89db7befab5de5088838c7f3ddc30ba835a6b014836b9f6934c50180807f  ./seo/online-d
 043549ff1a09cf5f1bdb7bf4299a0b70893f9e6ec3aaa8cf2f9e4ba5aa7ed964  ./seo/png-compress/index.html
 1577a747668f561667efe14f37cd3ae16315f0a5bfb4f29ed8c43854e6836f55  ./seo/privacy/index.html
 1ef6192300b6e5962b6f023691405e814e49cc43dc6344dd2f7e14c376951246  ./seo/remove-background/index.html
-a3e7f7ef3501c2736a33c1ba5f72d2139b7d08f5696c9f15e9af81519df62654  ./seo/roadmap/index.html
+70759b88d82b4fb38ecbd3ca636835beca402902f59dcdaa742961d975ccc32f  ./seo/roadmap/index.html
 91a9b1057316e8566e33a57b2119c7b8cae74b7f577a75a2b10d872064d3b94a  ./seo/video-editor/index.html
 cf62bb6e4fe6c78568245c086dc640fe332d14ad6760e1f933633cfbadce3305  ./sitemap.xml
 15ef39bcc7957344bd78408590e2922b5f0799cd627da5c4a8da234195872cf8  ./video/editor.js
