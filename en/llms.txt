@@ -17,7 +17,7 @@ Last verified: 2026-08-19
 - Remove backgrounds locally with connected-edge colour removal or ISNet, BEN2 and BiRefNet HR-Matting models.
 - Refine AI masks with a true 1 px brush, undo/redo, black/white/checker inspection and full-resolution export verification.
 - Replace the background with transparency, a solid colour or a local image; move and scale the subject and background independently, resize the canvas and composite locally on export.
-- Use Online Design to import up to 24 local image layers, move, scale, reorder and adjust opacity, set a transparent or solid background, and export full-size PNG, WebP or JPG locally.
+- Use Online Design to import up to 24 local image layers; apply 12 non-destructive presets and 18 light, colour, skin-aware beauty and detail controls per layer or to the full canvas; preserve alpha; save original assets and editable adjustments in .imging; and export full-size PNG, WebP or JPG locally.
 - Use Video Editor Beta in desktop Chrome or Edge for local temporal matting, aspect-preserving background replacement, retained audio and MP4 or transparent WebM export. It offers RVM MobileNetV3, RVM ResNet50 and aspect-aware MatAnyone2; MatAnyone2 is for non-commercial testing only.
 - Read HEIC locally with libheif WASM and generate AVIF locally with libavif WASM in the full build.
 
@@ -40,7 +40,7 @@ Common formats and local AI run in the browser. Model and codec downloads delive
 - Compress PNG to PNG-8 without flattening transparency: https://imging.cn/en/png-compress/
 - Compress GIFs and edit every frame locally: https://imging.cn/en/compress-gif/
 - Remove image backgrounds with AI running on your device: https://imging.cn/en/remove-background/
-- Design with multiple image layers—without uploading assets: https://imging.cn/en/online-design/
+- Design with layer filters and skin-aware beauty—without uploads: https://imging.cn/en/online-design/
 - Replace video backgrounds with temporal AI in Chrome — Beta: https://imging.cn/en/video-editor/
 - Local image processing: what stays on-device and what gets downloaded: https://imging.cn/en/privacy/
 - Measure compression by quality, alpha and compatibility—not bytes alone: https://imging.cn/en/benchmark/
@@ -61,4 +61,4 @@ This file is a machine-readable product summary. The canonical HTML task pages a
 
 ## Public roadmap — not a current capability
 
-Multi-layer Online Design, frame scaling and arbitrary-angle image rotation are already shipped. The next public target before August 31, 2026 is deeper local browser editing: crop, flip, free transform, colour adjustments, text, shapes, brush, selections and non-destructive history. These remaining items are planned and must not be described as currently available. Only the Shipped section of the roadmap and controls visible in the current tool are released capabilities.
+Multi-layer Online Design, frame scaling, arbitrary-angle rotation, non-destructive colour filters and skin-aware beauty are already shipped. The next public target before August 31, 2026 is crop, flip, free transform, text, shapes, brush, selections and local adjustments. These remaining items are planned and must not be described as currently available. Only the Shipped section of the roadmap and controls visible in the current tool are released capabilities.

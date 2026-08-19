@@ -2,6 +2,34 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://imging.cn/schemas/imging-project-v1.schema.json",
   "title": "图映开放工程格式 v1",
+  "$defs": {
+    "adjustments": {
+      "type": "object",
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "preset": { "type": "string", "pattern": "^[A-Za-z0-9-]{1,32}$" },
+        "intensity": { "type": "number", "minimum": 0, "maximum": 100 },
+        "exposure": { "type": "number", "minimum": -100, "maximum": 100 },
+        "contrast": { "type": "number", "minimum": -100, "maximum": 100 },
+        "highlights": { "type": "number", "minimum": -100, "maximum": 100 },
+        "shadows": { "type": "number", "minimum": -100, "maximum": 100 },
+        "saturation": { "type": "number", "minimum": -100, "maximum": 100 },
+        "vibrance": { "type": "number", "minimum": -100, "maximum": 100 },
+        "temperature": { "type": "number", "minimum": -100, "maximum": 100 },
+        "tint": { "type": "number", "minimum": -100, "maximum": 100 },
+        "hue": { "type": "number", "minimum": -180, "maximum": 180 },
+        "skinSmooth": { "type": "number", "minimum": 0, "maximum": 100 },
+        "skinBrighten": { "type": "number", "minimum": 0, "maximum": 100 },
+        "rosy": { "type": "number", "minimum": -100, "maximum": 100 },
+        "clarity": { "type": "number", "minimum": -100, "maximum": 100 },
+        "sharpen": { "type": "number", "minimum": 0, "maximum": 100 },
+        "fade": { "type": "number", "minimum": 0, "maximum": 100 },
+        "vignette": { "type": "number", "minimum": 0, "maximum": 100 },
+        "grain": { "type": "number", "minimum": 0, "maximum": 100 }
+      },
+      "additionalProperties": true
+    }
+  },
   "type": "object",
   "required": ["format", "formatVersion", "mimeType", "generator", "document", "canvas", "assets", "layers"],
   "properties": {
@@ -54,7 +82,8 @@
             "color": { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$" }
           },
           "additionalProperties": true
-        }
+        },
+        "adjustments": { "$ref": "#/$defs/adjustments" }
       },
       "additionalProperties": true
     },
@@ -91,6 +120,7 @@
           "assetId": { "type": "string", "minLength": 1 },
           "visible": { "const": true },
           "opacity": { "type": "number", "minimum": 0, "maximum": 1 },
+          "adjustments": { "$ref": "#/$defs/adjustments" },
           "transform": {
             "type": "object",
             "required": ["origin", "x", "y", "scale", "rotation"],
