@@ -1,5 +1,5 @@
 /* 图映 · 浏览器本地视频抠像加载器
- * RVM 与内部 MatAnyone2 实验链路均以跨帧状态保持边缘稳定；视频帧与蒙版始终留在浏览器内。
+ * RVM 与 MatAnyone2 Beta 链路均以跨帧状态保持边缘稳定；视频帧与蒙版始终留在浏览器内。
  */
 (function(){
   'use strict';
@@ -14,7 +14,7 @@
     {name:'stepUpdate',label:copy('时序传播','temporal propagation'),file:'matanyone2_step_update.onnx',bytes:154147770,sha256:stepSha}
   ];}
   var CACHE_NAME='tuying-video-matting-v2';
-  var MODEL_RELEASE='v1.0.1-web';
+  var MODEL_RELEASE='v1.1.0-web';
   var MODEL_CDN_BASE='https://modelscope.cn/models/dragonsoar/imging-video-matting/resolve/'+MODEL_RELEASE+'/';
   var MODELS={
     balanced:{
@@ -29,7 +29,7 @@
     },
     experimental:{
       id:'experimental',kind:'matanyone2',label:copy('实验极致','Experimental ultimate'),technicalName:'MatAnyone2 ONNX FP32 · Adaptive HD',
-      description:copy('保持原比例，并自动匹配有效像素最多的横屏、方形或竖屏高清模型','Preserves the source aspect ratio and automatically selects the HD landscape, square or portrait model with the most usable pixels'),
+      description:copy('保持原比例，并自动匹配有效像素最多的横屏、方形或竖屏高清模型；仅限非商业测试','Preserves the source aspect ratio and automatically selects the HD landscape, square or portrait model with the most usable pixels; non-commercial testing only'),
       bytes:307843860,
       profiles:[
         {key:'landscape',label:copy('横屏 1280×720','Landscape 1280×720'),directory:'matanyone2-1280x720',analysisWidth:1280,analysisHeight:720,bytes:307843860,release:'matanyone2-onnx-1280x720-t5-no-residual',parts:matParts(37426352,'a4bc8ee74e10fc47317198a9d078f2609473f891f02c7c30f54d6b3a8928fe70','79cf77320d31715d23038669d1d8d8ef6fd0a2b450896f3d6105b707426499dd',76207742,'d968b19c22eae27fbbd6e57dbf1eba35a7313df43ee29920c40c90b855589abe','06cd829c1bd9543b2f49025870a7506ca8aeb28f454a0d35091674894a4de152')},
@@ -38,9 +38,13 @@
       ]
     }
   };
+  function modelSources(cdnUrl,localUrl){return[
+    {id:'modelscope',label:'ModelScope CDN',url:cdnUrl,credentials:'omit'},
+    {id:'local',label:copy('本站备用地址','site fallback'),url:localUrl,credentials:'same-origin'}
+  ];}
   function prepareMatAnyoneProfile(parent,profile){
     profile.id=parent.id+'-'+profile.key;profile.parentId=parent.id;profile.kind='matanyone2';profile.technicalName='MatAnyone2 ONNX FP32 · '+profile.analysisWidth+'×'+profile.analysisHeight;profile.description=parent.description;profile.label=parent.label+' · '+profile.label;
-    profile.parts.forEach(function(part){part.id=profile.id+'-'+part.name;part.parentId=parent.id;part.release=profile.release;part.localUrl=new URL('../models/video-matting/'+profile.directory+'/'+part.file,BASE).href+'?sha='+part.sha256.slice(0,12);part.url=part.localUrl;part.sources=[{id:'local',label:copy('本站高速资源','site model asset'),url:part.localUrl,credentials:'same-origin'}];});
+    profile.parts.forEach(function(part){part.id=profile.id+'-'+part.name;part.parentId=parent.id;part.release=profile.release;part.url=MODEL_CDN_BASE+profile.directory+'/'+part.file;part.localUrl=new URL('../models/video-matting/'+profile.directory+'/'+part.file,BASE).href+'?sha='+part.sha256.slice(0,12);part.sources=modelSources(part.url,part.localUrl);});
     profile.url=profile.parts[0].url;profile.localUrl=profile.parts[0].localUrl;profile.sha256=profile.parts.map(function(part){return part.sha256.slice(0,12);}).join('-');return profile;
   }
   Object.keys(MODELS).forEach(function(id){
@@ -52,9 +56,7 @@
     }
     model.url=MODEL_CDN_BASE+model.file;
     model.localUrl=new URL('../models/video-matting/'+model.file,BASE).href+'?sha='+model.sha256.slice(0,12);
-    var cdn={id:'modelscope',label:'ModelScope CDN',url:model.url,credentials:'omit'};
-    var local={id:'local',label:copy('本站高速资源','site model asset'),url:model.localUrl,credentials:'same-origin'};
-    model.sources=[local,cdn];
+    model.sources=modelSources(model.url,model.localUrl);
   });
 
   var runtimePromise=null,runtimeScript=null,sessionPromises={},backends={};

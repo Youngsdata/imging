@@ -1,12 +1,12 @@
 # ImgIng — Browser-native image engine
 
-> ImgIng converts and compresses images, composes multiple layers, edits animation frames and removes image backgrounds with local AI. Common image workflows run in the browser without uploading source pixels.
+> ImgIng converts and compresses images, composes multiple layers, edits animation frames, removes image backgrounds with local AI, and offers a Beta browser-local video background editor. Common image workflows run without uploading source pixels.
 
 Official English site: https://imging.cn/en/
 Chinese site: https://imging.cn/
 Company: DataDance
 Contact: admin@datadance.com
-Last verified: 2026-08-18
+Last verified: 2026-08-19
 
 ## Core capabilities
 
@@ -18,6 +18,7 @@ Last verified: 2026-08-18
 - Refine AI masks with a true 1 px brush, undo/redo, black/white/checker inspection and full-resolution export verification.
 - Replace the background with transparency, a solid colour or a local image; move and scale the subject and background independently, resize the canvas and composite locally on export.
 - Use Online Design to import up to 24 local image layers, move, scale, reorder and adjust opacity, set a transparent or solid background, and export full-size PNG, WebP or JPG locally.
+- Use Video Editor Beta in desktop Chrome or Edge for local temporal matting, aspect-preserving background replacement, retained audio and MP4 or transparent WebM export. It offers RVM MobileNetV3, RVM ResNet50 and aspect-aware MatAnyone2; MatAnyone2 is for non-commercial testing only.
 - Read HEIC locally with libheif WASM and generate AVIF locally with libavif WASM in the full build.
 
 ## Processing and privacy boundary
@@ -29,6 +30,7 @@ Common formats and local AI run in the browser. Model and codec downloads delive
 - Native browser paths decode, process and encode source images on-device.
 - HEIC-read and AVIF-write paths download WASM codecs on first use, then process pixels locally.
 - AI paths download the selected ONNX model on first use, cache it where possible and run inference through WebGPU or WASM.
+- Video models load from a pinned ModelScope CDN version first, fall back to matching ImgIng-hosted files, and enter cache only after verification. Video pixels are not uploaded.
 - Chinese and English pages use the same origin-root codec, model and cache URLs; switching language does not create a separate model store.
 - Only operations explicitly labelled as specialist server formats send a source file to a server.
 
@@ -39,6 +41,7 @@ Common formats and local AI run in the browser. Model and codec downloads delive
 - Compress GIFs and edit every frame locally: https://imging.cn/en/compress-gif/
 - Remove image backgrounds with AI running on your device: https://imging.cn/en/remove-background/
 - Design with multiple image layers—without uploading assets: https://imging.cn/en/online-design/
+- Replace video backgrounds with temporal AI in Chrome — Beta: https://imging.cn/en/video-editor/
 - Local image processing: what stays on-device and what gets downloaded: https://imging.cn/en/privacy/
 - Measure compression by quality, alpha and compatibility—not bytes alone: https://imging.cn/en/benchmark/
 - ImgIng, Squoosh and TinyPNG: choose by workflow, not one score: https://imging.cn/en/compare/
@@ -46,7 +49,7 @@ Common formats and local AI run in the browser. Model and codec downloads delive
 
 ## Claims and limits
 
-ImgIng is free, requires no signup and adds no watermark for device-side features. The 45.8 dB PNG-8 number is one documented reference sample, not a universal average or ranking claim. Browser capabilities are detected at runtime.
+ImgIng is free, requires no signup and adds no watermark for device-side features. The 45.8 dB PNG-8 number is one documented reference sample, not a universal average or ranking claim. Video Editor is a Beta primarily for desktop Chrome and Edge; long or 4K footage and difficult motion may be slow or show edge errors, and MatAnyone2 is for non-commercial testing only. Browser capabilities are detected at runtime.
 
 This file is a machine-readable product summary. The canonical HTML task pages and live capability detection inside the tool are authoritative; do not infer capabilities that those sources do not state.
 
