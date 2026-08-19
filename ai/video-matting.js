@@ -29,7 +29,7 @@
     },
     experimental:{
       id:'experimental',kind:'matanyone2',label:copy('实验极致','Experimental ultimate'),technicalName:'MatAnyone2 ONNX FP32 · Adaptive HD',
-      description:copy('保持原比例，并自动匹配有效像素最多的横屏、方形或竖屏高清模型；仅限非商业测试','Preserves the source aspect ratio and automatically selects the HD landscape, square or portrait model with the most usable pixels; non-commercial testing only'),
+      description:copy('保持原比例，自动匹配有效像素最多的高清模型，并用 RVM ResNet50 校准首帧细节；仅限非商业测试','Preserves the source aspect ratio, selects the HD profile with the most usable pixels, and calibrates first-frame detail with RVM ResNet50; non-commercial testing only'),
       bytes:307843860,
       profiles:[
         {key:'landscape',label:copy('横屏 1280×720','Landscape 1280×720'),directory:'matanyone2-1280x720',analysisWidth:1280,analysisHeight:720,bytes:307843860,release:'matanyone2-onnx-1280x720-t5-no-residual',parts:matParts(37426352,'a4bc8ee74e10fc47317198a9d078f2609473f891f02c7c30f54d6b3a8928fe70','79cf77320d31715d23038669d1d8d8ef6fd0a2b450896f3d6105b707426499dd',76207742,'d968b19c22eae27fbbd6e57dbf1eba35a7313df43ee29920c40c90b855589abe','06cd829c1bd9543b2f49025870a7506ca8aeb28f454a0d35091674894a4de152')},
@@ -59,7 +59,7 @@
     model.sources=modelSources(model.url,model.localUrl);
   });
 
-  var runtimePromise=null,runtimeScript=null,sessionPromises={},backends={};
+  var runtimePromise=null,runtimeScript=null,sessionPromises={},backends={},bootstrapQualityUnavailable={};
   var halfTable=new Uint16Array(256);
 
   function abortError(){var e=new Error(copy('任务已停止','The task was stopped'));e.name='AbortError';return e;}
@@ -204,7 +204,22 @@
 
   async function createSession(modelId,onProgress,options){
     var model=resolveModel(getModel(modelId),options),signal=options&&options.signal;throwIfAborted(signal);
-    if(model.kind==='matanyone2')return createMatAnyoneSessions(model,onProgress,options);
+    if(model.kind==='matanyone2'){
+      var matSessions=await createMatAnyoneSessions(model,onProgress,options);
+      // MatAnyone2 的时序质量取决于首帧种子。预先准备 RVM ResNet50，避免完整导出
+      // 已开始后才静默下载；失败时仍允许图片模型与轻量 RVM 继续兜底。
+      if(!bootstrapQualityUnavailable[model.id]){
+        emit(onProgress,{model:model.id,phase:'bootstrap-model',percent:0,text:copy('正在准备高质量首帧校准模型','Preparing the high-quality first-frame calibrator')});
+        try{
+          await createSession('quality',function(progress){emit(onProgress,Object.assign({},progress,{model:model.id,phase:'bootstrap-model',bootstrapPhase:progress.phase,text:progress.text,detail:progress.detail||progress.text}));},options);
+        }catch(error){
+          if(error&&error.name==='AbortError')throw error;
+          bootstrapQualityUnavailable[model.id]=true;
+          emit(onProgress,{model:model.id,phase:'bootstrap-model-fallback',percent:100,text:copy('高质量首帧模型暂不可用，将自动使用备用识别','The high-quality first-frame model is unavailable; automatic fallback will be used'),detail:error&&error.message||String(error)});
+        }
+      }
+      return matSessions;
+    }
     if(sessionPromises[model.id])return guarded(sessionPromises[model.id],0,'',signal);
     sessionPromises[model.id]=(async function(){
       var ort=await loadRuntime(onProgress,signal);ort.env.logLevel='error';ort.env.wasm.wasmPaths=BASE;ort.env.wasm.numThreads=(self.crossOriginIsolated&&navigator.hardwareConcurrency)?Math.min(4,navigator.hardwareConcurrency):1;
@@ -238,8 +253,8 @@
   function disposeMap(map){if(!map)return;Object.keys(map).forEach(function(name){disposeTensor(map[name]);});}
   function disposeMatState(state){if(!state||!state.mat)return;disposeMap(state.mat);state.mat=null;}
   function newRec(ort){return[0,1,2,3].map(function(){return new ort.Tensor('float16',new Uint16Array(1),[1,1,1,1]);});}
-  function resetState(state){if(!state)return;disposeRec(state.rec);disposeMatState(state);state.rec=null;state.prevAlpha=null;state.prevProbe=null;state.modelProfile=null;state.frameIndex=0;state.sceneCuts=0;}
-  function createState(){return{rec:null,mat:null,prevAlpha:null,prevProbe:null,modelProfile:null,frameIndex:0,sceneCuts:0};}
+  function resetState(state){if(!state)return;disposeRec(state.rec);disposeMatState(state);state.rec=null;state.prevAlpha=null;state.prevProbe=null;state.modelProfile=null;state.bootstrapSource='';state.bootstrapStats=null;state.frameIndex=0;state.sceneCuts=0;}
+  function createState(){return{rec:null,mat:null,prevAlpha:null,prevProbe:null,modelProfile:null,bootstrapSource:'',bootstrapStats:null,frameIndex:0,sceneCuts:0};}
   function makeProbe(data,width,height){var cols=12,rows=7,out=new Float32Array(cols*rows),n=0;for(var y=0;y<rows;y++){var py=Math.min(height-1,Math.round((y+.5)*height/rows));for(var x=0;x<cols;x++){var px=Math.min(width-1,Math.round((x+.5)*width/cols)),o=(py*width+px)*4;out[n++]=(data[o]*.299+data[o+1]*.587+data[o+2]*.114)/255;}}return out;}
   function isSceneCut(previous,current){if(!previous||previous.length!==current.length)return false;var diff=0;for(var i=0;i<current.length;i++)diff+=Math.abs(current[i]-previous[i]);return diff/current.length>.31;}
 
@@ -264,6 +279,30 @@
     var scale=Math.min(targetWidth/Math.max(1,sourceWidth),targetHeight/Math.max(1,sourceHeight)),width=Math.max(1,Math.round(sourceWidth*scale)),height=Math.max(1,Math.round(sourceHeight*scale));
     return{x:Math.floor((targetWidth-width)/2),y:Math.floor((targetHeight-height)/2),width:width,height:height,scale:scale};
   }
+  function noSubjectError(message){var error=new Error(message||copy('当前帧没有识别到可传播的主体','No propagatable subject was found in this frame'));error.code='NO_SUBJECT';return error;}
+  function maskPayload(value,fallbackWidth,fallbackHeight){
+    if(!value)return null;var data=value.mask||value.data||value,width=+value.width||fallbackWidth,height=+value.height||fallbackHeight;
+    if(!data||typeof data.length!=='number'||data.length<width*height)return null;return{data:data,width:width,height:height};
+  }
+  function morphAxis(source,width,height,radius,horizontal,dilate){
+    var out=new Uint8Array(source.length),span=radius*2+1,lines=horizontal?height:width,length=horizontal?width:height;
+    for(var line=0;line<lines;line++){
+      var count=0;
+      for(var initial=0;initial<=radius;initial++){var initialIndex=horizontal?line*width+initial:initial*width+line;if(initial<length)count+=source[initialIndex]?1:0;}
+      for(var position=0;position<length;position++){
+        var index=horizontal?line*width+position:position*width+line;out[index]=dilate?(count>0?1:0):(count===span?1:0);
+        var remove=position-radius,add=position+radius+1;if(remove>=0){var removeIndex=horizontal?line*width+remove:remove*width+line;count-=source[removeIndex]?1:0;}if(add<length){var addIndex=horizontal?line*width+add:add*width+line;count+=source[addIndex]?1:0;}
+      }
+    }
+    return out;
+  }
+  function conditionBootstrapAlpha(alpha,width,height,fit){
+    var binary=new Uint8Array(alpha.length);for(var i=0;i<alpha.length;i++)binary[i]=alpha[i]>=3/255?1:0;
+    var radius=Math.max(2,Math.min(5,Math.round(Math.min(fit.width,fit.height)/160))),closed=morphAxis(morphAxis(binary,width,height,radius,true,true),width,height,radius,false,true);closed=morphAxis(morphAxis(closed,width,height,radius,true,false),width,height,radius,false,false);
+    var out=new Float32Array(alpha.length),foreground=0,coverage=0;for(var j=0;j<out.length;j++){out[j]=closed[j]?(binary[j]?Math.max(0,Math.min(1,alpha[j])):.65):0;if(out[j]>=.5)foreground++;if(binary[j])coverage++;}
+    return{data:out,foregroundRatio:foreground/out.length,sourceCoverage:coverage/out.length,radius:radius};
+  }
+  function bootstrapDimensions(width,height){var longest=Math.max(width,height),scale=Math.min(1,1920/Math.max(1,longest));return{width:Math.max(2,Math.round(width*scale)),height:Math.max(2,Math.round(height*scale))};}
   function makeMatImage(source,width,height,state,sourceWidth,sourceHeight){
     var canvas=state.analysisCanvas||(state.analysisCanvas=document.createElement('canvas'));canvas.width=width;canvas.height=height;
     var fit=containFit(sourceWidth,sourceHeight,width,height);state.analysisFit=fit;
@@ -271,32 +310,40 @@
     var pixels=context.getImageData(0,0,width,height).data,n=width*height,input=new Float32Array(n*3);for(var i=0;i<n;i++){var p=i*4;input[i]=pixels[p]/255;input[n+i]=pixels[p+1]/255;input[n*2+i]=pixels[p+2]/255;}
     return new ort.Tensor('float32',input,[1,3,height,width]);
   }
-  function resizeBootstrapMask(mask,width,height,state,sourceWidth,sourceHeight){
-    var maskWidth=mask.width||width,maskHeight=mask.height||height,data=mask.data||mask,source=state.bootstrapCanvas||(state.bootstrapCanvas=document.createElement('canvas'));source.width=maskWidth;source.height=maskHeight;
+  function resizeBootstrapMask(mask,width,height,state,sourceWidth,sourceHeight,sourceLabel){
+    var payload=maskPayload(mask,width,height);if(!payload)throw new Error(copy('首帧蒙版数据尺寸异常','The first-frame mask data has an invalid size'));
+    var maskWidth=payload.width,maskHeight=payload.height,data=payload.data,source=state.bootstrapCanvas||(state.bootstrapCanvas=document.createElement('canvas'));source.width=maskWidth;source.height=maskHeight;
     var sourceContext=source.getContext('2d',{willReadFrequently:true}),image=sourceContext.createImageData(maskWidth,maskHeight),rgba=image.data,n=maskWidth*maskHeight;
     for(var i=0;i<n;i++){var raw=data[i],value=data instanceof Float32Array||data instanceof Float64Array?Math.round(Math.max(0,Math.min(1,raw))*255):Math.max(0,Math.min(255,raw));var p=i*4;rgba[p]=rgba[p+1]=rgba[p+2]=value;rgba[p+3]=255;}sourceContext.putImageData(image,0,0);
     var target=state.bootstrapTargetCanvas||(state.bootstrapTargetCanvas=document.createElement('canvas'));target.width=width;target.height=height;var targetContext=target.getContext('2d',{willReadFrequently:true}),fit=state.analysisFit||containFit(sourceWidth,sourceHeight,width,height);targetContext.fillStyle='#000';targetContext.fillRect(0,0,width,height);targetContext.imageSmoothingEnabled=true;targetContext.imageSmoothingQuality='high';targetContext.drawImage(source,fit.x,fit.y,fit.width,fit.height);
-    var scaled=targetContext.getImageData(0,0,width,height).data,out=new Float32Array(width*height),foreground=0;for(var j=0;j<out.length;j++){out[j]=scaled[j*4]/255;if(out[j]>=.5)foreground++;}
-    if(foreground/out.length<.0002)throw new Error(copy('首帧没有识别到可传播的主体，请换到人物清晰出现的画面','No subject was found in the first frame. Seek to a frame where the person is clearly visible'));
-    return new ort.Tensor('float32',out,[1,1,height,width]);
+    var scaled=targetContext.getImageData(0,0,width,height).data,out=new Float32Array(width*height);for(var j=0;j<out.length;j++)out[j]=scaled[j*4]/255;
+    var conditioned=conditionBootstrapAlpha(out,width,height,fit);if(conditioned.foregroundRatio<.0002)throw noSubjectError(copy('当前帧没有识别到可传播的主体','No propagatable subject was found in this frame'));
+    state.bootstrapSource=sourceLabel||copy('首帧蒙版','first-frame mask');state.bootstrapStats={foregroundRatio:conditioned.foregroundRatio,sourceCoverage:conditioned.sourceCoverage,closingRadius:conditioned.radius};
+    return new ort.Tensor('float32',conditioned.data,[1,1,height,width]);
+  }
+  async function createRvmBootstrapMask(source,modelId,width,height,state,onProgress,options,sourceWidth,sourceHeight){
+    var fallbackState=createState(),result=null,size=bootstrapDimensions(sourceWidth,sourceHeight),model=getModel(modelId);
+    try{
+      result=await matte(source,modelId,fallbackState,function(progress){emit(onProgress,{model:'experimental',phase:'bootstrap',percent:100,text:progress.text||copy('正在运行高质量首帧识别','Running high-quality first-frame detection'),detail:progress.detail||progress.text});},{signal:options.signal,width:size.width,height:size.height});
+      var stats=result.alphaStats||{};if(stats.max<8||(stats.foregroundRatio||0)<.0002)throw noSubjectError();
+      var canvas=result.canvas,rgba=canvas.getContext('2d',{willReadFrequently:true}).getImageData(0,0,canvas.width,canvas.height).data,mask=new Uint8ClampedArray(canvas.width*canvas.height);for(var i=0;i<mask.length;i++)mask[i]=rgba[i*4+3];
+      return resizeBootstrapMask({mask:mask,width:canvas.width,height:canvas.height},width,height,state,sourceWidth,sourceHeight,model.label);
+    }finally{resetState(fallbackState);}
   }
   async function createBootstrapMask(source,width,height,state,onProgress,options,sourceWidth,sourceHeight){
-    if(options.bootstrapMask)return resizeBootstrapMask(options.bootstrapMask,width,height,state,sourceWidth,sourceHeight);
-    if(!window.TYBG)throw new Error(copy('首帧蒙版模型未加载','The first-frame mask model is unavailable'));
-    emit(onProgress,{model:'experimental',phase:'bootstrap',percent:100,text:copy('正在用本地图片 AI 生成首帧蒙版','Generating the first-frame mask with local image AI')});
-    try{
-      var result=await TYBG.segment(source,'quick',function(progress){emit(onProgress,{model:'experimental',phase:'bootstrap',percent:100,text:progress.text||copy('正在生成首帧蒙版','Generating first-frame mask'),detail:progress.text});},{signal:options.signal});
-      return resizeBootstrapMask(result,width,height,state,sourceWidth,sourceHeight);
-    }catch(error){
-      if(error&&error.name==='AbortError')throw error;
-      emit(onProgress,{model:'experimental',phase:'bootstrap',percent:100,text:copy('图片模型未识别主体，正在用轻量 RVM 自动补救','The image model found no subject; retrying automatically with lightweight RVM')});
-      var fallbackState=createState(),fallback;
-      try{
-        fallback=await matte(source,'balanced',fallbackState,function(progress){emit(onProgress,{model:'experimental',phase:'bootstrap',percent:100,text:progress.text||copy('正在运行首帧备用识别','Running fallback first-frame detection'),detail:progress.detail||progress.text});},{signal:options.signal,width:source.width||source.videoWidth,height:source.height||source.videoHeight});
-        var canvas=fallback.canvas,rgba=canvas.getContext('2d',{willReadFrequently:true}).getImageData(0,0,canvas.width,canvas.height).data,mask=new Uint8ClampedArray(canvas.width*canvas.height);for(var i=0;i<mask.length;i++)mask[i]=rgba[i*4+3];
-        return resizeBootstrapMask({data:mask,width:canvas.width,height:canvas.height},width,height,state,sourceWidth,sourceHeight);
-      }finally{resetState(fallbackState);}
+    if(options.bootstrapMask)return resizeBootstrapMask(options.bootstrapMask,width,height,state,sourceWidth,sourceHeight,copy('指定蒙版','provided mask'));
+    var errors=[],sawNoSubject=false;
+    if(!bootstrapQualityUnavailable[state.modelProfile]){
+      emit(onProgress,{model:'experimental',phase:'bootstrap',percent:100,text:copy('正在用 RVM ResNet50 校准首帧发丝与边缘','Calibrating first-frame hair and edges with RVM ResNet50')});
+      try{return await createRvmBootstrapMask(source,'quality',width,height,state,onProgress,options,sourceWidth,sourceHeight);}catch(error){if(error&&error.name==='AbortError')throw error;if(error&&error.code==='NO_SUBJECT')throw error;errors.push(error);}
     }
+    if(window.TYBG){
+      emit(onProgress,{model:'experimental',phase:'bootstrap',percent:100,text:copy('高质量视频识别未得到主体，正在尝试图片 AI','High-quality video detection found no subject; trying image AI')});
+      try{var result=await TYBG.segment(source,'quick',function(progress){emit(onProgress,{model:'experimental',phase:'bootstrap',percent:100,text:progress.text||copy('正在生成备用首帧蒙版','Generating a fallback first-frame mask'),detail:progress.text});},{signal:options.signal});return resizeBootstrapMask(result,width,height,state,sourceWidth,sourceHeight,copy('快速图片 AI','Fast image AI'));}catch(error){if(error&&error.name==='AbortError')throw error;sawNoSubject=sawNoSubject||error.code==='NO_SUBJECT';errors.push(error);}
+    }
+    emit(onProgress,{model:'experimental',phase:'bootstrap',percent:100,text:copy('正在用轻量 RVM 做最后一次主体识别','Running lightweight RVM as the final subject fallback')});
+    try{return await createRvmBootstrapMask(source,'balanced',width,height,state,onProgress,options,sourceWidth,sourceHeight);}catch(error){if(error&&error.name==='AbortError')throw error;sawNoSubject=sawNoSubject||error.code==='NO_SUBJECT';errors.push(error);}
+    if(sawNoSubject)throw noSubjectError();throw errors[0]||new Error(copy('首帧蒙版模型不可用','The first-frame mask models are unavailable'));
   }
   function renderMatAnyoneCanvas(source,alpha,analysisWidth,analysisHeight,width,height,state,outputCanvas){
     var maskCanvas=state.maskCanvas||(state.maskCanvas=document.createElement('canvas'));maskCanvas.width=analysisWidth;maskCanvas.height=analysisHeight;var maskContext=maskCanvas.getContext('2d'),maskImage=maskContext.createImageData(analysisWidth,analysisHeight),rgba=maskImage.data,alphaData=alpha.data;
@@ -341,16 +388,17 @@
   async function matteMatAnyone(source,model,state,onProgress,options,sessions){
     var signal=options.signal,width=Math.max(2,Math.round(options.width||source.width)),height=Math.max(2,Math.round(options.height||source.height)),analysisWidth=model.analysisWidth,analysisHeight=model.analysisHeight,inputCanvas=options.inputCanvas||state.inputCanvas||document.createElement('canvas');if(inputCanvas===source)inputCanvas=state.inputCanvas||document.createElement('canvas');state.inputCanvas=inputCanvas;if(inputCanvas.width!==width)inputCanvas.width=width;if(inputCanvas.height!==height)inputCanvas.height=height;
     if(state.modelProfile&&state.modelProfile!==model.id){disposeMatState(state);state.prevProbe=null;state.frameIndex=0;}state.modelProfile=model.id;
-    var context=inputCanvas.getContext('2d',{willReadFrequently:true});context.clearRect(0,0,width,height);context.drawImage(source,0,0,width,height);var pixels=context.getImageData(0,0,width,height).data,probe=makeProbe(pixels,width,height),sceneCut=isSceneCut(state.prevProbe,probe);if(sceneCut){disposeMatState(state);state.sceneCuts++;}state.prevProbe=probe;
+    var context=inputCanvas.getContext('2d',{willReadFrequently:true});context.clearRect(0,0,width,height);context.drawImage(source,0,0,width,height);var pixels=context.getImageData(0,0,width,height).data,probe=makeProbe(pixels,width,height),sceneCut=isSceneCut(state.prevProbe,probe);if(sceneCut){disposeMatState(state);state.bootstrapSource='';state.bootstrapStats=null;state.sceneCuts++;}state.prevProbe=probe;
     emit(onProgress,{model:model.id,phase:'prepare-frame',frameIndex:state.frameIndex,sceneCut:sceneCut,text:sceneCut?copy('检测到镜头切换，正在重新生成首帧蒙版','Scene cut detected; regenerating the first-frame mask'):copy('正在准备 MatAnyone2 视频帧','Preparing a MatAnyone2 video frame')});
-    var seeded=!state.mat,image=makeMatImage(inputCanvas,analysisWidth,analysisHeight,state,width,height),alpha;
+    var seeded=!state.mat,image=makeMatImage(inputCanvas,analysisWidth,analysisHeight,state,width,height),alpha,noSubject=false;
     try{
-      if(!state.mat){var bootstrap=await createBootstrapMask(inputCanvas,analysisWidth,analysisHeight,state,onProgress,options,width,height);try{emit(onProgress,{model:model.id,phase:'infer-frame',frameIndex:state.frameIndex,text:copy('正在精修首帧并建立时序记忆','Refining the first frame and building temporal memory')});alpha=await initialiseMatAnyone(sessions,image,bootstrap,state,signal);}finally{disposeTensor(bootstrap);}}
+      if(!state.mat){try{var bootstrap=await createBootstrapMask(inputCanvas,analysisWidth,analysisHeight,state,onProgress,options,width,height);try{emit(onProgress,{model:model.id,phase:'infer-frame',frameIndex:state.frameIndex,text:copy('正在精修首帧并建立时序记忆','Refining the first frame and building temporal memory')});alpha=await initialiseMatAnyone(sessions,image,bootstrap,state,signal);}finally{disposeTensor(bootstrap);}}catch(error){if(error&&error.code==='NO_SUBJECT')noSubject=true;else throw error;}}
       else{emit(onProgress,{model:model.id,phase:'infer-frame',frameIndex:state.frameIndex,text:copy('正在运行 MatAnyone2 时序传播','Running MatAnyone2 temporal propagation')});alpha=await propagateMatAnyone(sessions,image,state,signal);}
     }finally{disposeTensor(image);}
+    if(noSubject){var emptyCanvas=options.outputCanvas||document.createElement('canvas');if(emptyCanvas.width!==width)emptyCanvas.width=width;if(emptyCanvas.height!==height)emptyCanvas.height=height;emptyCanvas.getContext('2d').clearRect(0,0,width,height);var emptyStats={min:0,max:0,mean:0,foregroundRatio:0,inputLuma:0,dataType:'Float32Array',phaType:'float32',phaShape:[1,1,analysisHeight,analysisWidth]};state.frameIndex++;state.lastAlphaStats=emptyStats;return{canvas:emptyCanvas,state:state,backend:backends[model.id],model:model.parentId||model.id,modelProfile:model.key||'',modelLabel:model.label,sceneCut:sceneCut,downsampleRatio:Math.min(state.analysisFit&&state.analysisFit.scale||1,1),alphaStats:emptyStats,bootstrapSource:''};}
     var stats=matAlphaStats(alpha,probe);if(seeded&&(stats.max<8||stats.foregroundRatio<.0002))throw new Error(copy('MatAnyone2 首帧生成了空蒙版，已停止导出以避免黑屏或白屏成品','MatAnyone2 produced an empty first-frame matte; export was stopped to avoid a blank result'));
     var canvas=renderMatAnyoneCanvas(inputCanvas,alpha,analysisWidth,analysisHeight,width,height,state,options.outputCanvas);state.frameIndex++;state.lastAlphaStats=stats;
-    return{canvas:canvas,state:state,backend:backends[model.id],model:model.parentId||model.id,modelProfile:model.key||'',modelLabel:model.label,sceneCut:sceneCut,downsampleRatio:Math.min(state.analysisFit&&state.analysisFit.scale||1,1),alphaStats:stats};
+    return{canvas:canvas,state:state,backend:backends[model.id],model:model.parentId||model.id,modelProfile:model.key||'',modelLabel:model.label,sceneCut:sceneCut,downsampleRatio:Math.min(state.analysisFit&&state.analysisFit.scale||1,1),alphaStats:stats,bootstrapSource:state.bootstrapSource,bootstrapStats:state.bootstrapStats};
   }
 
   async function matte(source,modelId,state,onProgress,options){
@@ -385,7 +433,7 @@
     return{canvas:outCanvas,state:state,backend:backends[model.id],model:model.id,modelLabel:model.label,sceneCut:sceneCut,downsampleRatio:ratio,alphaStats:alphaStats};
   }
 
-  async function isCached(modelId,options){var model=resolveModel(getModel(modelId),options);if(!('caches' in window))return false;try{var cache=await caches.open(CACHE_NAME);if(model.parts){var hits=await Promise.all(model.parts.map(function(part){return cache.match(cacheKey(part));}));return hits.every(Boolean);}return!!(await cache.match(cacheKey(model)));}catch(_e){return false;}}
+  async function isCached(modelId,options){var model=resolveModel(getModel(modelId),options);if(!('caches' in window))return false;try{var cache=await caches.open(CACHE_NAME);if(model.parts){var assets=model.parts.slice();if(model.kind==='matanyone2')assets.push(MODELS.quality);var hits=await Promise.all(assets.map(function(part){return cache.match(cacheKey(part));}));return hits.every(Boolean);}return!!(await cache.match(cacheKey(model)));}catch(_e){return false;}}
   async function cachedModels(options){var result={};await Promise.all(Object.keys(MODELS).map(async function(id){result[id]=await isCached(id,options);}));return result;}
   async function removeCached(modelId){var model=getModel(modelId);if(!('caches' in window))return false;try{var cache=await caches.open(CACHE_NAME),assets=model.profiles?model.profiles.reduce(function(all,profile){return all.concat(profile.parts);},[]):model.parts||[model],deleted=await Promise.all(assets.map(function(asset){markVerified(asset,false);return cache.delete(cacheKey(asset));}));return deleted.some(Boolean);}catch(_e){return false;}}
   function capabilities(){return{secure:isSecureContext,webcodecs:typeof VideoDecoder!=='undefined'&&typeof VideoEncoder!=='undefined',webgpu:!!navigator.gpu,wasm:typeof WebAssembly!=='undefined',crossOriginIsolated:!!self.crossOriginIsolated};}
