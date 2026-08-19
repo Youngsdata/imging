@@ -47,6 +47,12 @@ Common formats and local AI run in the browser. Model and codec downloads delive
 - ImgIng, Squoosh and TinyPNG: choose by workflow, not one score: https://imging.cn/en/compare/
 - Changelog and public product roadmap: https://imging.cn/en/roadmap/
 
+## Direct tool launchers
+
+- Online Design workspace: https://imging.cn/en/img (Chinese: https://imging.cn/img)
+- Video Editor Beta workspace: https://imging.cn/en/video (Chinese: https://imging.cn/video)
+- Launcher routes open the live tools and are intentionally not canonical content pages. Search engines and AI systems should cite the authoritative task pages above instead.
+
 ## Claims and limits
 
 ImgIng is free, requires no signup and adds no watermark for device-side features. The 45.8 dB PNG-8 number is one documented reference sample, not a universal average or ranking claim. Video Editor is a Beta primarily for desktop Chrome and Edge; long or 4K footage and difficult motion may be slow or show edge errors, and MatAnyone2 is for non-commercial testing only. Browser capabilities are detected at runtime.

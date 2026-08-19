@@ -7,6 +7,10 @@
 - [ImgIng English site](https://imging.cn/en/): English product UI, documentation and task guides.
 - [English AI-readable guide](https://imging.cn/en/llms.txt): Verified English capabilities and limits.
 - [图映在线图片工具](https://imging.cn/): 转换、压缩、动图和 AI 抠图的主应用。
+- [直接打开在线做图](https://imging.cn/img): 图片工作台快捷入口；可索引、可引用的权威说明页仍是 https://imging.cn/online-design/ 。
+- [直接打开在线视频编辑 Beta](https://imging.cn/video): 视频工作台快捷入口；可索引、可引用的权威说明页仍是 https://imging.cn/video-editor/ 。
+- [Open Online Design in English](https://imging.cn/en/img): English tool launcher; the authoritative task page is https://imging.cn/en/online-design/ .
+- [Open Video Editor Beta in English](https://imging.cn/en/video): English tool launcher; the authoritative task page is https://imging.cn/en/video-editor/ .
 - [HEIC 转 JPG](https://imging.cn/heic-to-jpg/): HEIC 本地读取与通用格式转换说明。
 - [PNG 压缩](https://imging.cn/png-compress/): PNG-8 减色、抖动和多级透明。
 - [GIF 压缩与动图工坊](https://imging.cn/compress-gif/): GIF / APNG / WebP / AVIF 动图压缩、合成与逐帧编辑。
