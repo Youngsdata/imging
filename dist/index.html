@@ -1034,7 +1034,7 @@
         <label class="videofield">输出格式<select id="videoFormat" autocomplete="off"><option value="mp4" selected>MP4 · H.264 / AAC</option><option value="webm">WebM · VP9 / Opus</option></select></label>
         <label class="videofield">导出质量<select id="videoQuality"><option value="very-high">肉眼无损 · 推荐</option><option value="high">高质量 · 更小</option><option value="medium">均衡 · 体积优先</option></select></label>
         <label class="designcheck"><span>保留原视频音频<small>音频会自动复制或重编码后重新封装</small></span><input id="videoKeepAudio" type="checkbox" checked></label>
-        <p class="videohint" id="videoFormatHint">默认导出兼容性更好的 MP4；只有透明背景会自动切换为 WebM。</p>
+        <p class="videohint" id="videoFormatHint">默认导出兼容性更好的 MP4；导入后会参考原片码率估算体积，只有透明背景自动切换 WebM。</p>
       </section>
     </aside>
     <main class="videostage" id="videoStage" tabindex="-1" aria-label="在线视频编辑预览区">
@@ -1470,10 +1470,11 @@
     <div class="relscroll">
       <div class="relcurrent">
         <time class="reldate" datetime="2026-08-19"><small>CURRENT</small><b>08.19</b></time>
-        <div><strong>当前构建 · 在线视频编辑 Beta</strong><span>开放浏览器本地视频换背景测试入口，支持三档时序模型、比例自适应、背景替换、原音频保留与 MP4 / WebM 导出。</span></div>
+        <div><strong>当前构建 · 视频导出体积自适应修正版</strong><span>修复视频换背景后 MP4 / WebM 码率被高质量档过度放大；改为参考原片、分辨率、帧率和透明通道的自适应码率。</span></div>
       </div>
       <div class="relsection"><h3>已经交付</h3><span>VERIFIED RELEASES</span></div>
       <div class="reltimeline">
+        <article class="relitem"><time datetime="2026-08-19">2026-08-19</time><b>视频导出体积与码率修复</b><p>修复视频换背景后导出体积异常放大，加入参考原片与画面特征的自适应视频码率和音频复用。</p></article>
         <article class="relitem"><time datetime="2026-08-19">2026-08-19</time><b>在线视频编辑 Beta（测试版本）</b><p>公开 Beta 测试入口，加入三档时序抠像、比例自适应、CDN 模型分发、背景替换、音频保留与 MP4 / WebM 导出。</p></article>
         <article class="relitem"><time datetime="2026-08-18">2026-08-18</time><b>动图 WebP 残影修复与帧优化开关</b><p>清除后续帧的价格与文字残影；差分帧和完整帧现在是两条可明确选择、独立验证的编码路径。</p></article>
         <article class="relitem"><time datetime="2026-08-17">2026-08-17</time><b>图片外框缩放与任意角度旋转</b><p>Keynote 式八向缩放和旋转手柄、右侧精确角度与快捷旋转，并完整保留到工程和成品导出。</p></article>
@@ -1481,7 +1482,6 @@
         <article class="relitem"><time datetime="2026-08-15">2026-08-15</time><b>AI 抠图后本地多背景图层合成</b><p>支持透明、纯色或本地背景图，可独立拖动缩放主体和背景、调整画布并在导出时全尺寸合成。</p></article>
         <article class="relitem"><time datetime="2026-08-15">2026-08-15</time><b>英文站与双语 SEO / GEO</b><p>完整英文工具、8 个英文任务页、hreflang、结构化数据、站点地图与 AI 可读说明。</p></article>
         <article class="relitem"><time datetime="2026-08-14">2026-08-14</time><b>专业 AI 抠图、真实导出与大图性能</b><p>统一预览与导出透明通道，加入 1px 画笔、撤销重做、大图精修和 Squoosh 式对比。</p></article>
-        <article class="relitem"><time datetime="2026-08-13">2026-08-13</time><b>三档本地 AI 与快速去底色</b><p>ISNet、BEN2、BiRefNet HR-Matting 按需下载；纯色背景支持边缘连通快速移除。</p></article>
       </div>
       <div class="relsection"><h3>下一个版本</h3><span>PLANNED · NOT SHIPPED</span></div>
       <div class="relnext">
@@ -1534,7 +1534,7 @@
 </script>
 <script src="ai/background-removal.js?v=4"></script>
 <script src="ai/video-matting.js?v=13"></script>
-<script src="video/editor.js?v=10"></script>
+<script src="video/editor.js?v=11"></script>
 <script>
 
 (function(){

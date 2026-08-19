@@ -1018,7 +1018,7 @@
         <label class="videofield">Output format<select id="videoFormat" autocomplete="off"><option value="mp4" selected>MP4 · H.264 / AAC</option><option value="webm">WebM · VP9 / Opus</option></select></label>
         <label class="videofield">Export quality<select id="videoQuality"><option value="very-high">Visually lossless · Recommended</option><option value="high">High quality · Smaller</option><option value="medium">Balanced · Size first</option></select></label>
         <label class="designcheck"><span>Keep source audio<small>Audio is copied or re-encoded and remuxed automatically</small></span><input id="videoKeepAudio" type="checkbox" checked></label>
-        <p class="videohint" id="videoFormatHint">MP4 is the compatible default. Only transparent output switches automatically to WebM.</p>
+        <p class="videohint" id="videoFormatHint">MP4 is the compatible default. After import, output size is estimated from the source bitrate; only transparent output switches automatically to WebM.</p>
       </section>
     </aside>
     <main class="videostage" id="videoStage" tabindex="-1" aria-label="Online video editor preview">
@@ -1278,9 +1278,10 @@
   <aside class="reldrawer" role="dialog" aria-modal="true" aria-labelledby="releaseTitle">
     <header class="relhead"><span class="releyebrow">CHANGELOG · PUBLIC ROADMAP</span><h2 id="releaseTitle">ImgIng release trail</h2><p>Every public release records its additions, fixes and changes; future plans remain clearly separate.</p><button class="relx" id="releaseClose" type="button" aria-label="Close release trail">&times;</button></header>
     <div class="relscroll">
-      <div class="relcurrent"><time class="reldate" datetime="2026-08-19"><small>CURRENT</small><b>08.19</b></time><div><strong>Current build · Online Video Editor Beta</strong><span>Opened the browser-local video background editor Beta with three temporal model tiers, aspect-aware inference, background replacement, retained audio and MP4 / WebM export.</span></div></div>
+      <div class="relcurrent"><time class="reldate" datetime="2026-08-19"><small>CURRENT</small><b>08.19</b></time><div><strong>Current build · Adaptive video export size fix</strong><span>Fixed excessive MP4 and WebM bitrates after video background replacement by adapting to the source, resolution, frame rate and alpha channel.</span></div></div>
       <div class="relsection"><h3>Shipped</h3><span>VERIFIED RELEASES</span></div>
       <div class="reltimeline">
+        <article class="relitem"><time datetime="2026-08-19">2026-08-19</time><b>Video export size and bitrate fix</b><p>Fixed oversized MP4 and WebM output after background replacement. Video bitrate now adapts to the source, resolution, frame rate and alpha channel; compatible audio is copied directly and only necessary transcoding uses an adaptive audio bitrate.</p></article>
         <article class="relitem"><time datetime="2026-08-19">2026-08-19</time><b>Online Video Editor Beta</b><p>Opened local video background replacement with two RVM models and aspect-adaptive MatAnyone2 landscape, square and portrait variants. Models use ModelScope CDN first with site fallback; original aspect ratio and audio are retained, with MP4 or transparent WebM export.</p></article>
         <article class="relitem"><time datetime="2026-08-18">2026-08-18</time><b>Animated WebP ghosting fix and frame-optimization control</b><p>Fixed price and text ghosting caused by lossy animated WebP delta-frame blending. Restored the Delta frames / Full frames control and routed WebP, APNG, GIF and AVIF through their matching encoding paths.</p></article>
         <article class="relitem"><time datetime="2026-08-17">2026-08-17</time><b>Frame scaling and arbitrary-angle image rotation</b><p>Shipped Keynote-style eight-way scaling and rotation handles, precise inspector angles and ±90° shortcuts. Preview, undo/redo, .imging project round-tripping and final image export all preserve rotation.</p></article>
@@ -1288,7 +1289,6 @@
         <article class="relitem"><time datetime="2026-08-15">2026-08-15</time><b>Local multi-background compositing after AI cutout</b><p>Professional refinement supports transparency, a solid colour or up to 12 local background layers. The subject and every background layer can move, scale, position and reorder independently, with full-resolution local compositing on export.</p></article>
         <article class="relitem"><time datetime="2026-08-15">2026-08-15</time><b>English site and bilingual SEO / GEO</b><p>Shipped the complete English tool and eight English task guides, reciprocal hreflang, a bilingual sitemap, structured data, English social previews and AI-readable documentation. AI model names and runtime states are localized too.</p></article>
         <article class="relitem"><time datetime="2026-08-14">2026-08-14</time><b>Professional AI cutout, real export and large-image performance</b><p>Unified full-resolution alpha across preview, refinement and download. Added a true 1 px brush, multi-step undo/redo, Space-to-pan, black/white edge inspection and a fixed-divider Squoosh-style comparison.</p></article>
-        <article class="relitem"><time datetime="2026-08-13">2026-08-13</time><b>Three local AI tiers and fast colour removal</b><p>Added on-demand ISNet INT8, BEN2 FP16 and BiRefNet HR-Matting FP16 models. The fast path removes only similar colour connected to the image edge, preserving matching colour inside the subject.</p></article>
       </div>
       <div class="relsection"><h3>Next release</h3><span>PLANNED · NOT SHIPPED</span></div>
       <div class="relnext"><div class="relnexttop"><b>Deeper local browser editing</b><span>Target: by Aug 31</span></div><p>Multi-layer layout has shipped. Next comes crop, colour, text, shapes and local edits in the same device-side engine.</p><ul><li>Crop, flip and free transform</li><li>Exposure, contrast, temperature and saturation</li><li>Text, shapes, brush and local adjustments</li><li>Non-destructive history, comparison and local export</li></ul><div class="relnotice">This is a public target, not a shipped feature. Scope may change after quality and browser-performance validation.</div></div>
@@ -1336,7 +1336,7 @@
 </script>
 <script src="/ai/background-removal.js?v=4"></script>
 <script src="/ai/video-matting.js?v=13"></script>
-<script src="/video/editor.js?v=10"></script>
+<script src="/video/editor.js?v=11"></script>
 <script>
 
 (function(){
