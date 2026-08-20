@@ -19,6 +19,7 @@ COPY --link ai/background-removal.js /usr/share/nginx/html/ai/background-removal
 COPY --link ai/video-matting.js /usr/share/nginx/html/ai/video-matting.js
 COPY --link video/ /usr/share/nginx/html/video/
 COPY --link pdf/ /usr/share/nginx/html/pdf/
+COPY --link fonts/ /usr/share/nginx/html/fonts/
 COPY --link seo/ /usr/share/nginx/html/
 COPY --link en/ /usr/share/nginx/html/en/
 COPY --link dist/index.html /usr/share/nginx/html/index.html

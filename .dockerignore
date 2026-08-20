@@ -18,6 +18,8 @@
 !video/**
 !pdf/
 !pdf/**
+!fonts/
+!fonts/**
 !models/
 !models/**
 !licenses/

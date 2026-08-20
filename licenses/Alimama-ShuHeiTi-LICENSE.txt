@@ -1,0 +1,26 @@
+阿里妈妈数黑体 (Alimama ShuHeiTi) — 字体授权说明
+Alimama ShuHeiTi — Font licence notice
+
+出品方 / Foundry: 阿里妈妈智造字 (Alimama, Alibaba Group)
+文件 / File: fonts/AlimamaShuHeiTi-Bold.woff2
+字符覆盖 / Coverage: 7025 字符（6767 汉字含 GB2312、52 个英文字母、206 个标点）
+本仓库内的文件为官方字体转换封装后的 WOFF2，字形数据未作任何修改。
+The file in this repository is the official font packaged as WOFF2; glyph data is unmodified.
+
+授权 / Licence
+阿里妈妈授权个人、企业等用户在遵守其条款的前提下免费下载、安装和使用该字体，
+可用于商业或非商业目的，并允许以 webfont 形式嵌入网页使用。
+Alimama grants a free, non-exclusive licence to individuals and companies to download,
+install and use this font for commercial or non-commercial purposes, including embedding
+it in web pages as a webfont.
+
+图映的合规声明 / How ImgIng complies
+- 字体文件原样随包分发，未做仿制、转换、拆分、反编译或任何修改。
+- 图映不就该字体向任何用户收费；端侧功能免费、免注册、无水印。
+- 未删除或修改任何法律声明。
+- 图映与阿里妈妈之间不存在合作、赞助或背书关系，本文件也不作此暗示。
+  ImgIng ships the font unmodified, charges nobody for it, keeps this notice intact, and
+  claims no partnership, sponsorship or endorsement by Alimama.
+
+以官方公布的《阿里妈妈字体知识产权法律声明》为准。
+The official Alimama font legal notice prevails over this summary.

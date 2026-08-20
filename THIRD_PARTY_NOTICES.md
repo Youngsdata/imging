@@ -2,6 +2,15 @@
 
 本发行包包含以下第三方组件。各组件仍适用其各自许可证；图映自身的授权范围见 `DISTRIBUTION-NOTICE.md`。
 
+## 阿里妈妈数黑体 (Alimama ShuHeiTi)
+
+- 文件：`fonts/AlimamaShuHeiTi-Bold.woff2`（678,632 字节，WOFF2）
+- 出品方：阿里妈妈智造字（Alibaba Group）
+- 授权：免费商用普通许可，允许以 webfont 形式嵌入网页；禁止仿制、反编译、单独出售或暗示与阿里妈妈存在合作关系
+- 用途：水印图层的可选字体之一，用户选中时才按需下载
+- 说明：字形数据未作任何修改；图映不就该字体向用户收费
+- 完整声明见 `licenses/Alimama-ShuHeiTi-LICENSE.txt`
+
 ## @jsquash/avif 2.1.1
 
 - 用途：浏览器端 AVIF 编码与解码

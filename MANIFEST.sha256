@@ -1,11 +1,11 @@
-d970f6e0fccf291839c6f0d0195ee706a81831879fdc2934d66a7394b1aa20d7  ./.dockerignore
+4a65abc917685bc4ca396aab228b6761e6233e19921487f137c542cf8c601abf  ./.dockerignore
 bccf5db2a11edcd177a54a784e8d0580e3c9aaf941efb76a19775a060a75f5f8  ./.gitattributes
 ffaf7c5b053355b77f21415191d946272c356fc7bc9e9e212491de5965766815  ./.github/workflows/publish-image.yml
 a786670ca340cb94b738db5e82f676ae28bf4f6bf17e0318dc0901a3aaef368d  ./DISTRIBUTION-NOTICE.md
-bbb6441ba3791ca97b3c875aab1608910e7186fc4fa06ad6315a2769bd148f92  ./Dockerfile
+88dc9fdd2f27abb536ab5d71a9a63a5eab1d462798b5da571450192db5b65549  ./Dockerfile
 0d07e57afeb006771b5ead6201efe6034752221425216267e305c0514edb4c55  ./README.en.md
 92640103d9492515e9211e4045663b3ae9803dbed978f68c641b2dcfa5c86e5b  ./README.md
-3db39cbe62d3a0bd2390df668ba75f2cb2be604dff020ee5ccc7e35fb5a3d071  ./THIRD_PARTY_NOTICES.md
+9c6fce6cdc726e2aaf4ffb99315311445c2ddca8c786a281b07ebfff3e14b6b5  ./THIRD_PARTY_NOTICES.md
 12536985161c6937a13282f173fddcf72513801f3e7087d6926ab00abbd9775b  ./ai/background-removal.js
 7236653b8565da4046e459cd0e274123419a1d9f1f8f18fd36c28058346ca655  ./ai/ort-wasm-simd-threaded.asyncify.mjs
 7e83cd6cee77e478bc96a7e91b198144fb5e4126287daf1f9b54bb195ebcd55a  ./ai/ort-wasm-simd-threaded.asyncify.wasm
@@ -50,10 +50,10 @@ edcd883d10e955655946b8fe733bb139faa8b7036092827b1849a4b34d727d6b  ./codecs/webp/
 3d70163a00e6264fc5a8fa7c8f3b1fa21a50a00d910f4d2de3ef1bbd2fdc98ab  ./codecs/webp/meta.js
 e71535eeee820d68b68ece7c8af761c39f3ddec93d3d957d2f83b19191339e0d  ./codecs/webp/utils.js
 12686e209637031cd00832e6fd8bdffd7ff450a136ecc2aec28ce4f28c237046  ./deploy.sh
-b8bb4ed4d59717945df3930c7ec7266d373880c39c77de68fd3511d7e4517366  ./dist/index.html
+d1cbbd8822873a26eb3d29c4c6e78c32a852eabf22f3519c42bd5b8bc1b80b3f  ./dist/index.html
 14beb3fac411d73f2d4c9d47b7ab427b712813e888cb945c234200d1807d83e3  ./docker/nginx/40-enable-ssl.sh
 0a973d3ccb018f6f9240e5d8ce8373d99d0e93997fd4251579bb62b844db9c03  ./docker/nginx/41-inject-beian.sh
-e67cbfb87324109e828196d631eb30834e9d982ef72f8ead178869fd7a7fe818  ./docker/nginx/app.conf
+01811bfa659fc5aede284df12abd8a2317bb791e9e6e3a0690f02a44aeee1171  ./docker/nginx/app.conf
 5cf22a87359b48a7319337799ce8b64e38b2392e6cd69098fb67014505c420d4  ./docker/nginx/default.conf
 678a8ac0e21b2f4fa5dfd7e3c8b032a773d766b2ed04bba83939e9a6cec1709b  ./docker/nginx/ssl.conf
 dc96a413e934f0ecb846e98d57b89f00a5202f925770282e0a5f2a9d7574a488  ./docs/imging-project-format.md
@@ -62,7 +62,7 @@ ae6da0a2429a571c7b1940602ff52f76809b1449b014f4268ad54fd806fcb49a  ./en/benchmark
 7f6684c4f5ec98524d3268db49ad2d4a36610856d9e76cedf5e475c66ca094d4  ./en/compare/index.html
 c92864c9f0dfb8c2ecef23fd96781da88d55dc30df3d9a3077463a07217219e0  ./en/compress-gif/index.html
 f516d699e15cafd6bbe3bbc4096306fca73fc9ec6b9c8a155faec51b23f1b28d  ./en/heic-to-jpg/index.html
-c96820ad307974558684f51349ad29fc40b425b326293811ad98f14174f3a4ae  ./en/index.html
+3a69289e8de4d41858ded01725ba1d33c4a4ea4e184a8cd247aecef6f32afbc7  ./en/index.html
 908126b349a0108f024711cc9e192b27ee57aa796591b6cb412e2fcb3cadca37  ./en/llms.txt
 4131180f0d74c6e755958a929ddf0c83366939c1b9ca255d21e797991cf7e56d  ./en/online-design/index.html
 ff7f453fedb6eb0fcc82fa458284af5b9bc480906d40bd35b1395007564713a8  ./en/pdf-compress/index.html
@@ -71,6 +71,8 @@ ff7f453fedb6eb0fcc82fa458284af5b9bc480906d40bd35b1395007564713a8  ./en/pdf-compr
 17c83bb27d99901c03af90c37afed7980413bddbfd890e58ffa563edf779711c  ./en/remove-background/index.html
 2d925c37301b7619097390560daecae43bef20b2f5a3c2324b247d78b8b70791  ./en/roadmap/index.html
 cf9bd7d0cd5f9ffcfd76adb1875c14110137425262a37534b64f46f23e2c3d15  ./en/video-editor/index.html
+fa4a258d17bfe83ebb61774b0730548a5e35de74dc5e9bf7c295a6869ae0847b  ./fonts/AlimamaShuHeiTi-Bold.woff2
+935b452d5f9564beacd41fb586d0286d050e4892864dedc63722c8b795ab1bab  ./licenses/Alimama-ShuHeiTi-LICENSE.txt
 a4843132cbd56c50f20ae008739d85b7563d38905fd692a337af52ad588c581a  ./licenses/BEN2-LICENSE.txt
 92a7089e0915fc32bc40067560b398f1e6a7a5958abd7d04eda393629a5acefb  ./licenses/BiRefNet-LICENSE.txt
 fbcfc930d0fb069b8087dc59ee15feca564bb223c6fe269bcc26a66c91bf443c  ./licenses/ISNet-General-ONNX-INT8-LICENSE.txt
