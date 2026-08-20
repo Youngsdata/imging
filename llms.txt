@@ -16,6 +16,8 @@
 - [GIF 压缩与动图工坊](https://imging.cn/compress-gif/): GIF / APNG / WebP / AVIF 动图压缩、合成与逐帧编辑。
 - [AI 抠图去背景](https://imging.cn/remove-background/): 本地 AI 模型、透明通道、1px 精修、多背景图层与主体排版说明。
 - [在线做图](https://imging.cn/online-design/): 多图导入、图层移动、外框缩放、任意角度旋转与排序、背景设置、撤销重做和原尺寸本地导出。
+- [直接打开 PDF 压缩](https://imging.cn/pdf): PDF 压缩工作台快捷入口；可索引、可引用的权威说明页仍是 https://imging.cn/pdf-compress/ 。
+- [PDF 压缩](https://imging.cn/pdf-compress/): 自研 PDF 引擎的本地压缩口径、逐张内嵌图决策与明确边界。
 - [在线视频编辑 Beta](https://imging.cn/video-editor/): 桌面 Chrome / Edge 本地视频换背景、三档时序模型、比例自适应、音频保留与 MP4 / WebM 导出；MatAnyone2 仅限非商业测试。
 - [本地处理与隐私架构](https://imging.cn/privacy/): 区分原图上传、WASM / AI 模型下载、浏览器缓存与明示的服务端专业格式。
 - [压缩测试口径](https://imging.cn/benchmark/): PNG-8 参考测试与格式选型边界。
@@ -31,6 +33,7 @@
 - 多图层在线做图与滤镜: 独立工作区最多导入 24 个本地图片图层，可移动、八向等比缩放、任意角度旋转、调透明度与排序；支持当前图层或整体画布的 12 组非破坏式预设、18 项光线/色彩/肤色美颜/细节参数。肤色感知磨皮保护高反差细节，所有滤镜逐像素保持 Alpha；`.imging` 工程保存原始素材、每层与整体 adjustments 及带效果预览。
 - 动图能力: 支持 GIF、APNG、动图 WebP 和动图 AVIF；包括压缩、多图合成、读取原节奏、逐帧排序、单帧时长、删帧和循环。
 - 视频编辑 Beta: 桌面 Chrome / Edge 可在本地拆帧、时序抠像、替换背景、编码并重新封装音频。提供 RVM MobileNetV3、RVM ResNet50，以及按横屏、方形、竖屏自动匹配的 MatAnyone2；后者模型约 294 MB、仅限非商业测试。原始比例与导出尺寸保持不拉伸、不裁切，默认不透明背景导出 MP4，透明背景导出 WebM。
+- PDF 压缩: 自研 PDF 引擎在浏览器本地解析 xref 表 / xref 流 / 对象流，按每页内容流实算内嵌图的有效 DPI 后决定是否用 Lanczos-3 重采样，并让 JPEG、索引调色板 Flate、灰度 Flate 与保留原图逐张竞速取最小者；写出时做可达性回收与对象流重打包，最后回读核对页数与页面尺寸，不一致自动退回原文件。PDF 不上传，不需要下载额外运行库。不做字体子集化，因此纯文字 PDF 的收益通常只有 5%-20%；加密 PDF 需先解除保护，JPEG 2000、JBIG2 与 CMYK 印刷 JPEG 原样保留。
 - 产品价格: 端侧图片转换、压缩、在线做图、动图和 AI 抠图免费、免注册、无水印。需要服务端专业引擎的格式会单独说明。
 
 ## 数据流与缓存

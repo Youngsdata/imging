@@ -11,6 +11,7 @@ Last verified: 2026-08-20
 ## Core capabilities
 
 - Convert and compress PNG, JPEG, WebP, GIF, BMP, AVIF and HEIC inputs.
+- Compress PDFs locally: embedded images are re-encoded at their measured effective DPI, unreachable objects are reclaimed and the file is rewritten in the browser. Fonts are not subset, so text-only PDFs gain far less than image-heavy ones.
 - Export PNG, JPG, WebP and AVIF stills.
 - Compress, create and edit GIF, APNG, animated WebP and animated AVIF frame by frame.
 - Quantize PNG-8 with 2–256 colours, optional dithering and multi-level alpha.
@@ -42,6 +43,7 @@ Common formats and local AI run in the browser. Model and codec downloads delive
 - Remove image backgrounds with AI running on your device: https://imging.cn/en/remove-background/
 - Design with layer filters and skin-aware beauty—without uploads: https://imging.cn/en/online-design/
 - Replace video backgrounds with temporal AI in Chrome — Beta: https://imging.cn/en/video-editor/
+- Compress PDFs by re-encoding each embedded image at its effective DPI: https://imging.cn/en/pdf-compress/
 - Local image processing: what stays on-device and what gets downloaded: https://imging.cn/en/privacy/
 - Measure compression by quality, alpha and compatibility—not bytes alone: https://imging.cn/en/benchmark/
 - ImgIng, Squoosh and TinyPNG: choose by workflow, not one score: https://imging.cn/en/compare/
