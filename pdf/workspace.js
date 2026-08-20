@@ -373,7 +373,11 @@
   }
 
   /* ---------- 绑定 ---------- */
-  ui.open.addEventListener('click',open);
+  // 首页任务卡等指向 /pdf 的入口一律就地打开工作台：不依赖服务端路由是否已部署，
+  // 也省掉一次整页刷新；history 仍会写成 /pdf，链接照样可分享。
+  var entries=[].slice.call(document.querySelectorAll('a[href="/pdf"],a[href="/en/pdf"]'));
+  if(entries.indexOf(ui.open)<0)entries.push(ui.open);
+  entries.forEach(function(link){link.addEventListener('click',open);});
   ui.close.addEventListener('click',close);
   ui.add.addEventListener('click',function(){ui.file.click();});
   ui.addTop.addEventListener('click',function(){ui.file.click();});
