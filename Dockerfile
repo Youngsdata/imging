@@ -22,6 +22,7 @@ COPY --link seo/ /usr/share/nginx/html/
 COPY --link en/ /usr/share/nginx/html/en/
 COPY --link dist/index.html /usr/share/nginx/html/index.html
 COPY --link robots.txt sitemap.xml llms.txt /usr/share/nginx/html/
+COPY --link b3449251ce1eb68a7b2920d31af684c1.txt /usr/share/nginx/html/
 
 # Small, mutable deployment files are last so they cannot invalidate assets.
 COPY --link docker/nginx/default.conf /etc/nginx/conf.d/default.conf
