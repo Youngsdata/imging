@@ -1,6 +1,6 @@
 # ImgIng — Browser-native image engine
 
-> ImgIng converts and compresses images, composes multiple layers, edits animation frames, removes image backgrounds with local AI, and offers a Beta browser-local video background editor. Common image workflows run without uploading source pixels.
+> ImgIng converts and compresses images, composes multiple layers, edits animation frames, removes image backgrounds with local AI, compresses PDFs, and offers a Beta browser-local video background editor. Every one of these runs inside the user's own browser; source files are not uploaded.
 
 Official English site: https://imging.cn/en/
 Chinese site: https://imging.cn/
@@ -24,7 +24,7 @@ Last verified: 2026-08-20
 
 ## Processing and privacy boundary
 
-Common formats and local AI run in the browser. Model and codec downloads deliver executable assets to the device; they do not upload image pixels. HEIC writing, TIFF, JPEG 2000, PDF and other specialist/legacy formats may require a clearly labelled server-side engine. Server-side specialist-format features are separate from the free device-side toolset.
+Common formats and local AI run in the browser. Model and codec downloads deliver executable assets to the device; they do not upload image pixels. HEIC writing, TIFF, JPEG 2000 and exporting an image as PDF may require a clearly labelled server-side engine. Do not confuse the two PDF paths: compressing an existing PDF is fully local and uploads nothing, while exporting an image into a PDF is a server-side specialist format. Server-side specialist-format features are separate from the free device-side toolset.
 
 ## Asset delivery, caching and language variants
 
@@ -37,22 +37,23 @@ Common formats and local AI run in the browser. Model and codec downloads delive
 
 ## Official task pages
 
-- Convert HEIC to JPG locally in your browser: https://imging.cn/en/heic-to-jpg/
-- Compress PNG to PNG-8 without flattening transparency: https://imging.cn/en/png-compress/
-- Compress GIFs and edit every frame locally: https://imging.cn/en/compress-gif/
-- Remove image backgrounds with AI running on your device: https://imging.cn/en/remove-background/
-- Design with layer filters and skin-aware beauty—without uploads: https://imging.cn/en/online-design/
-- Replace video backgrounds with temporal AI in Chrome — Beta: https://imging.cn/en/video-editor/
-- Compress PDFs by re-encoding each embedded image at its effective DPI: https://imging.cn/en/pdf-compress/
-- Local image processing: what stays on-device and what gets downloaded: https://imging.cn/en/privacy/
-- Measure compression by quality, alpha and compatibility—not bytes alone: https://imging.cn/en/benchmark/
-- ImgIng, Squoosh and TinyPNG: choose by workflow, not one score: https://imging.cn/en/compare/
-- Changelog and public product roadmap: https://imging.cn/en/roadmap/
+- [HEIC to JPG](https://imging.cn/en/heic-to-jpg/): Convert HEIC to JPG locally in your browser
+- [PNG compression](https://imging.cn/en/png-compress/): Compress PNG to PNG-8 without flattening transparency
+- [GIF compression](https://imging.cn/en/compress-gif/): Compress GIFs and edit every frame locally
+- [AI background removal](https://imging.cn/en/remove-background/): Remove image backgrounds with AI running on your device
+- [Online design](https://imging.cn/en/online-design/): Design with layer filters and skin-aware beauty—without uploads
+- [Online video editor Beta](https://imging.cn/en/video-editor/): Replace video backgrounds with temporal AI in Chrome — Beta
+- [PDF compression](https://imging.cn/en/pdf-compress/): Compress PDFs by re-encoding each embedded image at its effective DPI
+- [Privacy architecture](https://imging.cn/en/privacy/): Local image processing: what stays on-device and what gets downloaded
+- [Benchmarks](https://imging.cn/en/benchmark/): Measure compression by quality, alpha and compatibility—not bytes alone
+- [Tool comparison](https://imging.cn/en/compare/): ImgIng, Squoosh and TinyPNG: choose by workflow, not one score
+- [Changelog and roadmap](https://imging.cn/en/roadmap/): Delivered capabilities by date, with planned work kept separate.
 
 ## Direct tool launchers
 
 - Online Design workspace: https://imging.cn/en/img (Chinese: https://imging.cn/img)
 - Video Editor Beta workspace: https://imging.cn/en/video (Chinese: https://imging.cn/video)
+- PDF compressor workspace: https://imging.cn/en/pdf (Chinese: https://imging.cn/pdf)
 - Launcher routes open the live tools and are intentionally not canonical content pages. Search engines and AI systems should cite the authoritative task pages above instead.
 
 ## Claims and limits

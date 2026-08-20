@@ -594,7 +594,7 @@
   @media(max-width:520px){ .fmtgrid.g4{grid-template-columns:repeat(2,1fr);} }
   .fmt .rec{position:absolute; top:-8px; left:50%; transform:translateX(-50%); font-size:9px; font-family:var(--mono); font-weight:700; padding:2px 6px; border-radius:5px; white-space:nowrap; letter-spacing:.01em;}
   .rec.a{background:var(--coral);color:#fff;} .rec.b{background:var(--teal);color:#fff;} .rec.c{background:var(--bg-2);color:var(--muted);border:1px solid var(--line-2);}
-  /* AnimationPreview / frames条 */
+  /* AnimationPreview / Frame 条 */
   .animprev{display:none; gap:13px; align-items:center; margin-bottom:2px;}
   .animprev.show{display:flex;}
   .animprev>img{width:78px; height:78px; object-fit:cover; border-radius:11px; border:1px solid var(--line-2); flex:0 0 auto; background:var(--teal-bg);}
@@ -898,6 +898,7 @@
       <a href="#convert">Convert</a>
       <a href="#features">Features</a>
       <a href="#convert" data-open-anim>Animation</a>
+      <a href="#pdf">PDF</a>
       <a href="#compare">Compare</a>
       <a href="#browsers">Compatibility</a>
       <a href="#faq">FAQ</a>
@@ -1114,7 +1115,7 @@
       <button class="designbtn optional" id="designProjectNewTop" type="button">＋ <span class="txt">New project</span></button>
       <button class="designbtn optional" id="designProjectOpenTop" type="button">↥ <span class="txt">Open project</span></button>
       <button class="designbtn optional" id="designCurrentTop" type="button">Use current image</button>
-      <button class="designbtn" id="designUndo" type="button" title="undo（Ctrl/⌘+Z)">↶</button>
+      <button class="designbtn" id="designUndo" type="button" title="Undo (Ctrl/⌘+Z)">↶</button>
       <button class="designbtn" id="designRedo" type="button" title="Redo（Ctrl/⌘+Shift+Z)">↷</button>
       <button class="designbtn optional" id="designZoomOut" type="button" aria-label="Zoom out canvas">−</button>
       <button class="designbtn" id="designZoomFit" type="button">Fit</button>
@@ -1167,7 +1168,7 @@
     </aside>
     <main class="designstage" id="designStage" tabindex="-1" aria-label="Online design canvas. Drag a layer to move it; use the wheel to zoom.">
       <div class="designdrop" id="designDrop" hidden>Drop to add new layers</div>
-      <div class="designcanvas" id="designCanvas" role="application" aria-label="Multi-layer design canvas"><div class="designartwork" id="designCanvasArtwork"><div id="designCanvasLayers"></div></div><canvas class="designfilterpreview" id="designFilterPreview" hidden aria-hidden="true"></canvas><div class="designselection" id="designSelection" hidden><button class="designhandle" data-handle="nw" type="button" tabindex="-1" aria-label="Scale from top left"></button><button class="designhandle" data-handle="n" type="button" tabindex="-1" aria-label="Scale from top"></button><button class="designhandle" data-handle="ne" type="button" tabindex="-1" aria-label="Scale from top right"></button><button class="designhandle" data-handle="e" type="button" tabindex="-1" aria-label="Scale from right"></button><button class="designhandle" data-handle="se" type="button" tabindex="-1" aria-label="Scale from bottom right"></button><button class="designhandle" data-handle="s" type="button" tabindex="-1" aria-label="Scale from bottom"></button><button class="designhandle" data-handle="sw" type="button" tabindex="-1" aria-label="Scale from bottom left"></button><button class="designhandle" data-handle="w" type="button" tabindex="-1" aria-label="Scale from left"></button><button class="designhandle rotate" data-design-action="rotate" type="button" tabindex="-1" aria-label="Drag to rotate图层" title="Drag to rotate · 按住 Shift 每 15° 吸附"></button></div></div>
+      <div class="designcanvas" id="designCanvas" role="application" aria-label="Multi-layer design canvas"><div class="designartwork" id="designCanvasArtwork"><div id="designCanvasLayers"></div></div><canvas class="designfilterpreview" id="designFilterPreview" hidden aria-hidden="true"></canvas><div class="designselection" id="designSelection" hidden><button class="designhandle" data-handle="nw" type="button" tabindex="-1" aria-label="Scale from top left"></button><button class="designhandle" data-handle="n" type="button" tabindex="-1" aria-label="Scale from top"></button><button class="designhandle" data-handle="ne" type="button" tabindex="-1" aria-label="Scale from top right"></button><button class="designhandle" data-handle="e" type="button" tabindex="-1" aria-label="Scale from right"></button><button class="designhandle" data-handle="se" type="button" tabindex="-1" aria-label="Scale from bottom right"></button><button class="designhandle" data-handle="s" type="button" tabindex="-1" aria-label="Scale from bottom"></button><button class="designhandle" data-handle="sw" type="button" tabindex="-1" aria-label="Scale from bottom left"></button><button class="designhandle" data-handle="w" type="button" tabindex="-1" aria-label="Scale from left"></button><button class="designhandle rotate" data-design-action="rotate" type="button" tabindex="-1" aria-label="Drag to rotate the layer" title="Drag to rotate · Hold Shift to snap every 15°"></button></div></div>
       <div class="designempty" id="designEmpty"><b>Drop images to start designing</b><span>Every image is an independent layer you can move, scale, reorder and export locally.</span></div>
     </main>
     <aside class="designside right" aria-label="Layer management">
@@ -1259,7 +1260,7 @@
         <div class="videotitle"><span>Video source</span><small>LOCAL</small></div>
         <button class="videowide primary" id="videoAdd" type="button">＋ Import video</button>
         <input class="videofile" id="videoFile" type="file" accept="/video/mp4,/video/webm,/video/quicktime,.mp4,.webm,.mov,.m4v">
-        <p class="videohint">The Beta primarily supports desktop Chrome and Edge. MP4, WebM and MOV are recommended. framesdecoding, AI matting and compositing stay local; the source video is never uploaded.</p>
+        <p class="videohint">The Beta primarily supports desktop Chrome and Edge. MP4, WebM and MOV are recommended. Frame decoding, AI matting and compositing stay local; the source video is never uploaded.</p>
         <div class="videometa" id="videoMeta" style="margin-top:9px" hidden>
           <span><b id="videoMetaName">—</b>File</span><span><b id="videoMetaDuration">—</b>Duration</span><span><b id="videoMetaSize">—</b>Frame</span><span><b id="videoMetaAudio">—</b>Audio</span>
         </div>
@@ -1405,7 +1406,7 @@
     <div class="probar-actions">
       <button class="proicon txt" id="proOriginal" type="button" hidden>Hold to view original</button>
       <button class="proicon txt" id="proProof" type="button" hidden>Verify exported file</button>
-      <button class="proicon" id="proBgChecker" type="button" aria-label="棋盘Transparent background" title="棋盘Transparent background">▦</button>
+      <button class="proicon" id="proBgChecker" type="button" aria-label="Checkerboard transparent background" title="Checkerboard transparent background">▦</button>
       <button class="proicon" id="proBgBlack" type="button" aria-label="Black inspection background" title="Use black to inspect light fringes">●</button>
       <button class="proicon" id="proBgWhite" type="button" aria-label="White inspection background" title="Use white to inspect dark fringes">○</button>
       <button class="proicon" id="proZoomOut" type="button" aria-label="Zoom out">−</button>
@@ -1459,9 +1460,9 @@
       </div>
       <div class="protoolgroup">
         <div class="protooltitle">History</div>
-        <div class="prohistory"><button class="prowide" id="proUndo" type="button" title="undo上一步（Ctrl/⌘+Z)">undo</button><button class="prowide" id="proRedo" type="button" title="Redo next step (Ctrl/⌘+Shift+Z)">Redo</button></div><button class="prowide" id="proReset" type="button">Restore original AI alpha</button>
+        <div class="prohistory"><button class="prowide" id="proUndo" type="button" title="Undo (Ctrl/⌘+Z)">Undo</button><button class="prowide" id="proRedo" type="button" title="Redo next step (Ctrl/⌘+Shift+Z)">Redo</button></div><button class="prowide" id="proReset" type="button">Restore original AI alpha</button>
       </div>
-      <div class="protips"><kbd>B</kbd> Brush　<kbd>V</kbd> Arrange layers　<kbd>[</kbd><kbd>]</kbd> Brush<br><kbd>Ctrl/⌘ Z</kbd> undo　<kbd>Ctrl/⌘ Shift Z</kbd> Redo<br><kbd>Space</kbd> Pan view　<kbd>0</kbd> Fit view　<kbd>Esc</kbd> exit</div>
+      <div class="protips"><kbd>B</kbd> Brush　<kbd>V</kbd> Arrange layers　<kbd>[</kbd><kbd>]</kbd> Brush<br><kbd>Ctrl/⌘ Z</kbd> Undo　<kbd>Ctrl/⌘ Shift Z</kbd> Redo<br><kbd>Space</kbd> Pan view　<kbd>0</kbd> Fit view　<kbd>Esc</kbd> exit</div>
     </aside>
     <main class="prostage" id="proStage" tabindex="-1">
       <div class="proloading" id="proLoading">Generating local preview…</div>
@@ -1687,7 +1688,7 @@
     <p class="fbsub">Tell us what worked, which formats you need and what went wrong.</p>
     <div class="fbbody">
       <figure class="fbqr">
-        <img src="data:image/png;base64,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" alt="扫码进入Feedback表单" width="150" height="150">
+        <img src="data:image/png;base64,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" alt="Scan to open the feedback form" width="150" height="150">
         <figcaption>Scan with WeChat or camera</figcaption>
       </figure>
       <div class="fbdiv" aria-hidden="true"><i></i><span>or</span><i></i></div>
@@ -2210,7 +2211,7 @@
         '<div id="aiFine"'+(aiReady?'':' hidden')+'><p class="animsum">The AI output is used pixel for pixel by default. Alpha and edge colours change only when you adjust the controls below.</p><div class="opt"><label>Edge contraction</label><input type="range" id="aiEdge" min="-4" max="4" step="1" value="'+blackSettings.edgeShift+'"><span class="val" id="aiEdgeV">'+(blackSettings.edgeShift>0?'+':'')+blackSettings.edgeShift+'</span></div>'+
         '<div class="opt"><label>Mask feather</label><input type="range" id="aiFeather" min="0" max="4" step="1" value="'+blackSettings.aiFeather+'"><span class="val" id="aiFeatherV">'+blackSettings.aiFeather+' px</span></div>'+
         '<div class="opt2"><span class="k">Remove background colour fringe <small style="color:var(--muted)">Optional · Changes the original AI edge</small></span><label class="switch"><input type="checkbox" id="aiDecontam"'+(blackSettings.decontaminate?' checked':'')+'><span class="slider"></span></label></div></div>'+
-        '<div class="masktools" id="maskTools"'+(aiReady?'':' hidden')+'><button type="button" id="brushRemove" class="'+(blackSettings.brushMode==='remove'?'on':'')+'">Erase background</button><button type="button" id="brushKeep" class="'+(blackSettings.brushMode==='keep'?'on':'')+'">Restore subject</button><button type="button" id="maskUndo"'+(blackSettings.undo.length?'':' disabled')+'>undo</button><button type="button" id="maskRedo"'+(blackSettings.redo.length?'':' disabled')+'>Redo</button><button type="button" id="maskReset">Restore original AI alpha</button><span class="brush">Brush <input type="range" id="brushSize" min="1" max="120" step="1" value="'+blackSettings.brushSize+'"><b id="brushSizeV">'+blackSettings.brushSize+'</b></span></div></div></div>');
+        '<div class="masktools" id="maskTools"'+(aiReady?'':' hidden')+'><button type="button" id="brushRemove" class="'+(blackSettings.brushMode==='remove'?'on':'')+'">Erase background</button><button type="button" id="brushKeep" class="'+(blackSettings.brushMode==='keep'?'on':'')+'">Restore subject</button><button type="button" id="maskUndo"'+(blackSettings.undo.length?'':' disabled')+'>Undo</button><button type="button" id="maskRedo"'+(blackSettings.redo.length?'':' disabled')+'>Redo</button><button type="button" id="maskReset">Restore original AI alpha</button><span class="brush">Brush <input type="range" id="brushSize" min="1" max="120" step="1" value="'+blackSettings.brushSize+'"><b id="brushSizeV">'+blackSettings.brushSize+'</b></span></div></div></div>');
     }
     if(o.id==='jpg'||o.id==='webp'||o.id==='avif'||o.id==='heic'||o.id==='jp2'){
       var rq=qualityFor(o.id, curFeat);           // This format×本图的「视觉Lossless又Smallest」RecommendedQuality
@@ -2425,8 +2426,8 @@
   function setBrushMode(mode){ blackSettings.brushMode=mode; var a=opts.querySelector('#brushRemove'),b=opts.querySelector('#brushKeep'),pa=document.getElementById('proRemove'),pb=document.getElementById('proKeep');if(a)a.classList.toggle('on',mode==='remove');if(b)b.classList.toggle('on',mode==='keep');if(pa)pa.classList.toggle('on',mode==='remove');if(pb)pb.classList.toggle('on',mode==='keep'); }
   function syncUndoButton(){
     var undo=blackSettings.undo||[],redo=blackSettings.redo||[],b=opts.querySelector('#maskUndo'),r=opts.querySelector('#maskRedo'),p=document.getElementById('proUndo'),pr=document.getElementById('proRedo');
-    if(b){b.disabled=!undo.length;b.textContent='undo'+(undo.length?' '+undo.length:'');}if(r){r.disabled=!redo.length;r.textContent='Redo'+(redo.length?' '+redo.length:'');}
-    if(p){p.disabled=!undo.length;p.textContent='undo'+(undo.length?' ('+undo.length+')':'');}if(pr){pr.disabled=!redo.length;pr.textContent='Redo'+(redo.length?' ('+redo.length+')':'');}
+    if(b){b.disabled=!undo.length;b.textContent='Undo'+(undo.length?' '+undo.length:'');}if(r){r.disabled=!redo.length;r.textContent='Redo'+(redo.length?' '+redo.length:'');}
+    if(p){p.disabled=!undo.length;p.textContent='Undo'+(undo.length?' ('+undo.length+')':'');}if(pr){pr.disabled=!redo.length;pr.textContent='Redo'+(redo.length?' ('+redo.length+')':'');}
   }
   function scheduleAllMaskPreviews(){ if(proState&&proState.open&&proState.mode==='ai')scheduleProAIRender('hq');else scheduleBlackPreview(); }
   function pushMaskHistory(stack,mask){stack.push(mask.slice());if(stack.length>20)stack.shift();}
@@ -3488,7 +3489,7 @@
       modelineA=document.getElementById('modelineA'), resultA=document.getElementById('resultA'),
       fedit=document.getElementById('fedit'), fstrip=document.getElementById('fstrip'), feditSum=document.getElementById('feditSum');
   var selA=null, animFiles=[], animMode='', animReadable=true, animInFmt='', outBlobA=null, outNameA='anim.webp';
-  var editFrames=[], dragFrom=-1, srcRep=null;    // framesModel:[{canvas,delayMs,origDelay,thumb}];srcRep=源AnimationLoop(Compress模式Auto读)
+  var editFrames=[], dragFrom=-1, srcRep=null;    // Frame Model:[{canvas,delayMs,origDelay,thumb}];srcRep=源AnimationLoop(Compress模式Auto读)
   var SDA=null, SDAlock=false, isProgA=false, smartlineA=document.getElementById('smartlineA');   // Animation智能默认(首Frame 分析)
   var HAS_DEC=('ImageDecoder' in window);
   var animLoadSeq=0,animTaskSeq=0,boundAnimKey='anim';
@@ -3595,7 +3596,7 @@
     gridA.appendChild(d);
   });
   function pickA(o){ userTakeoverA(); selA=o; [].forEach.call(gridA.children, function(c){ var on=c.dataset.id===o.id; c.classList.toggle('sel', on); c.setAttribute('aria-pressed', on?'true':'false'); }); buildOptsA(); if(editFrames.length) syncAnimSum(); srvnoteA.classList.remove('show','codec'); if(resultA) resultA.classList.remove('show'); if(o.id==='webp'&&!o.live&&outputCodecAvailable(OUT.filter(function(x){return x.id==='webp';})[0])){srvnoteA.classList.add('show','codec');srvnoteA.innerHTML=CHIP_SVG+'<span class="txt"><b>WEBP</b> This WeChat / Safari engine needs the compatibility encoder. It will load on demand and finish locally.</span>';} updateGoA(); updateModeA(); }
-  // Animation智能默认:首Frame 分析 → 线条/少色荐 GIF、Photo/渐变荐Animation WebP。WebP frames编码与 WebCodecs AV1 刻度不同，分别标定。
+  // Animation智能默认:首Frame 分析 → 线条/少色荐 GIF、Photo/渐变荐Animation WebP。WebP Frame encoding与 WebCodecs AV1 刻度不同，分别标定。
   var ANIM_QUALITY=QUALITY_PROFILE.animation;
   function bigAnim(F, nFrames){ return (F.maxSide>800 || nFrames>60); }   // 大Animation/多Frame 再按各编码器自己的降档幅度Process。
   function animationProfile(id){return ANIM_QUALITY[id]||ANIM_QUALITY.webp;}
@@ -3621,9 +3622,9 @@
     sda.big=bigAnim(F, nFrames);
     if(animLockFmt){   // 「Compress」:锁定Output=输入Format,Frame-by-frame editor/Loop/Recommended等全部复用Animation
       sda.fmt=animLockFmt;
-      if(animLockFmt==='gif'){ sda.colA=Math.max(16,Math.min(256,Math.ceil((F.uniq||16)/16)*16)); sda.dither='none'; sda.reason='Compression · Keep GIF · '+sda.colA+' colours · '+nFrames+' frames'; }
-      else if(animLockFmt==='apng'){ sda.reason='Compression · Keep APNG (lossless true colour) · '+nFrames+' frames'; }
-      else { sda.qA=qualityForA(animLockFmt,F,nFrames); sda.reason='Compression · Keep '+({webp:'Animation WebP',avif:'Animation AVIF'}[animLockFmt]||animLockFmt.toUpperCase())+' · Quality '+sda.qA+' · '+nFrames+' frames'; }
+      if(animLockFmt==='gif'){ sda.colA=Math.max(16,Math.min(256,Math.ceil((F.uniq||16)/16)*16)); sda.dither='none'; sda.reason='Compression · Keep GIF · '+sda.colA+' colours · '+nFrames+' Frame '; }
+      else if(animLockFmt==='apng'){ sda.reason='Compression · Keep APNG (lossless true colour) · '+nFrames+' Frame '; }
+      else { sda.qA=qualityForA(animLockFmt,F,nFrames); sda.reason='Compression · Keep '+({webp:'Animation WebP',avif:'Animation AVIF'}[animLockFmt]||animLockFmt.toUpperCase())+' · Quality '+sda.qA+' · '+nFrames+' Frame '; }
       return sda;
     }
     // 线条/Solid colour/低色线稿 → GIF(Edge干净、Compatibility最好);其余(Photo/彩色线稿/截图)→ Animation WebP。
@@ -3716,7 +3717,7 @@
     optsA.innerHTML=G.join(''); optsA.classList.add('show');
     // 绑定滑块显示
     bindR('qA','qAv',''); bindR('colA','colAv',''); bindR('scaleA','sAv','%');
-    // 用户动了Quality/色数/Dithering → undoAnimation智能默认(与理由行所述一致)
+    // 用户动了Quality/色数/Dithering → UndoAnimation智能默认(与理由行所述一致)
     ['qA','colA'].forEach(function(id){ var el=optsA.querySelector('#'+id); if(el) el.addEventListener('input', userTakeoverA); });
     // Animation「Restore recommended」联动
     var qAel=optsA.querySelector('#qA'), qresetA=optsA.querySelector('#qresetA'), qrecAel=optsA.querySelector('.qrec');
@@ -3822,7 +3823,7 @@
     var lh=optsA.querySelector('#loopHint'); if(lh) lh.textContent='✓ Preserved source frame timing + '+(v==='inf'?'infinite loop':v==='1'?'play once':'loop '+srcRep+' times');
   }
   function loadImg(file){ return new Promise(function(res){ var im=new Image(), u=URL.createObjectURL(file); im.onload=function(){ URL.revokeObjectURL(u); res(im); }; im.onerror=function(){ URL.revokeObjectURL(u); res(null); }; im.src=u; }); }
-  // frames只存 canvas(不再同时存 ImageData),像素到Convert时才现取 → 大Animation内存直接减半
+  // Frame 只存 canvas(不再同时存 ImageData),像素到Convert时才现取 → 大Animation内存直接减半
   function freeFramesA(){ editFrames.forEach(function(f){ if(f&&f.canvas){ f.canvas.width=f.canvas.height=0; f.canvas=null; } if(f) f.thumb=null; }); }
   function unifySize(frames){ var W=frames[0].canvas.width,H=frames[0].canvas.height,out=[];
     frames.forEach(function(f){ if(f.canvas.width===W&&f.canvas.height===H){ out.push(f); return; }
@@ -3942,9 +3943,9 @@
     if(task&&!(await task.stage('Reading frames…','Reading and verifying source frames','The animation is first parsed for frame timing and loop information')))return false;
     var raw=await withTaskTimeout(gatherFramesA(),180000,'Reading animation frames timed out. Reduce the frame count or choose another file, then retry');
     if(!raw||!raw.length)throw new Error('Could not read source frames. Choose an image or animation the browser can decode');
-    if(task&&!(await task.stage('Arranging frames…','Applying frame order, speed and scale settings',raw.length+' frames · Scale '+aVal('scaleA',100)+'%',true)))return false;
+    if(task&&!(await task.stage('Arranging frames…','Applying frame order, speed and scale settings',raw.length+' Frame  · Scale '+aVal('scaleA',100)+'%',true)))return false;
     var frames=await scaleFramesA(arrangeFramesA(raw)), loop=readLoopA(), optimize=segVal('frameOptSeg','diff')!=='full', blob, eng;
-    if(task&&!(await task.stage('Encoding '+selA.name+'…','Encoding frames and building the '+selA.name+' container',frames.length+' frames · '+frames[0].canvas.width+'×'+frames[0].canvas.height+'. More frames take longer',true)))return false;
+    if(task&&!(await task.stage('Encoding '+selA.name+'…','Encoding frames and building the '+selA.name+' container',frames.length+' Frame  · '+frames[0].canvas.width+'×'+frames[0].canvas.height+'. More frames take longer',true)))return false;
     if(selA.id==='webp'){ blob=await withTaskTimeout(encodeAnimWebP(frames,{loop:loop, quality:encodeQuality(aVal('qA',ANIM_QUALITY.webp.base)), optimize:optimize}),300000,'Animated WebP encoding timed out. Reduce dimensions or the frame count'); eng='Animation WebP · '+(optimize?'Inter-frame delta':'Full frames')+' + ImgIng container'; }
     else if(selA.id==='apng'){ blob=await withTaskTimeout(encodeAPNG(frames,{loop:loop, optimize:optimize}),300000,'APNG encoding timed out. Reduce dimensions or the frame count'); eng='APNG · Lossless true colour'+(optimize?'Inter-frame delta':'Full frames'); }
     else if(selA.id==='gif'){ var dit=aVal('ditA','fs'); blob=await withTaskTimeout(Promise.resolve(encodeGIF(frames,{loop:loop, colors:+aVal('colA',256), dither:dit!=='none', optimize:optimize})),300000,'GIF encoding timed out. Reduce colours, dimensions or the frame count'); eng='GIF89a · '+(+aVal('colA',256))+' colours'+(dit!=='none'?' + dithering':'')+' · '+(optimize?'Inter-frame delta':'Full frames'); }
@@ -3954,7 +3955,7 @@
     if(task&&!(await task.stage('Verifying result…','Encoding complete; preparing the result preview','Calculating the actual file size and verifying the output')))return false;
     outBlobA=blob; outNameA=(animFiles[0].name.replace(/\.[^.]+$/,'')||'anim')+'.'+selA.id;
     var oldB=animFiles.reduce(function(s,f){ return s+f.size; },0), newB=blob.size, save=Math.round((1-newB/oldB)*100);
-    document.getElementById('rtA').textContent=(animMode==='compress'?'Compression complete':'Creation complete')+' · '+frames.length+' frames';
+    document.getElementById('rtA').textContent=(animMode==='compress'?'Compression complete':'Creation complete')+' · '+frames.length+' Frame ';
     document.getElementById('oldszA').textContent=fmtBytes(oldB);
     document.getElementById('newszA').textContent=fmtBytes(newB);
     var sv=document.getElementById('saveA'); if(save>0){ sv.textContent='Saved '+save+'%'; sv.classList.remove('zero'); } else { sv.textContent=(save===0?'Same file size':'+'+Math.abs(save)+'%'); sv.classList.add('zero'); }
