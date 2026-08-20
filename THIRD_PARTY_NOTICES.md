@@ -9,6 +9,14 @@
 - 上游项目：<https://github.com/jamsinclair/jSquash>
 - 许可证副本：`codecs/avif/LICENSE`
 
+## @jsquash/webp 1.5.0
+
+- 用途：iPhone 微信 / Safari 缺少 Canvas WebP 编码时的浏览器端 WebP 编码与解码兜底
+- 许可证：Apache License 2.0；内含 libwebp 的 BSD 风格许可证
+- 上游项目：<https://github.com/jamsinclair/jSquash>
+- 许可证副本：`codecs/webp/LICENSE`
+- libwebp 许可证副本：`codecs/webp/CODEC-LICENSE.txt`
+
 ## wasm-feature-detect 1.8.0
 
 - 用途：浏览器 WASM 能力检测
