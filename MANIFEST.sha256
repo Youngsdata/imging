@@ -50,7 +50,7 @@ edcd883d10e955655946b8fe733bb139faa8b7036092827b1849a4b34d727d6b  ./codecs/webp/
 3d70163a00e6264fc5a8fa7c8f3b1fa21a50a00d910f4d2de3ef1bbd2fdc98ab  ./codecs/webp/meta.js
 e71535eeee820d68b68ece7c8af761c39f3ddec93d3d957d2f83b19191339e0d  ./codecs/webp/utils.js
 12686e209637031cd00832e6fd8bdffd7ff450a136ecc2aec28ce4f28c237046  ./deploy.sh
-76a7c4829fab03061e9b86ec4a2c19e9ed4b6a5a3c56216aceb7647b3af7819b  ./dist/index.html
+f40be185d801226f4feeb2f731b325ba2611d23c979a24949fc4499c439749fc  ./dist/index.html
 14beb3fac411d73f2d4c9d47b7ab427b712813e888cb945c234200d1807d83e3  ./docker/nginx/40-enable-ssl.sh
 0a973d3ccb018f6f9240e5d8ce8373d99d0e93997fd4251579bb62b844db9c03  ./docker/nginx/41-inject-beian.sh
 e67cbfb87324109e828196d631eb30834e9d982ef72f8ead178869fd7a7fe818  ./docker/nginx/app.conf
@@ -62,7 +62,7 @@ ae6da0a2429a571c7b1940602ff52f76809b1449b014f4268ad54fd806fcb49a  ./en/benchmark
 7f6684c4f5ec98524d3268db49ad2d4a36610856d9e76cedf5e475c66ca094d4  ./en/compare/index.html
 c92864c9f0dfb8c2ecef23fd96781da88d55dc30df3d9a3077463a07217219e0  ./en/compress-gif/index.html
 f516d699e15cafd6bbe3bbc4096306fca73fc9ec6b9c8a155faec51b23f1b28d  ./en/heic-to-jpg/index.html
-19d1a8930c21faf71b5d61a63d960320624184b09b9ae0a1ef51d6f9185b4edc  ./en/index.html
+0e38c9e388476dc2c1c0f0aafda9e230cdf7cc00048983fdba6592ef4bc1ae55  ./en/index.html
 908126b349a0108f024711cc9e192b27ee57aa796591b6cb412e2fcb3cadca37  ./en/llms.txt
 4131180f0d74c6e755958a929ddf0c83366939c1b9ca255d21e797991cf7e56d  ./en/online-design/index.html
 ff7f453fedb6eb0fcc82fa458284af5b9bc480906d40bd35b1395007564713a8  ./en/pdf-compress/index.html

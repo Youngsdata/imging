@@ -763,12 +763,26 @@
   table.cmp tr:last-child th, table.cmp tr:last-child td{border-bottom:none;}
   .cmp .y{color:var(--teal-2); font-weight:700;} .cmp .n{color:var(--muted);}
   .cmp .sv{color:var(--coral-2); font-weight:600; font-size:.92em;}
-  /* 工具Compare:Area列给长标题稳定留位并允许换行,四个产品列严格等分剩余空间 */
-  #compare table.cmp{table-layout:fixed; min-width:820px;}
+  /* 工具Compare / 浏览器矩阵 / PDF 三张表的首列统一Width:同一页面里出现三种不同的Area列宽会显得没对齐。
+     首列给长标题稳定留位并允许换行(矩阵表原本 nowrap 且Width随内容跑到About 350px),其余列等分剩余空间。 */
+  #compare table.cmp,
+  #browsers table.cmp.matrix,
+  #pdf table.cmp{table-layout:fixed; min-width:820px;}
   #compare table.cmp thead th:first-child,
-  #compare table.cmp tbody th{width:240px; white-space:normal; overflow-wrap:anywhere; word-break:normal;}
+  #compare table.cmp tbody th,
+  #browsers table.cmp.matrix thead th:first-child,
+  #browsers table.cmp.matrix tbody th,
+  #pdf table.cmp thead th:first-child,
+  #pdf table.cmp tbody th{width:240px; white-space:normal; overflow-wrap:anywhere; word-break:normal;}
+  /* 固定布局下最后一列不能再写 99%,否则与首列的 240px 一起过About束;交给它吃掉剩余Width */
+  #browsers table.cmp.matrix th:last-child,
+  #browsers table.cmp.matrix td:last-child{width:auto;}
   html[lang="en"] #compare table.cmp thead th:first-child,
-  html[lang="en"] #compare table.cmp tbody th{width:18%;}
+  html[lang="en"] #compare table.cmp tbody th,
+  html[lang="en"] #browsers table.cmp.matrix thead th:first-child,
+  html[lang="en"] #browsers table.cmp.matrix tbody th,
+  html[lang="en"] #pdf table.cmp thead th:first-child,
+  html[lang="en"] #pdf table.cmp tbody th{width:18%;}
   /* 矩阵:全部左对齐;Features列/Safari 列按内容自适应、Safari 吃掉多余Width;只把 Chrome 与 Firefox 两列设成等宽(Firefox 加宽到与 Chrome 一样) */
   table.cmp.matrix th, table.cmp.matrix td{text-align:left; white-space:nowrap;}
   table.cmp.matrix tbody th{width:auto; font-weight:650; color:var(--ink-2);}
