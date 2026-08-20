@@ -120,24 +120,25 @@
   .hero-tagline-accent{color:var(--teal-2);}
   .hero-launch{margin-top:20px;}
   .hero-launch-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:9px;}
-  .hero-launch-head b{font-size:13px;color:var(--ink);}
-  .hero-launch-head span{font:650 9.5px var(--mono);letter-spacing:.11em;color:var(--teal-2);text-transform:uppercase;}
-  .hero-launch-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;}
-  .hero-launch-card{position:relative;display:grid;grid-template-columns:34px minmax(0,1fr);align-items:center;gap:9px;min-width:0;min-height:64px;padding:9px 10px;border:1px solid var(--line);border-radius:12px;background:color-mix(in srgb,var(--surface) 96%,transparent);box-shadow:0 10px 28px -28px color-mix(in srgb,var(--ink) 50%,transparent);transition:transform .16s ease,border-color .16s ease,background .16s ease,box-shadow .16s ease;}
+  .hero-launch-head b{font-size:14.5px;color:var(--ink);}
+  .hero-launch-head span{font:650 10.5px var(--mono);letter-spacing:.11em;color:var(--teal-2);text-transform:uppercase;}
+  .hero-launch-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;}
+  .hero-launch-card{position:relative;display:grid;grid-template-columns:34px minmax(0,1fr);align-items:center;gap:10px;min-width:0;min-height:72px;padding:10px 11px;border:1px solid var(--line);border-radius:12px;background:color-mix(in srgb,var(--surface) 96%,transparent);box-shadow:0 10px 28px -28px color-mix(in srgb,var(--ink) 50%,transparent);transition:transform .16s ease,border-color .16s ease,background .16s ease,box-shadow .16s ease;}
   .hero-launch-card:hover,.hero-launch-card:focus-visible{transform:translateY(-2px);border-color:color-mix(in srgb,var(--teal) 68%,var(--line));background:var(--surface);box-shadow:0 15px 32px -24px color-mix(in srgb,var(--teal) 44%,transparent);outline:none;}
   .hero-launch-card:nth-child(5):hover,.hero-launch-card:nth-child(5):focus-visible,.hero-launch-card:nth-child(6):hover,.hero-launch-card:nth-child(6):focus-visible{border-color:color-mix(in srgb,var(--coral) 58%,var(--line));box-shadow:0 15px 32px -24px color-mix(in srgb,var(--coral) 38%,transparent);}
   .hero-launch-icon{display:grid;place-items:center;width:34px;height:34px;border-radius:10px;background:var(--teal-bg);color:var(--teal-2);}
   .hero-launch-card:nth-child(5) .hero-launch-icon,.hero-launch-card:nth-child(6) .hero-launch-icon{background:var(--coral-bg);color:var(--coral-2);}
   .hero-launch-icon svg{display:block;width:18px;height:18px;}
   .hero-launch-copy{min-width:0;}
-  .hero-launch-copy b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12.5px;line-height:1.25;color:var(--ink);}
-  .hero-launch-copy small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:3px;font-size:9.5px;line-height:1.25;color:var(--muted);}
-  .hero-launch-card em{position:absolute;right:7px;top:6px;border-radius:999px;padding:1px 4px;background:var(--teal);color:#fff;font:800 7px var(--mono);font-style:normal;}
+  .hero-launch-copy b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:14px;line-height:1.28;color:var(--ink);}
+  .hero-launch-copy small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:4px;font-size:11px;line-height:1.35;color:var(--muted);}
+  .hero-launch-card em{position:absolute;right:7px;top:6px;border-radius:999px;padding:2px 5px;background:var(--teal);color:#fff;font:800 8px var(--mono);font-style:normal;}
+  .hero-launch-card:nth-child(5) .hero-launch-copy,.hero-launch-card:nth-child(6) .hero-launch-copy{padding-top:12px;}
   .hero-trust{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin-top:10px;}
-  .hero-trust span{display:flex;align-items:center;justify-content:center;gap:6px;min-width:0;padding:7px 8px;border-radius:9px;background:color-mix(in srgb,var(--teal-bg) 66%,var(--surface));color:var(--ink-2);font-size:10.5px;font-weight:650;white-space:nowrap;}
-  .hero-trust span::before{content:"✓";color:var(--teal-2);font:800 10px var(--mono);}
+  .hero-trust span{display:flex;align-items:center;justify-content:center;gap:6px;min-width:0;padding:8px;border-radius:9px;background:color-mix(in srgb,var(--teal-bg) 66%,var(--surface));color:var(--ink-2);font-size:12px;font-weight:650;white-space:nowrap;}
+  .hero-trust span::before{content:"✓";color:var(--teal-2);font:800 11px var(--mono);}
   .hero-more{margin-top:12px;border-top:1px solid var(--line);}
-  .hero-more>summary{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 2px 6px;color:var(--muted);font-size:11.5px;font-weight:650;cursor:pointer;list-style:none;}
+  .hero-more>summary{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 2px 8px;color:var(--muted);font-size:13px;font-weight:650;cursor:pointer;list-style:none;}
   .hero-more>summary::-webkit-details-marker{display:none;}
   .hero-more>summary::after{content:"＋";color:var(--teal-2);font:700 14px var(--mono);}
   .hero-more[open]>summary::after{content:"−";}
@@ -157,18 +158,22 @@
   /* DataDance 品牌区：首屏只Restore克制的公司署名与联系入口。 */
   .dbrand{display:flex;align-items:center;gap:10px;margin-top:12px;padding-top:11px;border-top:1px solid var(--line);text-decoration:none;color:inherit;transition:opacity .15s ease;}
   .dbrand-head{display:flex;align-items:baseline;gap:7px;flex:0 0 auto;}
-  .dbrand-name{font-family:var(--mono);font-size:16px;font-weight:800;letter-spacing:-.01em;line-height:1;background:linear-gradient(96deg,var(--teal) 8%,var(--coral) 92%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;}
-  .dbrand-by{font-family:var(--mono);font-size:9px;font-weight:700;color:var(--muted);letter-spacing:.12em;}
+  .dbrand-name{font-family:var(--mono);font-size:17px;font-weight:800;letter-spacing:-.01em;line-height:1;background:linear-gradient(96deg,var(--teal) 8%,var(--coral) 92%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;}
+  .dbrand-by{font-family:var(--mono);font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.12em;}
   .dbrand-copy{min-width:0;margin-left:auto;text-align:right;}
-  .dbrand-slogan{font-size:11px;font-weight:650;color:var(--ink-2);letter-spacing:.01em;}
-  .dbrand-note{font-size:10px;color:var(--muted);margin:2px 0 0;line-height:1.4;}
+  .dbrand-slogan{font-size:12.5px;font-weight:650;color:var(--ink-2);letter-spacing:.01em;}
+  .dbrand-note{font-size:11.5px;color:var(--muted);margin:3px 0 0;line-height:1.45;}
   .dbrand-note b{color:var(--coral-2); font-weight:700;}
   .dbrand-mail{color:var(--teal-2); font-weight:600;}
   .dbrand:hover{opacity:.86;}
   .dbrand:hover .dbrand-mail{text-decoration:underline;}
+  @media(max-width:1200px) and (min-width:521px){
+    .hero-launch-card{min-height:84px;}
+    .hero-launch-copy small{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;white-space:normal;}
+  }
   @media(max-width:520px){
     .hero{padding-top:18px}.hero h1{font-size:30px}.hero-title-line{white-space:normal}.hero-tagline{font-size:17px;white-space:normal}.brandclaim{padding:13px 14px 13px 16px}.brandclaim strong{font-size:15px}
-    .hero-launch-grid{grid-template-columns:repeat(2,minmax(0,1fr));}.hero-launch-card{min-height:62px;padding:8px}.hero-launch-head span{display:none}.hero-trust{grid-template-columns:1fr 1fr}.hero-trust span:last-child{grid-column:1/-1}.hero-launch-copy b{font-size:12px}
+    .hero-launch-grid{grid-template-columns:repeat(2,minmax(0,1fr));}.hero-launch-card{min-height:96px;padding:9px}.hero-launch-head span{display:none}.hero-trust{grid-template-columns:1fr 1fr}.hero-trust span:last-child{grid-column:1/-1}.hero-launch-copy b,.hero-launch-copy small{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;white-space:normal}.hero-launch-copy b{font-size:13.5px}.hero-launch-copy small{font-size:10.5px}
     .hero-step{grid-template-columns:36px minmax(0,1fr);gap:10px}.hero-step-no{width:34px;height:34px}.hero-proof{grid-template-columns:1fr 1fr}.hero-proof-item:last-child{grid-column:1/-1}
     .dbrand{align-items:flex-start}.dbrand-copy{text-align:left;margin-left:0}.dbrand-note{display:none}
   }
@@ -1452,9 +1457,10 @@
   <aside class="reldrawer" role="dialog" aria-modal="true" aria-labelledby="releaseTitle">
     <header class="relhead"><span class="releyebrow">CHANGELOG · PUBLIC ROADMAP</span><h2 id="releaseTitle">ImgIng release trail</h2><p>Every public release records its additions, fixes and changes; future plans remain clearly separate.</p><button class="relx" id="releaseClose" type="button" aria-label="Close release trail">&times;</button></header>
     <div class="relscroll">
-      <div class="relcurrent"><time class="reldate" datetime="2026-08-20"><small>CURRENT</small><b>08.20</b></time><div><strong>Current build · Format-aware smart compression tuning release</strong><span>Retuned default quality for WebP, JPEG, AVIF, transparent cutouts and animation to reduce file size while preserving text, texture and alpha edges.</span></div></div>
+      <div class="relcurrent"><time class="reldate" datetime="2026-08-20"><small>CURRENT</small><b>08.20</b></time><div><strong>Current build · Homepage launcher readability release</strong><span>Improved the homepage launchers, descriptions, trust promises and brand details, with a stable two-line mobile layout for longer English task names.</span></div></div>
       <div class="relsection"><h3>Shipped</h3><span>VERIFIED RELEASES</span></div>
       <div class="reltimeline">
+        <article class="relitem"><time datetime="2026-08-20">2026-08-20</time><b>Clearer launcher typography and mobile readability</b><p>Increased task titles, format descriptions, NEW / BETA badges, trust promises, expandable guidance and brand contact text, together with card height and spacing. The two-column mobile layout now allows long task titles to wrap to two lines without clipping, crowding or misalignment.</p></article>
         <article class="relitem"><time datetime="2026-08-20">2026-08-20</time><b>Smaller format-aware defaults by content type</b><p>Retuned recommendations for regular and smooth photos, texture, graphics and soft alpha around the official Squoosh and codec baselines. Native browser JPEG retains extra headroom, WebP alpha stays lossless at 100, common phone-size AVIF images use a more efficient effort tier, and same-format compression still keeps the source whenever re-encoding is not smaller.</p></article>
         <article class="relitem"><time datetime="2026-08-20">2026-08-20</time><b>Clear home hero and direct task launchers</b><p>Kept the existing two-column structure and full converter while changing the information order to task first, explanation second. Six launchers open conversion, compression, AI cutout, Animation Studio, Online Design and Video Background directly. Local processing, no-signup and no-watermark promises remain visible, with technical detail available on demand across English, Chinese and mobile layouts.</p></article>
         <article class="relitem"><time datetime="2026-08-20">2026-08-20</time><b>Local WebP processing and mobile layout fixes for iPhone WeChat</b><p>WebP capability checks now validate the actual MIME type so WebKit cannot silently return PNG. When Canvas WebP encoding is unavailable, a self-hosted libwebp WASM encoder loads on demand across conversion, same-format compression, background removal, Online Design and animation export without uploading pixels. Mobile text scaling, header controls, mode icons and floating launchers now have stable sizing, baselines and safe-area spacing.</p></article>
@@ -1462,7 +1468,6 @@
         <article class="relitem"><time datetime="2026-08-19">2026-08-19</time><b>Professional filters, skin-aware beauty and open projects</b><p>Added per-image-layer and full-canvas scopes with 12 presets and 18 light, colour, skin-aware beauty and detail controls. Edge-preserving smoothing never expands transparent contours, alpha is retained pixel for pixel, large images use overlapping memory-safe bands, and .imging stores all parameters, original assets and a filtered preview.</p></article>
         <article class="relitem"><time datetime="2026-08-19">2026-08-19</time><b>Video first-frame hair, aspect and blank-intro fixes</b><p>Fixed a fallback-mask payload bug and low-contrast hair loss in the experimental tier. RVM ResNet50 now calibrates the first frame before MatAnyone2 temporal memory; narrow gaps are closed in linear time without replacing the original soft alpha. Landscape, square, portrait and ultrawide video keep their aspect ratio, while blank intros output the chosen background and continue looking for a later subject.</p></article>
         <article class="relitem"><time datetime="2026-08-19">2026-08-19</time><b>Unified light/dark editor themes and scrollbars</b><p>Online Design, Video Editor and Professional Refinement now share the site design tokens across toolbars, panels, controls, canvases, cards and exit confirmation. Each workspace also gets an in-editor theme control and matching scrollbars.</p></article>
-        <article class="relitem"><time datetime="2026-08-19">2026-08-19</time><b>Ultimate video model status overlap fix</b><p>Video model cards now use an adaptive two-column title and status layout. The long MatAnyone2 title and Cached for ratio state no longer overlap, while the description retains the full row width.</p></article>
       </div>
       <div class="relsection"><h3>Next release</h3><span>PLANNED · NOT SHIPPED</span></div>
       <div class="relnext"><div class="relnexttop"><b>Deeper local browser editing</b><span>Target: by Aug 31</span></div><p>Multi-layer layout, professional filters and skin-aware beauty have shipped. Next comes crop, text, shapes, selections and local edits.</p><ul><li>Crop, flip and free transform</li><li>Text, shapes and layer styles</li><li>Brush, selections, masks and local adjustments</li><li>Deeper professional history and comparison</li></ul><div class="relnotice">This is a public target, not a shipped feature. Scope may change after quality and browser-performance validation.</div></div>

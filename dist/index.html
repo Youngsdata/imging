@@ -123,24 +123,25 @@
   .hero-tagline-accent{color:var(--teal-2);}
   .hero-launch{margin-top:20px;}
   .hero-launch-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:9px;}
-  .hero-launch-head b{font-size:13px;color:var(--ink);}
-  .hero-launch-head span{font:650 9.5px var(--mono);letter-spacing:.11em;color:var(--teal-2);text-transform:uppercase;}
-  .hero-launch-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;}
-  .hero-launch-card{position:relative;display:grid;grid-template-columns:34px minmax(0,1fr);align-items:center;gap:9px;min-width:0;min-height:64px;padding:9px 10px;border:1px solid var(--line);border-radius:12px;background:color-mix(in srgb,var(--surface) 96%,transparent);box-shadow:0 10px 28px -28px color-mix(in srgb,var(--ink) 50%,transparent);transition:transform .16s ease,border-color .16s ease,background .16s ease,box-shadow .16s ease;}
+  .hero-launch-head b{font-size:14.5px;color:var(--ink);}
+  .hero-launch-head span{font:650 10.5px var(--mono);letter-spacing:.11em;color:var(--teal-2);text-transform:uppercase;}
+  .hero-launch-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;}
+  .hero-launch-card{position:relative;display:grid;grid-template-columns:34px minmax(0,1fr);align-items:center;gap:10px;min-width:0;min-height:72px;padding:10px 11px;border:1px solid var(--line);border-radius:12px;background:color-mix(in srgb,var(--surface) 96%,transparent);box-shadow:0 10px 28px -28px color-mix(in srgb,var(--ink) 50%,transparent);transition:transform .16s ease,border-color .16s ease,background .16s ease,box-shadow .16s ease;}
   .hero-launch-card:hover,.hero-launch-card:focus-visible{transform:translateY(-2px);border-color:color-mix(in srgb,var(--teal) 68%,var(--line));background:var(--surface);box-shadow:0 15px 32px -24px color-mix(in srgb,var(--teal) 44%,transparent);outline:none;}
   .hero-launch-card:nth-child(5):hover,.hero-launch-card:nth-child(5):focus-visible,.hero-launch-card:nth-child(6):hover,.hero-launch-card:nth-child(6):focus-visible{border-color:color-mix(in srgb,var(--coral) 58%,var(--line));box-shadow:0 15px 32px -24px color-mix(in srgb,var(--coral) 38%,transparent);}
   .hero-launch-icon{display:grid;place-items:center;width:34px;height:34px;border-radius:10px;background:var(--teal-bg);color:var(--teal-2);}
   .hero-launch-card:nth-child(5) .hero-launch-icon,.hero-launch-card:nth-child(6) .hero-launch-icon{background:var(--coral-bg);color:var(--coral-2);}
   .hero-launch-icon svg{display:block;width:18px;height:18px;}
   .hero-launch-copy{min-width:0;}
-  .hero-launch-copy b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12.5px;line-height:1.25;color:var(--ink);}
-  .hero-launch-copy small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:3px;font-size:9.5px;line-height:1.25;color:var(--muted);}
-  .hero-launch-card em{position:absolute;right:7px;top:6px;border-radius:999px;padding:1px 4px;background:var(--teal);color:#fff;font:800 7px var(--mono);font-style:normal;}
+  .hero-launch-copy b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:14px;line-height:1.28;color:var(--ink);}
+  .hero-launch-copy small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:4px;font-size:11px;line-height:1.35;color:var(--muted);}
+  .hero-launch-card em{position:absolute;right:7px;top:6px;border-radius:999px;padding:2px 5px;background:var(--teal);color:#fff;font:800 8px var(--mono);font-style:normal;}
+  .hero-launch-card:nth-child(5) .hero-launch-copy,.hero-launch-card:nth-child(6) .hero-launch-copy{padding-top:12px;}
   .hero-trust{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin-top:10px;}
-  .hero-trust span{display:flex;align-items:center;justify-content:center;gap:6px;min-width:0;padding:7px 8px;border-radius:9px;background:color-mix(in srgb,var(--teal-bg) 66%,var(--surface));color:var(--ink-2);font-size:10.5px;font-weight:650;white-space:nowrap;}
-  .hero-trust span::before{content:"✓";color:var(--teal-2);font:800 10px var(--mono);}
+  .hero-trust span{display:flex;align-items:center;justify-content:center;gap:6px;min-width:0;padding:8px;border-radius:9px;background:color-mix(in srgb,var(--teal-bg) 66%,var(--surface));color:var(--ink-2);font-size:12px;font-weight:650;white-space:nowrap;}
+  .hero-trust span::before{content:"✓";color:var(--teal-2);font:800 11px var(--mono);}
   .hero-more{margin-top:12px;border-top:1px solid var(--line);}
-  .hero-more>summary{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 2px 6px;color:var(--muted);font-size:11.5px;font-weight:650;cursor:pointer;list-style:none;}
+  .hero-more>summary{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 2px 8px;color:var(--muted);font-size:13px;font-weight:650;cursor:pointer;list-style:none;}
   .hero-more>summary::-webkit-details-marker{display:none;}
   .hero-more>summary::after{content:"＋";color:var(--teal-2);font:700 14px var(--mono);}
   .hero-more[open]>summary::after{content:"−";}
@@ -160,18 +161,22 @@
   /* DataDance 品牌区：首屏只保留克制的公司署名与联系入口。 */
   .dbrand{display:flex;align-items:center;gap:10px;margin-top:12px;padding-top:11px;border-top:1px solid var(--line);text-decoration:none;color:inherit;transition:opacity .15s ease;}
   .dbrand-head{display:flex;align-items:baseline;gap:7px;flex:0 0 auto;}
-  .dbrand-name{font-family:var(--mono);font-size:16px;font-weight:800;letter-spacing:-.01em;line-height:1;background:linear-gradient(96deg,var(--teal) 8%,var(--coral) 92%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;}
-  .dbrand-by{font-family:var(--mono);font-size:9px;font-weight:700;color:var(--muted);letter-spacing:.12em;}
+  .dbrand-name{font-family:var(--mono);font-size:17px;font-weight:800;letter-spacing:-.01em;line-height:1;background:linear-gradient(96deg,var(--teal) 8%,var(--coral) 92%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;}
+  .dbrand-by{font-family:var(--mono);font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.12em;}
   .dbrand-copy{min-width:0;margin-left:auto;text-align:right;}
-  .dbrand-slogan{font-size:11px;font-weight:650;color:var(--ink-2);letter-spacing:.01em;}
-  .dbrand-note{font-size:10px;color:var(--muted);margin:2px 0 0;line-height:1.4;}
+  .dbrand-slogan{font-size:12.5px;font-weight:650;color:var(--ink-2);letter-spacing:.01em;}
+  .dbrand-note{font-size:11.5px;color:var(--muted);margin:3px 0 0;line-height:1.45;}
   .dbrand-note b{color:var(--coral-2); font-weight:700;}
   .dbrand-mail{color:var(--teal-2); font-weight:600;}
   .dbrand:hover{opacity:.86;}
   .dbrand:hover .dbrand-mail{text-decoration:underline;}
+  @media(max-width:1200px) and (min-width:521px){
+    .hero-launch-card{min-height:84px;}
+    .hero-launch-copy small{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;white-space:normal;}
+  }
   @media(max-width:520px){
     .hero{padding-top:18px}.hero h1{font-size:30px}.hero-title-line{white-space:normal}.hero-tagline{font-size:17px;white-space:normal}.brandclaim{padding:13px 14px 13px 16px}.brandclaim strong{font-size:15px}
-    .hero-launch-grid{grid-template-columns:repeat(2,minmax(0,1fr));}.hero-launch-card{min-height:62px;padding:8px}.hero-launch-head span{display:none}.hero-trust{grid-template-columns:1fr 1fr}.hero-trust span:last-child{grid-column:1/-1}.hero-launch-copy b{font-size:12px}
+    .hero-launch-grid{grid-template-columns:repeat(2,minmax(0,1fr));}.hero-launch-card{min-height:96px;padding:9px}.hero-launch-head span{display:none}.hero-trust{grid-template-columns:1fr 1fr}.hero-trust span:last-child{grid-column:1/-1}.hero-launch-copy b,.hero-launch-copy small{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;white-space:normal}.hero-launch-copy b{font-size:13.5px}.hero-launch-copy small{font-size:10.5px}
     .hero-step{grid-template-columns:36px minmax(0,1fr);gap:10px}.hero-step-no{width:34px;height:34px}.hero-proof{grid-template-columns:1fr 1fr}.hero-proof-item:last-child{grid-column:1/-1}
     .dbrand{align-items:flex-start}.dbrand-copy{text-align:left;margin-left:0}.dbrand-note{display:none}
   }
@@ -1639,10 +1644,11 @@
     <div class="relscroll">
       <div class="relcurrent">
         <time class="reldate" datetime="2026-08-20"><small>CURRENT</small><b>08.20</b></time>
-        <div><strong>当前构建 · 分格式智能压缩参数优化版</strong><span>重新标定 WebP、JPEG、AVIF、透明抠图和动图的默认质量，在保留文字、纹理与透明边缘的同时进一步减小文件体积。</span></div>
+        <div><strong>当前构建 · 首页核心入口可读性优化版</strong><span>放大首页六类任务入口、说明、使用承诺与品牌区小字，并为手机端英文长标题提供稳定的两行布局。</span></div>
       </div>
       <div class="relsection"><h3>已经交付</h3><span>VERIFIED RELEASES</span></div>
       <div class="reltimeline">
+        <article class="relitem"><time datetime="2026-08-20">2026-08-20</time><b>首页入口文字与移动端可读性提升</b><p>放大首页核心入口和辅助说明文字，优化手机双列与英文长标题的两行显示。</p></article>
         <article class="relitem"><time datetime="2026-08-20">2026-08-20</time><b>分格式、分内容的小体积智能默认</b><p>下调 WebP、JPEG、AVIF、透明抠图与动图的智能推荐值，保留透明边缘和同格式不增大的安全保护。</p></article>
         <article class="relitem"><time datetime="2026-08-20">2026-08-20</time><b>首页首屏清爽化与核心任务直达</b><p>首页首屏新增六类任务直达入口，弱化视觉噪音，并把隐私与免费承诺固定在开始操作之前。</p></article>
         <article class="relitem"><time datetime="2026-08-20">2026-08-20</time><b>iPhone 微信 WebP 本地处理与移动端布局修复</b><p>修复 iPhone 微信 WebP 被判定为服务端的问题，新增按需 libwebp 本地兜底并统一移动端图标和顶部布局。</p></article>
@@ -1650,7 +1656,6 @@
         <article class="relitem"><time datetime="2026-08-19">2026-08-19</time><b>在线做图专业滤镜、肤色美颜与开放工程</b><p>在线做图新增单层与整体非破坏式滤镜、12 组预设、18 项精调、肤色感知美颜及工程完整往返。</p></article>
         <article class="relitem"><time datetime="2026-08-19">2026-08-19</time><b>视频首帧发丝、比例与空白开场修复</b><p>恢复实验档首帧遗漏发丝，加入高质量首帧校准、软透明轮廓闭合、空白开场等待主体与多比例回归。</p></article>
         <article class="relitem"><time datetime="2026-08-19">2026-08-19</time><b>编辑工作区深浅主题与滚动条统一</b><p>三个编辑工作区完整支持深浅主题，新增工作区内主题切换并统一暗色与浅色滚动条。</p></article>
-        <article class="relitem"><time datetime="2026-08-19">2026-08-19</time><b>英文最高级视频模型状态重叠修复</b><p>修复英文 MatAnyone2 长标题与缓存状态重叠，统一三档视频模型卡片布局。</p></article>
       </div>
       <div class="relsection"><h3>下一个版本</h3><span>PLANNED · NOT SHIPPED</span></div>
       <div class="relnext">
