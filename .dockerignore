@@ -16,6 +16,8 @@
 !ai/**
 !video/
 !video/**
+!pdf/
+!pdf/**
 !models/
 !models/**
 !licenses/
