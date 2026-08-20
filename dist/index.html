@@ -1639,10 +1639,11 @@
     <div class="relscroll">
       <div class="relcurrent">
         <time class="reldate" datetime="2026-08-20"><small>CURRENT</small><b>08.20</b></time>
-        <div><strong>当前构建 · 首页任务导航与清爽体验版</strong><span>首页首屏新增六类核心任务入口，先选转换、压缩、抠图、动图、在线做图或视频换背景，再直接进入对应工作区。</span></div>
+        <div><strong>当前构建 · 分格式智能压缩参数优化版</strong><span>重新标定 WebP、JPEG、AVIF、透明抠图和动图的默认质量，在保留文字、纹理与透明边缘的同时进一步减小文件体积。</span></div>
       </div>
       <div class="relsection"><h3>已经交付</h3><span>VERIFIED RELEASES</span></div>
       <div class="reltimeline">
+        <article class="relitem"><time datetime="2026-08-20">2026-08-20</time><b>分格式、分内容的小体积智能默认</b><p>下调 WebP、JPEG、AVIF、透明抠图与动图的智能推荐值，保留透明边缘和同格式不增大的安全保护。</p></article>
         <article class="relitem"><time datetime="2026-08-20">2026-08-20</time><b>首页首屏清爽化与核心任务直达</b><p>首页首屏新增六类任务直达入口，弱化视觉噪音，并把隐私与免费承诺固定在开始操作之前。</p></article>
         <article class="relitem"><time datetime="2026-08-20">2026-08-20</time><b>iPhone 微信 WebP 本地处理与移动端布局修复</b><p>修复 iPhone 微信 WebP 被判定为服务端的问题，新增按需 libwebp 本地兜底并统一移动端图标和顶部布局。</p></article>
         <article class="relitem"><time datetime="2026-08-19">2026-08-19</time><b>视频纯色背景选色与即时预览修复</b><p>修复视频纯色背景选择后看似仍为白色的问题，复用当前帧蒙版即时更新颜色、背景图和虚化效果。</p></article>
@@ -1650,7 +1651,6 @@
         <article class="relitem"><time datetime="2026-08-19">2026-08-19</time><b>视频首帧发丝、比例与空白开场修复</b><p>恢复实验档首帧遗漏发丝，加入高质量首帧校准、软透明轮廓闭合、空白开场等待主体与多比例回归。</p></article>
         <article class="relitem"><time datetime="2026-08-19">2026-08-19</time><b>编辑工作区深浅主题与滚动条统一</b><p>三个编辑工作区完整支持深浅主题，新增工作区内主题切换并统一暗色与浅色滚动条。</p></article>
         <article class="relitem"><time datetime="2026-08-19">2026-08-19</time><b>英文最高级视频模型状态重叠修复</b><p>修复英文 MatAnyone2 长标题与缓存状态重叠，统一三档视频模型卡片布局。</p></article>
-        <article class="relitem"><time datetime="2026-08-19">2026-08-19</time><b>英文首页双入口重叠修复</b><p>修复英文首页两个工具入口的文案换行重叠，改为按实际高度自动排列。</p></article>
       </div>
       <div class="relsection"><h3>下一个版本</h3><span>PLANNED · NOT SHIPPED</span></div>
       <div class="relnext">
@@ -1862,22 +1862,22 @@
     if(isBlackEdgeMode()){setAIActionBusy(false);opts.querySelectorAll('.aimodel').forEach(function(b){b.disabled=false;});if(!silent){var st=opts.querySelector('#aiStatus');aiProgressSubBase='上一次处理已停止，可以直接重新开始';if(st)st.textContent='AI 任务已停止';renderAIElapsed();}}
     updateGo();
   }
-  // 所有有损输出只认这一份“视觉无损但尽量小”参数源。静态、透明合成和动图的编码器刻度不同，禁止互相套值。
-  // 标定口径：真实编码→解码回读，综合分块 SSIM、PSNR、边缘误差和肉眼 A/B，选择正常观看看不出差异的最低档。
-  // AVIF 的 libavif 压缩效率明显高于 WebP；2026-08 重新标定后直接使用真实编码器数值，不再藏 0.78 系数。
+  // 所有有损输出只认这一份“常规观看看不出差异、体积尽量小”参数源。静态、透明合成和动图的编码器刻度不同，禁止互相套值。
+  // 2026-08 体积优化：以 Squoosh/libwebp 的 WebP 75、MozJPEG 75、AVIF 50 为格式基线，再按本项目真实编码路径和内容复杂度分档。
+  // JPEG 原生 Canvas 比 MozJPEG 保守一档；图文、纹理和软透明边缘逐级加码。抠图只降低 RGB 质量，WebP Alpha 仍由编码器以 100 无损保存。
   var QUALITY_PROFILE={
     still:{
-      webp:{sharp:90,smooth:78,texture:84,normal:80},
-      jpg: {sharp:93,smooth:85,texture:88,normal:84},
-      avif:{sharp:69,smooth:59,texture:64,normal:61},
+      webp:{sharp:84,smooth:72,texture:80,normal:75},
+      jpg: {sharp:88,smooth:78,texture:84,normal:80},
+      avif:{sharp:60,smooth:48,texture:56,normal:52},
       heic:{sharp:90,smooth:82,texture:87,normal:83},
       jp2: {sharp:89,smooth:81,texture:87,normal:83}
     },
-    base:{webp:80,jpg:85,avif:64,heic:85,jp2:85},
-    cutout:{webp:84},
+    base:{webp:75,jpg:80,avif:52,heic:85,jp2:85},
+    cutout:{webp:82},
     animation:{
-      webp:{label:'动图 WebP',base:78,sharp:88,smooth:76,texture:82,normal:78,bigDelta:8,bigFloor:62},
-      avif:{label:'动图 AVIF',base:64,sharp:76,smooth:60,texture:68,normal:64,bigDelta:4,bigFloor:56}
+      webp:{label:'动图 WebP',base:74,sharp:84,smooth:72,texture:79,normal:74,bigDelta:8,bigFloor:60},
+      avif:{label:'动图 AVIF',base:54,sharp:64,smooth:50,texture:58,normal:54,bigDelta:4,bigFloor:48}
     }
   };
   var QTAB=QUALITY_PROFILE.still,QBASE=QUALITY_PROFILE.base;
@@ -3008,9 +3008,9 @@
   // 在线做图在最终合成画布上重新识别内容；照片、纹理、图文和透明边缘分别复用静态编码器的实测档位。
   var designExportConfig={
     png:{quality:null,hint:'PNG 使用无损编码，不需要设置画质；透明通道会完整保留。'},
-    webp:{quality:QBASE.webp||80,hint:'WebP 会按最终合成画面的照片、纹理、图文和透明边缘自动推荐最低视觉无损档。'},
-    jpeg:{quality:QBASE.jpg||85,hint:'JPG 会先按白底合成再分析；对文字边缘和渐变使用更高档，避免振铃和色带。'}
-  },designQualityByFormat={webp:QBASE.webp||80,jpeg:QBASE.jpg||85},designQualityManual={webp:false,jpeg:false},designQualityRecommendation={webp:QBASE.webp||80,jpeg:QBASE.jpg||85},designQualityRefreshTimer=0,designPng8Enabled=false;
+    webp:{quality:QBASE.webp||75,hint:'WebP 会按最终合成画面的照片、纹理、图文和透明边缘自动推荐最低视觉无损档。'},
+    jpeg:{quality:QBASE.jpg||80,hint:'JPG 会先按白底合成再分析；对文字边缘和渐变使用更高档，避免振铃和色带。'}
+  },designQualityByFormat={webp:QBASE.webp||75,jpeg:QBASE.jpg||80},designQualityManual={webp:false,jpeg:false},designQualityRecommendation={webp:QBASE.webp||75,jpeg:QBASE.jpg||80},designQualityRefreshTimer=0,designPng8Enabled=false;
   function designActive(){for(var i=0;i<designState.layers.length;i++)if(designState.layers[i].id===designState.activeId)return designState.layers[i];return null;}
   function designSnapshot(){return JSON.stringify({width:designState.width,height:designState.height,bgMode:designState.bgMode,bgColor:designState.bgColor,effects:designDefaultEffects(designState.effects),activeId:designState.activeId,layers:designState.layers.map(function(l){return{id:l.id,x:l.x,y:l.y,scale:l.scale,rotation:l.rotation||0,opacity:l.opacity,effects:designDefaultEffects(l.effects)};})});}
   function designDocumentSnapshot(){return JSON.stringify({width:designState.width,height:designState.height,bgMode:designState.bgMode,bgColor:designState.bgColor,effects:designDefaultEffects(designState.effects),layers:designState.layers.map(function(l){return{id:l.id,x:l.x,y:l.y,scale:l.scale,rotation:l.rotation||0,opacity:l.opacity,effects:designDefaultEffects(l.effects)};})});}
@@ -3189,7 +3189,7 @@
   function designProjectFilename(){var title=String(designState.projectTitle||'imging-design').replace(/\.[^.]+$/,'').replace(/[\\/:*?"<>|\u0000-\u001f]/g,'-').replace(/\s+/g,' ').trim().slice(0,60);return(title||'imging-design')+'.imging';}
   function setDesignProjectButtons(disabled){document.getElementById('designProjectNew').disabled=disabled;document.getElementById('designProjectNewTop').disabled=disabled;document.getElementById('designProjectSave').disabled=disabled;document.getElementById('designProjectSaveTop').disabled=disabled;document.getElementById('designProjectOpen').disabled=disabled;document.getElementById('designProjectOpenTop').disabled=disabled;}
   function resetDesignProject(){
-    releaseDesignAssets();designRegistry.clear();designState.width=1080;designState.height=1080;designState.bgMode='transparent';designState.bgColor='#ffffff';designState.effects=designDefaultEffects();designState.layers=[];designState.activeId=null;designState.zoom=1;designState.panX=0;designState.panY=0;designFilterScope='layer';designState.projectId=createDesignProjectId();designState.projectTitle='未命名图映工程';designState.projectCreatedAt=new Date().toISOString();designState.history=[];designState.future=[];designPreset.value='square';designFormat.value='png';designQualityByFormat={webp:QBASE.webp||80,jpeg:QBASE.jpg||85};designQualityManual={webp:false,jpeg:false};designQualityRecommendation={webp:QBASE.webp||80,jpeg:QBASE.jpg||85};designPng8Enabled=false;designPngColors.value=8;designPngDither.checked=false;designFile.value='';designProjectFile.value='';syncDesignExportControls();designState.history=[designSnapshot()];markDesignProjectSaved();renderDesign();requestAnimationFrame(fitDesignView);designStatus.textContent='已新建空白工程 · 1080 × 1080 · 图层、滤镜和素材已清空';
+    releaseDesignAssets();designRegistry.clear();designState.width=1080;designState.height=1080;designState.bgMode='transparent';designState.bgColor='#ffffff';designState.effects=designDefaultEffects();designState.layers=[];designState.activeId=null;designState.zoom=1;designState.panX=0;designState.panY=0;designFilterScope='layer';designState.projectId=createDesignProjectId();designState.projectTitle='未命名图映工程';designState.projectCreatedAt=new Date().toISOString();designState.history=[];designState.future=[];designPreset.value='square';designFormat.value='png';designQualityByFormat={webp:QBASE.webp||75,jpeg:QBASE.jpg||80};designQualityManual={webp:false,jpeg:false};designQualityRecommendation={webp:QBASE.webp||75,jpeg:QBASE.jpg||80};designPng8Enabled=false;designPngColors.value=8;designPngDither.checked=false;designFile.value='';designProjectFile.value='';syncDesignExportControls();designState.history=[designSnapshot()];markDesignProjectSaved();renderDesign();requestAnimationFrame(fitDesignView);designStatus.textContent='已新建空白工程 · 1080 × 1080 · 图层、滤镜和素材已清空';
   }
   function requestNewDesignProject(){var hasProject=designRegistry.size>0||designState.layers.length>0||designState.history.length>1||designState.width!==1080||designState.height!==1080||designState.bgMode!=='transparent'||designState.bgColor!=='#ffffff';if(!hasProject){resetDesignProject();return;}var message=(designHasUnsavedChanges()?'当前工程有尚未保存的修改；':'')+'新建后会清空所有图层、原始素材、背景和撤销记录，此操作无法撤销。';openEditExitConfirm('新建空白工程？',message,resetDesignProject,'取消','新建工程');}
   async function saveDesignProject(){
@@ -3238,7 +3238,7 @@
         var internalId='design-'+Date.now()+'-'+(++designSeq);registry.set(internalId,sourceAsset);layers.push({id:internalId,x:x,y:y,scale:scale*100,rotation:designRotationValue(rotation),opacity:opacity*100,effects:effects});externalToInternal.set(layerDef.id,internalId);usedAssetIds.add(layerDef.assetId);
       }
       if(usedAssetIds.size!==assetMap.size)throw new Error('工程包含未被图层引用的素材');
-      releaseDesignAssets();designRegistry.clear();registry.forEach(function(asset,id){designRegistry.set(id,asset);});loadedAssets=[];designState.width=width;designState.height=height;designState.bgMode=bgMode;designState.bgColor=bgColor;designState.effects=globalEffects;designState.layers=layers;designState.activeId=externalToInternal.get(manifest.editor&&manifest.editor.activeLayerId)||(layers.length?layers[layers.length-1].id:null);designState.zoom=manifest.editor&&Number.isFinite(+manifest.editor.zoom)?Math.max(.03,Math.min(8,+manifest.editor.zoom)):1;designState.panX=manifest.editor&&manifest.editor.pan&&Number.isFinite(+manifest.editor.pan.x)?+manifest.editor.pan.x:0;designState.panY=manifest.editor&&manifest.editor.pan&&Number.isFinite(+manifest.editor.pan.y)?+manifest.editor.pan.y:0;designState.projectId=manifest.document&&typeof manifest.document.id==='string'?manifest.document.id.slice(0,200):createDesignProjectId();designState.projectTitle=manifest.document&&typeof manifest.document.title==='string'?manifest.document.title.slice(0,200):String(file.name||'图映工程').replace(/\.imging$/i,'');designState.projectCreatedAt=manifest.document&&typeof manifest.document.createdAt==='string'?manifest.document.createdAt:new Date().toISOString();var exportSettings=manifest.exportSettings||{},exportFormat=['png','webp','jpeg'].indexOf(exportSettings.format)>=0?exportSettings.format:'png';designFormat.value=exportFormat;designQualityByFormat={webp:QBASE.webp||80,jpeg:QBASE.jpg||85};designQualityManual={webp:false,jpeg:false};designQualityRecommendation={webp:QBASE.webp||80,jpeg:QBASE.jpg||85};if((exportFormat==='webp'||exportFormat==='jpeg')&&Number.isFinite(+exportSettings.quality)&&+exportSettings.quality>=1&&+exportSettings.quality<=100){designQualityByFormat[exportFormat]=Math.round(+exportSettings.quality);designQualityManual[exportFormat]=exportSettings.qualityMode!=='auto';}designPng8Enabled=exportSettings.pngMode==='indexed';if(Number.isFinite(+exportSettings.pngColors)){designPngColors.value=Math.max(2,Math.min(8,Math.round(Math.log2(+exportSettings.pngColors))));}designPngDither.checked=exportSettings.pngDither===true;syncDesignExportControls();designState.history=[designSnapshot()];designState.future=[];markDesignProjectSaved();renderDesign();designStatus.textContent='工程已打开 · '+layers.length+' 个可编辑图层 · 滤镜和原始素材均已恢复';
+      releaseDesignAssets();designRegistry.clear();registry.forEach(function(asset,id){designRegistry.set(id,asset);});loadedAssets=[];designState.width=width;designState.height=height;designState.bgMode=bgMode;designState.bgColor=bgColor;designState.effects=globalEffects;designState.layers=layers;designState.activeId=externalToInternal.get(manifest.editor&&manifest.editor.activeLayerId)||(layers.length?layers[layers.length-1].id:null);designState.zoom=manifest.editor&&Number.isFinite(+manifest.editor.zoom)?Math.max(.03,Math.min(8,+manifest.editor.zoom)):1;designState.panX=manifest.editor&&manifest.editor.pan&&Number.isFinite(+manifest.editor.pan.x)?+manifest.editor.pan.x:0;designState.panY=manifest.editor&&manifest.editor.pan&&Number.isFinite(+manifest.editor.pan.y)?+manifest.editor.pan.y:0;designState.projectId=manifest.document&&typeof manifest.document.id==='string'?manifest.document.id.slice(0,200):createDesignProjectId();designState.projectTitle=manifest.document&&typeof manifest.document.title==='string'?manifest.document.title.slice(0,200):String(file.name||'图映工程').replace(/\.imging$/i,'');designState.projectCreatedAt=manifest.document&&typeof manifest.document.createdAt==='string'?manifest.document.createdAt:new Date().toISOString();var exportSettings=manifest.exportSettings||{},exportFormat=['png','webp','jpeg'].indexOf(exportSettings.format)>=0?exportSettings.format:'png';designFormat.value=exportFormat;designQualityByFormat={webp:QBASE.webp||75,jpeg:QBASE.jpg||80};designQualityManual={webp:false,jpeg:false};designQualityRecommendation={webp:QBASE.webp||75,jpeg:QBASE.jpg||80};if((exportFormat==='webp'||exportFormat==='jpeg')&&Number.isFinite(+exportSettings.quality)&&+exportSettings.quality>=1&&+exportSettings.quality<=100){designQualityByFormat[exportFormat]=Math.round(+exportSettings.quality);designQualityManual[exportFormat]=exportSettings.qualityMode!=='auto';}designPng8Enabled=exportSettings.pngMode==='indexed';if(Number.isFinite(+exportSettings.pngColors)){designPngColors.value=Math.max(2,Math.min(8,Math.round(Math.log2(+exportSettings.pngColors))));}designPngDither.checked=exportSettings.pngDither===true;syncDesignExportControls();designState.history=[designSnapshot()];designState.future=[];markDesignProjectSaved();renderDesign();designStatus.textContent='工程已打开 · '+layers.length+' 个可编辑图层 · 滤镜和原始素材均已恢复';
     }catch(e){var temporary=new Map();loadedAssets.forEach(function(asset,index){temporary.set(String(index),asset);});releaseDesignAssets(temporary);designStatus.textContent='打开工程失败：'+((e&&e.message)||e);}finally{setDesignProjectButtons(false);renderDesignControls();designProjectFile.value='';}
   }
   function pickDesignProject(){designProjectFile.click();}

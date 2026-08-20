@@ -17,8 +17,8 @@ window.TYCODECS.onEnc('image/avif', async function(imageData, quality){
   // 小图不分块(分块有轻微体积开销)。
   var tcol = W >= 2600 ? 2 : (W >= 1400 ? 1 : 0);
   var trow = H >= 2600 ? 2 : (H >= 1400 ? 1 : 0);
-  // 速度自适应:libavif speed 越低越慢但越小。大图(手机 20MP)用高 speed 提速,小图保持 6 求最小。
-  var speed = mp > 6000000 ? 8 : (mp > 2000000 ? 7 : 6);
+  // 速度自适应:libavif speed 越低越慢但越小。常见 12MP 手机图用 7 换取更高压缩率；仅超大图保留 8，避免等待和内存压力失控。
+  var speed = mp > 16000000 ? 8 : (mp > 6000000 ? 7 : 6);
   var ab = await encode(imageData, { quality: q, speed: speed, subsample: 1, tileColsLog2: tcol, tileRowsLog2: trow });
   return new Uint8Array(ab);
 });
