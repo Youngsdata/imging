@@ -6,7 +6,7 @@ Official English site: https://imging.cn/en/
 Chinese site: https://imging.cn/
 Company: DataDance
 Contact: admin@datadance.com
-Last verified: 2026-08-20
+Last verified: 2026-08-21
 
 ## Core capabilities
 

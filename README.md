@@ -163,6 +163,39 @@ docker run --detach \
 
 生产环境建议由 HTTPS 反向代理暴露服务。页面使用的 AVIF WASM 需要 Cross-Origin Isolation，镜像内置的 Nginx 配置已经发送所需响应头。
 
+## 访问监控（可选）
+
+`imging-monitor` 是独立的可选镜像，通过共享目录读取主 `imging` 容器的 JSON access log，不直接读取前置 Nginx 日志。它内置离线 IPv4/IPv6 地域库、增量统计、全量有效访问地域图与 Top 100 IP，并使用 Argon2id、TOTP、服务端会话、CSRF 和登录限流保护管理页面。只有 2xx/3xx 会进入 PV、UV 和地域统计，404、493 等失败或拦截请求不会入库。
+
+有前置代理时，先让主镜像持久化日志并仅信任代理的精确 CIDR；以下示例中 `172.17.0.11` 是前置代理连接主机时的实际来源地址：
+
+```bash
+mkdir -p /data/imging/imging-logs
+./deploy.sh -u --port 8082 \
+  --log-dir /data/imging/imging-logs \
+  --trusted-proxies 172.17.0.11/32 \
+  --timezone Asia/Shanghai
+```
+
+主 Nginx 只会对来自该 CIDR 的连接解析 `X-Forwarded-For`，并把真实用户 IP 写入 `clientip`。不要信任整个内网网段。
+
+```bash
+mkdir -p monitor-secrets
+docker run --rm -it --user "$(id -u):$(id -g)" \
+  -v "$PWD/monitor-secrets:/secrets" \
+  ghcr.io/youngsdata/imging-monitor:latest \
+  python -m monitor.cli --output /secrets --username admin
+
+IMGING_MONITOR_PUBLIC_ORIGIN=https://status.example.com \
+docker compose -f compose.monitor.yml up -d
+```
+
+已有 `deploy.sh` 管理的主容器时，用相同的 `IMGING_LOG_DIR` 执行 `docker compose -f compose.monitor.yml up -d --no-deps imging-monitor`，只启动 monitor。监控端口默认绑定 `127.0.0.1:8899`；远端前置代理需要通过 `IMGING_MONITOR_BIND` 绑定内网地址，并用防火墙和 `IMGING_MONITOR_TRUSTED_PROXIES` 仅允许、信任该代理。
+
+旧前置 JSON 日志可通过 `python -m monitor.cli import-legacy` 导入。必须指定带时区的 `--before` 切换边界，并用 `--host` 只保留主站域名；相同快照重复执行不会重复计数。完整部署、历史迁移、日志轮转和持久化说明见源码仓库 `README.md`。
+
+保存初始化时仅显示一次的 TOTP URI 和恢复码；缺少认证密钥时服务会拒绝启动。登录后可在“统计设置”中修改 SQLite 聚合数据保留天数、空闲扫描间隔和单批读取行数，无需重启；原始日志仍应按 `monitor/logrotate.example` 在宿主机轮转。
+
 ## 标签
 
 - `latest`：公开仓库默认分支的最新构建

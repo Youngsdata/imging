@@ -8,6 +8,7 @@
 !docker/nginx/ssl.conf
 !docker/nginx/40-enable-ssl.sh
 !docker/nginx/41-inject-beian.sh
+!docker/nginx/42-configure-real-ip.sh
 !dist/
 !dist/index.html
 !codecs/

@@ -163,6 +163,39 @@ Then open <http://localhost:8080>.
 
 For production, expose the service through an HTTPS reverse proxy. The AVIF WASM runtime requires Cross-Origin Isolation; the bundled Nginx configuration already sends the required response headers.
 
+## Access monitor (optional)
+
+`imging-monitor` is a separate optional image. It consumes the JSON access log produced by the main `imging` container instead of reading the front proxy log. It includes offline IPv4/IPv6 geolocation, full successful-traffic region aggregation, and a Top 100 IP view. Only 2xx/3xx responses enter PV, UV, and region statistics; failed or blocked responses such as 404/493 are excluded. The administration UI is protected by Argon2id, TOTP, server-side sessions, CSRF checks, and login throttling.
+
+When a front proxy is present, persist the main-container log and trust only the proxy's exact source CIDR. In this example, `172.17.0.11` is the address from which the proxy connects to the application host:
+
+```bash
+mkdir -p /data/imging/imging-logs
+./deploy.sh -u --port 8082 \
+  --log-dir /data/imging/imging-logs \
+  --trusted-proxies 172.17.0.11/32 \
+  --timezone Asia/Shanghai
+```
+
+The main Nginx resolves `X-Forwarded-For` only for connections from that CIDR and writes the resulting client address to `clientip`. Do not trust an entire private network for convenience.
+
+```bash
+mkdir -p monitor-secrets
+docker run --rm -it --user "$(id -u):$(id -g)" \
+  -v "$PWD/monitor-secrets:/secrets" \
+  ghcr.io/youngsdata/imging-monitor:latest \
+  python -m monitor.cli --output /secrets --username admin
+
+IMGING_MONITOR_PUBLIC_ORIGIN=https://status.example.com \
+docker compose -f compose.monitor.yml up -d
+```
+
+If the main container is already managed by `deploy.sh`, use the same `IMGING_LOG_DIR` and run `docker compose -f compose.monitor.yml up -d --no-deps imging-monitor` to start only the monitor. It binds to `127.0.0.1:8899` by default. A remote front proxy requires an intranet `IMGING_MONITOR_BIND`; restrict port 8899 with the host firewall and trust only that proxy through `IMGING_MONITOR_TRUSTED_PROXIES`.
+
+Import an old front-proxy JSON snapshot with `python -m monitor.cli import-legacy`. Supply a timezone-aware `--before` cutover boundary and use `--host` to retain only application hosts. Re-running the same snapshot does not duplicate counts. See the source repository `README.md` for the complete deployment, migration, rotation, and persistence procedure.
+
+Save the TOTP URI and recovery codes shown once during initialization. The service fails closed when authentication secrets are missing. After signing in, use “Statistics settings” to change the SQLite aggregate retention, idle scan interval, and batch size without restarting. Raw logs must still be rotated on the host with `monitor/logrotate.example`.
+
 ## Image tags
 
 - `latest`: the latest build from the public repository's default branch

@@ -1,0 +1,14 @@
+# 将 /absolute/path/imging-logs 改为 IMGING_LOG_DIR 的绝对路径。
+/absolute/path/imging-logs/access.json {
+    daily
+    rotate 14
+    compress
+    delaycompress
+    missingok
+    notifempty
+    create 0640 root 10001
+    sharedscripts
+    postrotate
+        docker kill --signal USR1 imging >/dev/null 2>&1 || true
+    endscript
+}

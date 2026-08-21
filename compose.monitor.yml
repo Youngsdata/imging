@@ -1,0 +1,81 @@
+services:
+  imging:
+    image: ${IMGING_IMAGE:-ghcr.io/youngsdata/imging:latest}
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "${IMGING_BIND:-127.0.0.1}:${IMGING_PORT:-8080}:80"
+    environment:
+      IMGING_TRUSTED_PROXIES: "${IMGING_TRUSTED_PROXIES:-}"
+      TZ: "${TZ:-UTC}"
+    volumes:
+      - ${IMGING_LOG_DIR:-./imging-logs}:/var/log/imging
+    tmpfs:
+      - /var/cache/nginx
+      - /var/run
+      - /tmp
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - NET_BIND_SERVICE
+      - SETGID
+      - SETUID
+
+  imging-monitor:
+    image: ${IMGING_MONITOR_IMAGE:-ghcr.io/youngsdata/imging-monitor:latest}
+    build:
+      context: ./monitor
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      imging:
+        condition: service_started
+    ports:
+      - "${IMGING_MONITOR_BIND:-127.0.0.1}:${IMGING_MONITOR_PORT:-8899}:8899"
+    environment:
+      IMGING_MONITOR_PUBLIC_ORIGIN: "${IMGING_MONITOR_PUBLIC_ORIGIN:-https://status.imging.cn}"
+      IMGING_MONITOR_USERNAME: "${IMGING_MONITOR_USERNAME:-admin}"
+      IMGING_MONITOR_TRUSTED_PROXIES: "${IMGING_MONITOR_TRUSTED_PROXIES:-127.0.0.1/32,::1/128}"
+      TZ: "${TZ:-UTC}"
+    secrets:
+      - source: admin_password_hash
+        target: admin_password_hash
+        uid: "10001"
+        gid: "10001"
+        mode: 0400
+      - source: totp_secret
+        target: totp_secret
+        uid: "10001"
+        gid: "10001"
+        mode: 0400
+      - source: recovery_codes
+        target: recovery_codes
+        uid: "10001"
+        gid: "10001"
+        mode: 0400
+    volumes:
+      - ${IMGING_LOG_DIR:-./imging-logs}:/logs:ro
+      - imging-monitor-data:/var/lib/imging-monitor
+    read_only: true
+    tmpfs:
+      - /tmp
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+
+volumes:
+  imging-monitor-data:
+
+secrets:
+  admin_password_hash:
+    file: ${IMGING_MONITOR_SECRETS_DIR:-./monitor-secrets}/admin_password_hash
+  totp_secret:
+    file: ${IMGING_MONITOR_SECRETS_DIR:-./monitor-secrets}/totp_secret
+  recovery_codes:
+    file: ${IMGING_MONITOR_SECRETS_DIR:-./monitor-secrets}/recovery_codes

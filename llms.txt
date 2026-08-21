@@ -65,4 +65,4 @@
 - 出品方: DataDance（数据跳动）
 - 官方域名: https://imging.cn/
 - 联系邮箱: admin@datadance.com
-- 内容更新日期: 2026-08-20
+- 内容更新日期: 2026-08-21

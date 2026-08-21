@@ -1,5 +1,9 @@
 FROM nginx:1.30.4-alpine-slim@sha256:ddde39c6e51f02fde7410c2e9c234cf2d0a4c7bdbbe176aeb37d8ad7ab4eb58c
 
+ENV TZ=UTC
+
+RUN apk add --no-cache tzdata
+
 # Keep large, slow-changing assets in independent linked layers. A page/config
 # change then reuses these layers instead of invalidating their BuildKit cache.
 COPY --link codecs/ /usr/share/nginx/html/codecs/
@@ -32,6 +36,10 @@ COPY --link docker/nginx/app.conf /etc/nginx/snippets/imging-app.conf
 COPY --link docker/nginx/ssl.conf /etc/nginx/optional/ssl.conf
 COPY --link --chmod=755 docker/nginx/40-enable-ssl.sh /docker-entrypoint.d/40-enable-ssl.sh
 COPY --link --chmod=755 docker/nginx/41-inject-beian.sh /docker-entrypoint.d/41-inject-beian.sh
+COPY --link --chmod=755 docker/nginx/42-configure-real-ip.sh /docker-entrypoint.d/42-configure-real-ip.sh
+
+RUN mkdir -p /var/log/imging \
+    && touch /etc/nginx/snippets/imging-real-ip.conf
 
 EXPOSE 80 443
 
