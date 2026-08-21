@@ -236,7 +236,7 @@ class MonitorTestCase(unittest.TestCase):
         stylesheet = (Path(__file__).parent.parent / "static" / "dashboard-v2.css").read_text(encoding="utf-8")
         template = (Path(__file__).parent.parent / "templates" / "dashboard.html").read_text(encoding="utf-8")
         self.assertIn(".refresh-control .primary-button{flex:0 0 106px;width:106px", stylesheet)
-        self.assertIn("dashboard-v2.css?v=6", template)
+        self.assertIn("dashboard-v2.css?v=8", template)
 
     def test_current_ip_filter_switch_is_wired_to_runtime_settings(self):
         script = (Path(__file__).parent.parent / "static" / "dashboard.js").read_text(encoding="utf-8")
@@ -264,6 +264,10 @@ class MonitorTestCase(unittest.TestCase):
         self.assertIn("state.stats.today_crawler", script)
         self.assertIn("grid-template-columns:1.08fr repeat(4,minmax(0,1fr))", stylesheet)
         self.assertIn("article>small{margin-top:auto}", stylesheet)
+        self.assertIn('font-variant-numeric:tabular-nums', stylesheet)
+        self.assertIn("article>span{display:flex;align-items:center;gap:7px;color:#7d8780;font-size:11px", stylesheet)
+        self.assertIn("article>small{color:#7f8982;font-size:11px", stylesheet)
+        self.assertIn("font:800 10px/1 ui-monospace", stylesheet)
 
     def test_wrong_user_and_wrong_password_have_same_public_error(self):
         wrong_user = self.login(username="someone")
