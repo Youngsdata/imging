@@ -7,8 +7,8 @@
   <meta name="csrf-token" content="{{ csrf }}">
   <title>imging.cn · 访问监控</title>
   <link rel="stylesheet" href="/static/app.css">
-  <link rel="stylesheet" href="/static/dashboard-v2.css">
-  <script src="/static/dashboard.js" defer></script>
+  <link rel="stylesheet" href="/static/dashboard-v2.css?v=2">
+  <script src="/static/dashboard.js?v=2" defer></script>
 </head>
 <body class="dashboard-page">
   <header class="topbar">
@@ -28,7 +28,7 @@
       <article><span>活跃地域</span><strong id="region-count">—</strong><small>省份或国家</small></article>
     </section>
     <section class="paired-grid">
-      <article class="panel trend-panel"><div class="panel-heading"><div><p>TRAFFIC PULSE</p><h2>每日 PV / UV 趋势</h2></div><div class="legend"><span class="pv-dot"></span>PV <span class="uv-dot"></span>UV</div></div><div class="chart-box"><canvas id="trend-chart" aria-label="每日 PV 和 UV 趋势图"></canvas></div></article>
+      <article class="panel trend-panel"><div class="panel-heading"><div><p>TRAFFIC PULSE</p><h2>每日 PV / UV 趋势</h2></div><div class="legend"><span class="pv-dot"></span>PV <span class="uv-dot"></span>UV</div></div><div class="chart-box"><canvas id="trend-chart" tabindex="0" aria-label="每日 PV 和 UV 趋势图，可用左右方向键查看每天数据" aria-describedby="trend-tooltip"></canvas><canvas id="trend-overlay" aria-hidden="true"></canvas><div id="trend-tooltip" class="trend-tooltip" role="tooltip" aria-hidden="true" hidden><time id="trend-tooltip-date"></time><span><i class="pv"></i>PV<strong id="trend-tooltip-pv">0</strong></span><span><i class="uv"></i>UV<strong id="trend-tooltip-uv">0</strong></span></div></div></article>
       <article class="panel map-panel"><div class="panel-heading"><div><p>REGION SIGNAL</p><h2>访问地域分布</h2></div><div class="map-switch" role="group" aria-label="地图范围"><button class="active" data-map="china" type="button" aria-pressed="true">中国</button><button data-map="world" type="button" aria-pressed="false">世界</button></div></div><div id="map" class="map-box"><div id="map-tooltip" class="map-tooltip" hidden></div></div><p class="map-note">颜色越深表示有效访问量越高；中国按省份、世界按国家聚合。</p></article>
     </section>
     <section class="panel ranking-panel"><div class="panel-heading ranking-heading"><div><p>TOP 100 CLIENTS</p><h2>访问 IP 排名</h2><span id="caller-note" class="caller-note"></span></div><label class="ranking-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input id="ip-filter" type="search" placeholder="筛选 IP、国家或城市" aria-label="筛选访问 IP"></label></div><p id="ranking-note" class="ranking-note">按查询区间累计访问量降序</p><div class="ip-head" aria-hidden="true"><span>排名</span><span>IP 地址</span><span>地域 / 运营商</span><span>访问占比</span><span>访问量</span></div><div id="ip-ranking" class="ip-ranking"></div><div id="ranking-empty" class="ranking-empty" hidden>没有匹配的 IP 或地域</div></section>

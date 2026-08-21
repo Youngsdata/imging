@@ -7,7 +7,7 @@ import re
 import tempfile
 import time
 import unittest
-from collections import Counter, defaultdict
+from collections import Counter
 from dataclasses import replace
 from datetime import date, timedelta
 from pathlib import Path
@@ -24,6 +24,7 @@ from monitor.security import PASSWORD_HASHER
 from monitor.security import client_ip
 from monitor.security import expected_origin
 from monitor.store import Store
+from monitor.traffic import AutomatedTrafficClassifier
 from monitor import supervisor
 
 
@@ -208,10 +209,18 @@ class MonitorTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn('<option value="12" data-custom-days selected>最近 12 天</option>', response.get_data(as_text=True))
 
-    def test_single_day_chart_draws_visible_pv_and_uv_markers(self):
+    def test_trend_chart_draws_single_day_markers_and_supports_tooltips(self):
         script = (Path(__file__).parent.parent / "static" / "dashboard.js").read_text(encoding="utf-8")
+        template = (Path(__file__).parent.parent / "templates" / "dashboard.html").read_text(encoding="utf-8")
         self.assertIn("data.length===1", script)
         self.assertIn("context.arc(p.x,p.y,5", script)
+        self.assertIn('id="trend-tooltip"', template)
+        self.assertIn('role="tooltip"', template)
+        self.assertIn('addEventListener("pointermove"', script)
+        self.assertIn('addEventListener("mousemove"', script)
+        self.assertIn('item.full_date||item.date', script)
+        self.assertIn('addEventListener("keydown",chartKeydown)', script)
+        self.assertIn('event.key==="ArrowLeft"', script)
 
     def test_wrong_user_and_wrong_password_have_same_public_error(self):
         wrong_user = self.login(username="someone")
@@ -353,8 +362,8 @@ class MonitorTestCase(unittest.TestCase):
         redirect = json.dumps({"@timestamp": today + "T10:00:01+08:00", "clientip": "1.2.3.4", "status": "302"}).encode()
         blocked = json.dumps({"@timestamp": today + "T10:00:02+08:00", "clientip": "5.6.7.8", "status": "493"}).encode()
         missing = json.dumps({"@timestamp": today + "T10:00:03+08:00", "clientip": "5.6.7.8", "status": "404"}).encode()
-        self.assertEqual(collector._parse(valid), (today, "1.2.3.4", False, 36000, ""))
-        self.assertEqual(collector._parse(redirect), (today, "1.2.3.4", False, 36001, ""))
+        self.assertEqual(collector._parse(valid)[:6], (today, "1.2.3.4", False, 36000, "", True))
+        self.assertEqual(collector._parse(redirect)[:6], (today, "1.2.3.4", False, 36001, "", True))
         self.assertIsNone(collector._parse(blocked))
         self.assertIsNone(collector._parse(missing))
 
@@ -370,20 +379,63 @@ class MonitorTestCase(unittest.TestCase):
                 "@timestamp": today + "T10:00:00+08:00", "clientip": "1.2.3.4",
                 "status": "200", "user_agent": agent,
             }).encode()
-            self.assertEqual(collector._parse(raw), (today, "1.2.3.4", True, 36000, ""))
+            self.assertEqual(collector._parse(raw)[:6], (today, "1.2.3.4", True, 36000, "", True))
 
     def test_collector_classifies_repeated_same_path_burst_as_automated(self):
+        classifier = AutomatedTrafficClassifier()
         automated = Counter()
-        bursts = defaultdict(list)
         for second in range(21):
-            parsed = (date.today().isoformat(), "1.2.3.4", False, 36000 + second, "/en/")
-            LogCollector._record_classification(parsed, None, automated, bursts)
+            parsed = (date.today().isoformat(), "1.2.3.4", False, 36000 + second, "/en/", False, 1)
+            automated.update(classifier.feed(parsed))
         for index in range(12):
-            parsed = (date.today().isoformat(), "5.6.7.8", False, index * 61, "/")
-            LogCollector._record_classification(parsed, None, automated, bursts)
-        LogCollector._apply_burst_classification(bursts, automated)
+            parsed = (date.today().isoformat(), "5.6.7.8", False, index * 61, "/", True, 2)
+            automated.update(classifier.feed(parsed))
         self.assertEqual(automated[(date.today().isoformat(), "1.2.3.4")], 21)
         self.assertNotIn((date.today().isoformat(), "5.6.7.8"), automated)
+
+    def test_behavior_classifier_excludes_page_sweeps_and_duplicate_bootstrap_but_keeps_humans(self):
+        today = date.today().isoformat()
+        classifier = AutomatedTrafficClassifier()
+        automated = Counter()
+        sweep_paths = ["/llms.txt", "/video", "/pdf", "/img", "/ai/video-matting.js",
+                       "/ai/background-removal.js", "/video/editor.js", "/pdf/workspace.js"]
+        for index, path in enumerate(sweep_paths):
+            automated.update(classifier.feed((today, "66.93.99.50", False, 36000 + index // 3, path, True, 1)))
+        bootstrap = ["/", "/ai/background-removal.js", "/ai/video-matting.js", "/video/editor.js", "/pdf/workspace.js"]
+        for agent, start in ((2, 36100), (3, 36106)):
+            for index, path in enumerate(bootstrap):
+                automated.update(classifier.feed((today, "205.169.39.80", False, start + index, path, index == 0, agent)))
+        self.assertEqual(automated[(today, "66.93.99.50")], 8)
+        self.assertEqual(automated[(today, "205.169.39.80")], 10)
+
+        human = AutomatedTrafficClassifier()
+        human_hits = Counter()
+        for agent, start in ((4, 40000), (5, 40400)):
+            for index, path in enumerate(bootstrap):
+                human_hits.update(human.feed((today, "104.12.225.3", False, start + index, path, index == 0, agent)))
+        self.assertNotIn((today, "104.12.225.3"), human_hits)
+
+    def test_legacy_import_can_add_new_behavior_classification_once(self):
+        today = date.today().isoformat()
+        source = self.settings.db_path.parent / "legacy-behavior.json"
+        rows = []
+        bootstrap = ["/", "/ai/background-removal.js", "/ai/video-matting.js", "/video/editor.js", "/pdf/workspace.js"]
+        for agent, start in (("Chrome/83", 0), ("Chrome/79", 6)):
+            for index, path in enumerate(bootstrap):
+                rows.append({
+                    "@timestamp": "{}T10:00:{:02d}+08:00".format(today, start + index),
+                    "http_host": "imging.cn", "clientip": "205.169.39.80", "status": "200",
+                    "request": "GET {} HTTP/1.1".format(path), "referer": "-" if index == 0 else "https://imging.cn/",
+                    "agent": agent,
+                })
+        source.write_text("\n".join(json.dumps(row) for row in rows) + "\n", encoding="utf-8")
+        store = Store(self.settings.db_path)
+        first = import_legacy_log(source, store, FakeResolver(), today + "T11:00:00+08:00", ["imging.cn"], 90)
+        second = import_legacy_log(source, store, FakeResolver(), today + "T11:00:00+08:00", ["imging.cn"], 90)
+        self.assertTrue(first["behavior_updated"])
+        self.assertEqual(first["automated_hits"], 10)
+        self.assertFalse(second["behavior_updated"])
+        self.assertEqual(store.stats(1, [])["data"][-1], {"date": today[5:], "full_date": today, "pv": 0, "uv": 0})
 
     def test_legacy_import_filters_host_status_and_cutover_and_is_idempotent(self):
         today = date.today().isoformat()
@@ -578,7 +630,7 @@ class MonitorTestCase(unittest.TestCase):
         first_removed = (date.today() - timedelta(days=7)).isoformat()
         kept = json.dumps({"@timestamp": oldest_kept + "T10:00:00+08:00", "clientip": "1.2.3.4", "status": "200"}).encode()
         removed = json.dumps({"@timestamp": first_removed + "T10:00:00+08:00", "clientip": "1.2.3.4", "status": "200"}).encode()
-        self.assertEqual(collector._parse(kept), (oldest_kept, "1.2.3.4", False, 36000, ""))
+        self.assertEqual(collector._parse(kept)[:6], (oldest_kept, "1.2.3.4", False, 36000, "", True))
         self.assertIsNone(collector._parse(removed))
         store.ingest(self.settings.log_path, 1, 100, {(oldest_kept, "1.2.3.4"): 2, (first_removed, "5.6.7.8"): 3}, {}, FakeResolver())
         store.prune(7)

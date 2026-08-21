@@ -3,11 +3,11 @@ import json
 import os
 import threading
 import time
-from collections import Counter, defaultdict
+from collections import Counter
 from datetime import date, timedelta
 
 from .config import RUNTIME_SETTING_LIMITS
-from .traffic import is_automated_user_agent
+from .traffic import AutomatedTrafficClassifier, is_automated_user_agent
 
 
 class LogCollector(threading.Thread):
@@ -21,6 +21,7 @@ class LogCollector(threading.Thread):
         self.inode = 0
         self.offset = 0
         self.last_prune_key = None
+        self.traffic_classifier = AutomatedTrafficClassifier()
         self.runtime_defaults = {
             "retention_days": settings.retention_days,
             "collector_interval_seconds": settings.collector_interval_seconds,
@@ -62,7 +63,6 @@ class LogCollector(threading.Thread):
         if start >= limit:
             return
         automated = Counter()
-        bursts = defaultdict(list)
         with open(str(self.settings.log_path), "rb") as handle:
             handle.seek(start)
             while handle.tell() < limit:
@@ -71,8 +71,7 @@ class LogCollector(threading.Thread):
                     break
                 parsed = self._parse(raw)
                 if parsed:
-                    self._record_classification(parsed, None, automated, bursts)
-        self._apply_burst_classification(bursts, automated)
+                    automated.update(self.traffic_classifier.feed(parsed))
         self.store.record_automated_hits(self.settings.log_path, self.inode, limit, automated)
 
     def _collect_once(self):
@@ -80,7 +79,6 @@ class LogCollector(threading.Thread):
             self._open()
         counts = Counter()
         automated = Counter()
-        bursts = defaultdict(list)
         lines = 0
         while lines < self.runtime["collector_batch_lines"]:
             raw = self.handle.readline()
@@ -89,9 +87,9 @@ class LogCollector(threading.Thread):
             lines += 1
             parsed = self._parse(raw)
             if parsed:
-                self._record_classification(parsed, counts, automated, bursts)
+                counts[(parsed[0], parsed[1])] += 1
+                automated.update(self.traffic_classifier.feed(parsed))
         self.offset = self.handle.tell()
-        self._apply_burst_classification(bursts, automated)
         if counts or lines:
             self.store.ingest(self.settings.log_path, self.inode, self.offset, counts, automated, self.resolver)
         else:
@@ -109,8 +107,8 @@ class LogCollector(threading.Thread):
                     for raw in tail.splitlines():
                         parsed = self._parse(raw)
                         if parsed:
-                            self._record_classification(parsed, counts, automated, bursts)
-                self._apply_burst_classification(bursts, automated)
+                            counts[(parsed[0], parsed[1])] += 1
+                            automated.update(self.traffic_classifier.feed(parsed))
                 self._close()
                 if counts:
                     self.store.ingest(self.settings.log_path, self.inode, self.offset, counts, automated, self.resolver)
@@ -132,41 +130,18 @@ class LogCollector(threading.Thread):
             ip = str(payload.get("clientip") or payload.get("remote_addr") or "").strip()
             ipaddress.ip_address(ip)
             agent = payload.get("user_agent") or payload.get("agent") or ""
+            referer = str(payload.get("referer") or "").strip()
             second = int(timestamp[11:13]) * 3600 + int(timestamp[14:16]) * 60 + int(timestamp[17:19])
             uri = str(payload.get("request_uri") or "")
             if not uri:
                 request_parts = str(payload.get("request") or "").split()
                 uri = request_parts[1] if len(request_parts) > 1 else ""
-            return day, ip, is_automated_user_agent(agent), second, uri.split("?", 1)[0][:1024]
+            return (
+                day, ip, is_automated_user_agent(agent), second, uri.split("?", 1)[0][:1024],
+                not referer or referer == "-", hash(str(agent)[:512]),
+            )
         except (ValueError, TypeError, json.JSONDecodeError):
             return None
-
-    @staticmethod
-    def _record_classification(parsed, counts, automated, bursts):
-        day, ip, declared_automated, second, uri = parsed
-        key = (day, ip)
-        if counts is not None:
-            counts[key] += 1
-        if declared_automated:
-            automated[key] += 1
-        elif uri:
-            bursts[(day, ip, uri)].append(second)
-
-    @staticmethod
-    def _apply_burst_classification(bursts, automated):
-        for (day, ip, _), seconds in bursts.items():
-            start = 0
-            hits = 0
-            for end, second in enumerate(seconds):
-                while start < end and second - seconds[start] > 60:
-                    start += 1
-                window = end - start + 1
-                if window == 10:
-                    hits += 10
-                elif window > 10:
-                    hits += 1
-            if hits:
-                automated[(day, ip)] += hits
 
     def _prune_if_needed(self):
         today = date.today()

@@ -187,7 +187,32 @@
 .dashboard-page .panel-heading h2::before{content:"";display:inline-block;width:18px;height:3px;margin:0 9px 4px 0;background:var(--dash-green);transition:width .22s ease}
 .dashboard-page .legend{color:#7a847d}
 .dashboard-page .pv-dot{background:#3f9f78}.dashboard-page .uv-dot{background:#172019}
-.dashboard-page .chart-box{height:350px;margin-top:8px}
+.dashboard-page .chart-box{position:relative;height:350px;margin-top:8px}
+.dashboard-page #trend-chart,.dashboard-page #trend-overlay{position:absolute;inset:0;width:100%;height:100%}
+.dashboard-page #trend-chart{z-index:1;cursor:crosshair;touch-action:pan-y}
+.dashboard-page #trend-overlay{z-index:2;pointer-events:none}
+.dashboard-page #trend-chart:focus-visible{outline:3px solid rgba(63,159,120,.18);outline-offset:-3px;border-radius:10px}
+.dashboard-page .trend-tooltip{
+  position:absolute;
+  z-index:4;
+  display:grid;
+  grid-template-columns:auto auto;
+  gap:5px 14px;
+  min-width:132px;
+  padding:9px 11px;
+  border:1px solid #2b332d;
+  border-radius:9px;
+  background:rgba(20,24,21,.94);
+  box-shadow:0 10px 28px rgba(20,24,21,.16);
+  color:#fff;
+  pointer-events:none;
+  transform:translateY(-2px);
+}
+.dashboard-page .trend-tooltip[hidden]{display:none}
+.dashboard-page .trend-tooltip time{grid-column:1/-1;padding-bottom:5px;border-bottom:1px solid rgba(255,255,255,.13);color:#d9e2dc;font:700 10px/1.2 ui-monospace,SFMono-Regular,monospace;letter-spacing:.04em}
+.dashboard-page .trend-tooltip span{display:grid;grid-template-columns:7px auto;align-items:center;gap:5px;color:#aeb8b1;font-size:9px;font-weight:700;letter-spacing:.06em}
+.dashboard-page .trend-tooltip i{width:7px;height:7px;border-radius:50%}.dashboard-page .trend-tooltip i.pv{background:#63b994}.dashboard-page .trend-tooltip i.uv{background:#fff}
+.dashboard-page .trend-tooltip strong{grid-column:1/-1;color:#fff;font:800 16px/1.05 "Avenir Next","PingFang SC",sans-serif;letter-spacing:-.02em}
 .dashboard-page .map-switch{padding:3px;border-color:var(--dash-line);border-radius:9px;background:#f3f5f2}
 .dashboard-page .map-switch button{min-width:54px;padding:6px 11px;border-radius:7px;color:#737b75;background:transparent}
 .dashboard-page .map-switch button:hover{color:var(--dash-ink);background:#fff}

@@ -1,8 +1,9 @@
 "use strict";
-const state={stats:null,mapMode:"china",mapData:{},loading:false,pendingReload:false,autoRefreshTimer:0};
+const state={stats:null,mapMode:"china",mapData:{},loading:false,pendingReload:false,autoRefreshTimer:0,chartHoverIndex:-1,chartLayout:null};
 const number=value=>Number(value||0).toLocaleString("zh-CN");
 const byId=id=>document.getElementById(id);
 const regionNames=typeof Intl.DisplayNames==="function"?new Intl.DisplayNames(["zh-CN"],{type:"region"}):null;
+const chartPadding=Object.freeze({left:42,right:14,top:18,bottom:32});
 
 async function loadStats(){
   if(state.loading){state.pendingReload=true;return;}
@@ -39,16 +40,38 @@ function renderAll(days){
 }
 
 function drawChart(data){
-  const canvas=byId("trend-chart"),box=canvas.parentElement,ratio=Math.min(devicePixelRatio||1,2),width=box.clientWidth,height=box.clientHeight;
-  canvas.width=Math.round(width*ratio);canvas.height=Math.round(height*ratio);const context=canvas.getContext("2d");context.scale(ratio,ratio);context.clearRect(0,0,width,height);
-  const padding={left:42,right:14,top:18,bottom:32},plotW=width-padding.left-padding.right,plotH=height-padding.top-padding.bottom;
+  const canvas=byId("trend-chart"),box=canvas.parentElement,ratio=Math.min(devicePixelRatio||1,2),width=box.clientWidth,height=box.clientHeight,context=chartContext(canvas,width,height,ratio);
+  const padding=chartPadding,plotW=width-padding.left-padding.right,plotH=height-padding.top-padding.bottom;
   const max=Math.max(5,...data.flatMap(item=>[item.pv,item.uv])),steps=4;
+  const point=(item,index,key)=>({x:padding.left+(data.length===1?plotW/2:plotW*index/(data.length-1)),y:padding.top+plotH*(1-item[key]/max)}),pvPoints=data.map((item,index)=>point(item,index,"pv")),uvPoints=data.map((item,index)=>point(item,index,"uv"));
+  state.chartLayout={data,width,height,ratio,plotW,plotH,max,pvPoints,uvPoints};if(state.chartHoverIndex>=data.length)state.chartHoverIndex=-1;
   context.font="11px ui-monospace, monospace";context.textBaseline="middle";context.strokeStyle="rgba(20,24,21,.09)";context.fillStyle="#7b847d";context.lineWidth=1;
   for(let index=0;index<=steps;index++){const y=padding.top+plotH*index/steps,value=Math.round(max*(steps-index)/steps);context.beginPath();context.moveTo(padding.left,y);context.lineTo(width-padding.right,y);context.stroke();context.fillText(number(value),4,y);}
-  const point=(item,index,key)=>({x:padding.left+(data.length===1?plotW/2:plotW*index/(data.length-1)),y:padding.top+plotH*(1-item[key]/max)});
-  function line(key,color){if(!data.length)return;if(data.length===1){const p=point(data[0],0,key);context.beginPath();context.moveTo(p.x-20,p.y);context.lineTo(p.x+20,p.y);context.strokeStyle=color;context.lineWidth=3;context.stroke();context.beginPath();context.arc(p.x,p.y,5,0,Math.PI*2);context.fillStyle=color;context.fill();context.strokeStyle="#fff";context.lineWidth=2;context.stroke();return}const gradient=context.createLinearGradient(0,padding.top,0,padding.top+plotH);gradient.addColorStop(0,color+"45");gradient.addColorStop(1,color+"00");context.beginPath();data.forEach((item,index)=>{const p=point(item,index,key);index?context.lineTo(p.x,p.y):context.moveTo(p.x,p.y)});context.lineTo(point(data[data.length-1],data.length-1,key).x,padding.top+plotH);context.lineTo(point(data[0],0,key).x,padding.top+plotH);context.closePath();context.fillStyle=gradient;context.fill();context.beginPath();data.forEach((item,index)=>{const p=point(item,index,key);index?context.lineTo(p.x,p.y):context.moveTo(p.x,p.y)});context.strokeStyle=color;context.lineWidth=2;context.stroke();}
-  line("pv","#3f9f78");line("uv","#172019");context.fillStyle="#7b847d";context.textAlign="center";context.textBaseline="top";
+  function line(points,color){if(!points.length)return;if(points.length===1){const p=points[0];context.beginPath();context.moveTo(p.x-20,p.y);context.lineTo(p.x+20,p.y);context.strokeStyle=color;context.lineWidth=3;context.stroke();context.beginPath();context.arc(p.x,p.y,5,0,Math.PI*2);context.fillStyle=color;context.fill();context.strokeStyle="#fff";context.lineWidth=2;context.stroke();return}const gradient=context.createLinearGradient(0,padding.top,0,padding.top+plotH);gradient.addColorStop(0,color+"45");gradient.addColorStop(1,color+"00");context.beginPath();points.forEach((p,index)=>{index?context.lineTo(p.x,p.y):context.moveTo(p.x,p.y)});context.lineTo(points[points.length-1].x,padding.top+plotH);context.lineTo(points[0].x,padding.top+plotH);context.closePath();context.fillStyle=gradient;context.fill();context.beginPath();points.forEach((p,index)=>{index?context.lineTo(p.x,p.y):context.moveTo(p.x,p.y)});context.strokeStyle=color;context.lineWidth=2;context.stroke();}
+  line(pvPoints,"#3f9f78");line(uvPoints,"#172019");context.fillStyle="#7b847d";context.textAlign="center";context.textBaseline="top";
   const stride=Math.max(1,Math.ceil(data.length/7));data.forEach((item,index)=>{if(index%stride===0||index===data.length-1)context.fillText(item.date,padding.left+(data.length===1?plotW/2:plotW*index/(data.length-1)),height-padding.bottom+9)});
+  drawChartOverlay();
+}
+
+function chartContext(canvas,width,height,ratio){const pixelWidth=Math.round(width*ratio),pixelHeight=Math.round(height*ratio);if(canvas.width!==pixelWidth||canvas.height!==pixelHeight){canvas.width=pixelWidth;canvas.height=pixelHeight}const context=canvas.getContext("2d");context.setTransform(ratio,0,0,ratio,0,0);context.clearRect(0,0,width,height);return context}
+function drawChartOverlay(){
+  const layout=state.chartLayout,tooltip=byId("trend-tooltip");if(!layout){tooltip.hidden=true;return}const context=chartContext(byId("trend-overlay"),layout.width,layout.height,layout.ratio),index=state.chartHoverIndex,item=layout.data[index];if(index<0||!item){tooltip.hidden=true;tooltip.setAttribute("aria-hidden","true");return}const pv=layout.pvPoints[index],uv=layout.uvPoints[index];
+  context.save();context.beginPath();context.setLineDash([3,4]);context.moveTo(pv.x,chartPadding.top);context.lineTo(pv.x,chartPadding.top+layout.plotH);context.strokeStyle="rgba(33,122,89,.42)";context.lineWidth=1;context.stroke();context.setLineDash([]);
+  [[pv,"#3f9f78"],[uv,"#172019"]].forEach(([marker,color])=>{context.beginPath();context.arc(marker.x,marker.y,5,0,Math.PI*2);context.fillStyle=color;context.fill();context.strokeStyle="#fff";context.lineWidth=2;context.stroke()});context.restore();renderChartTooltip(item,pv,byId("trend-chart").parentElement);
+}
+function renderChartTooltip(item,marker,box){
+  const tooltip=byId("trend-tooltip");
+  byId("trend-tooltip-date").textContent=new Date(`${item.full_date||item.date}T00:00:00`).toLocaleDateString("zh-CN",{year:"numeric",month:"short",day:"numeric",weekday:"short"});byId("trend-tooltip-pv").textContent=number(item.pv);byId("trend-tooltip-uv").textContent=number(item.uv);tooltip.hidden=false;tooltip.setAttribute("aria-hidden","false");
+  const tooltipWidth=tooltip.offsetWidth,left=marker.x+12+tooltipWidth<=box.clientWidth?marker.x+12:marker.x-tooltipWidth-12;tooltip.style.left=Math.max(4,left)+"px";tooltip.style.top="7px";byId("trend-chart").setAttribute("aria-label",`${item.date}，PV ${number(item.pv)}，UV ${number(item.uv)}；可用左右方向键切换日期`);
+}
+function chartIndexAt(clientX){
+  const canvas=byId("trend-chart"),layout=state.chartLayout;if(!layout?.data.length)return-1;const x=clientX-canvas.getBoundingClientRect().left-chartPadding.left;if(x<-14||x>layout.plotW+14)return-1;if(layout.data.length===1)return 0;return Math.max(0,Math.min(layout.data.length-1,Math.round(x/layout.plotW*(layout.data.length-1))));
+}
+function activateChartIndex(index){if(index<0){hideChartTooltip();return}if(index===state.chartHoverIndex)return;state.chartHoverIndex=index;drawChartOverlay()}
+function hideChartTooltip(){if(state.chartHoverIndex<0)return;state.chartHoverIndex=-1;byId("trend-chart").setAttribute("aria-label","每日 PV 和 UV 趋势图，可用左右方向键查看每天数据");drawChartOverlay()}
+function chartKeydown(event){
+  const length=state.chartLayout?.data.length||0;if(!length)return;let index=state.chartHoverIndex<0?length-1:state.chartHoverIndex;
+  if(event.key==="ArrowLeft")index=Math.max(0,index-1);else if(event.key==="ArrowRight")index=Math.min(length-1,index+1);else if(event.key==="Home")index=0;else if(event.key==="End")index=length-1;else if(event.key==="Escape"){hideChartTooltip();return}else return;event.preventDefault();activateChartIndex(index);
 }
 
 function renderRanking(items){
@@ -132,5 +155,6 @@ async function saveAutoRefresh(){
 }
 
 byId("auto-refresh").dataset.saved=byId("auto-refresh").value;byId("auto-refresh").addEventListener("change",saveAutoRefresh);byId("refresh").addEventListener("click",refreshNow);byId("days").addEventListener("change",refreshNow);byId("ip-filter").addEventListener("input",filterRanking);document.querySelectorAll("[data-map]").forEach(button=>button.addEventListener("click",()=>{state.mapMode=button.dataset.map;document.querySelectorAll("[data-map]").forEach(item=>{const active=item===button;item.classList.toggle("active",active);item.setAttribute("aria-pressed",String(active))});renderMap()}));
+const trendCanvas=byId("trend-chart"),activateChartAtPointer=event=>activateChartIndex(chartIndexAt(event.clientX));trendCanvas.addEventListener("pointermove",activateChartAtPointer);trendCanvas.addEventListener("mousemove",activateChartAtPointer);trendCanvas.addEventListener("pointerdown",activateChartAtPointer);trendCanvas.addEventListener("click",activateChartAtPointer);trendCanvas.addEventListener("pointerleave",event=>{if(event.pointerType!=="touch")hideChartTooltip()});trendCanvas.addEventListener("mouseleave",hideChartTooltip);trendCanvas.addEventListener("focus",()=>{if(state.chartHoverIndex<0)activateChartIndex((state.chartLayout?.data.length||1)-1)});trendCanvas.addEventListener("keydown",chartKeydown);
 byId("settings-open").addEventListener("click",openSettings);byId("settings-close").addEventListener("click",()=>settingsDialog.close());byId("settings-cancel").addEventListener("click",()=>settingsDialog.close());byId("settings-form").addEventListener("submit",saveSettings);settingsDialog.addEventListener("click",event=>{if(event.target===settingsDialog)settingsDialog.close()});
 new ResizeObserver(()=>{if(state.stats)drawChart(state.stats.data||[])}).observe(byId("trend-chart").parentElement);refreshNow();

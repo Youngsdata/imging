@@ -64,6 +64,10 @@ CREATE TABLE IF NOT EXISTS legacy_automation_imports (
     source_id TEXT PRIMARY KEY,
     FOREIGN KEY (source_id) REFERENCES legacy_imports(source_id)
 );
+CREATE TABLE IF NOT EXISTS legacy_behavior_imports (
+    source_id TEXT PRIMARY KEY,
+    FOREIGN KEY (source_id) REFERENCES legacy_imports(source_id)
+);
 CREATE TABLE IF NOT EXISTS sessions (
     token_hash TEXT PRIMARY KEY,
     username TEXT NOT NULL,
@@ -204,6 +208,21 @@ class Store:
             )
             connection.execute("INSERT INTO legacy_automation_imports(source_id) VALUES(?)", (source_id,))
             return not existing
+
+    def import_legacy_behavior(self, source_id, automated):
+        with self.connection() as connection:
+            existing = connection.execute(
+                "SELECT 1 FROM legacy_behavior_imports WHERE source_id=?", (source_id,)
+            ).fetchone()
+            if existing:
+                return False
+            connection.executemany(
+                "INSERT INTO daily_automated_ip(day,ip,hits) VALUES(?,?,?) "
+                "ON CONFLICT(day,ip) DO UPDATE SET hits=hits+excluded.hits",
+                ((day, ip, hits) for (day, ip), hits in automated.items()),
+            )
+            connection.execute("INSERT INTO legacy_behavior_imports(source_id) VALUES(?)", (source_id,))
+            return True
 
     @staticmethod
     def _ensure_geos(connection, ips, resolver):
