@@ -31,8 +31,9 @@ function applyRetention(retention){
 }
 
 function renderAll(days){
-  const data=state.stats.data||[],today=data[data.length-1]||{},total=data.reduce((sum,item)=>sum+item.pv,0);
+  const data=state.stats.data||[],today=data[data.length-1]||{},todayCrawler=state.stats.today_crawler||{},total=data.reduce((sum,item)=>sum+item.pv,0);
   byId("today-pv").textContent=number(today.pv);byId("today-uv").textContent=number(today.uv);byId("range-pv").textContent=number(total);
+  byId("today-crawler-pv").textContent=number(todayCrawler.pv);byId("today-crawler-uv").textContent=number(todayCrawler.uv);
   byId("range-caption").textContent=`最近 ${days} 天`;byId("caller-note").textContent=state.stats.caller_ip?(state.stats.exclude_current_ip?`已排除当前访问 IP ${state.stats.caller_ip}`:`当前访问 IP ${state.stats.caller_ip} 已计入统计`):"";
   const ingest=state.stats.ingest||{},stamp=ingest.updated_at?new Date(ingest.updated_at*1000).toLocaleTimeString("zh-CN",{hour12:false}):"尚未同步";
   const status=byId("ingest-status");status.textContent=ingest.error?`日志状态：${ingest.error}`:`日志已同步 · ${stamp}`;status.className=`ingest-status ${ingest.error?"error":"live"}`;

@@ -384,6 +384,10 @@ class Store:
             where += " AND d.ip NOT IN ({})".format(",".join("?" for _ in excluded))
             top_where += " AND d.ip NOT IN ({})".format(",".join("?" for _ in excluded))
             parameters.extend(excluded)
+        today_parameters = [date.today().isoformat(), *excluded]
+        today_where = "d.day = ?"
+        if excluded:
+            today_where += " AND d.ip NOT IN ({})".format(",".join("?" for _ in excluded))
         with self.connection() as connection:
             rows = connection.execute(
                 "SELECT d.day,SUM(MAX(d.hits-COALESCE(a.hits,0),0)) AS pv,"
@@ -406,6 +410,14 @@ class Store:
                 "WHERE {} GROUP BY g.country_code,g.province "
                 "HAVING SUM(MAX(d.hits-COALESCE(a.hits,0),0))>0".format(top_where), parameters
             ).fetchall()
+            today_crawler = connection.execute(
+                "SELECT COALESCE(SUM(MIN(COALESCE(c.hits,0),MAX(d.hits-COALESCE(a.hits,0),0))),0) AS pv,"
+                "COALESCE(SUM(CASE WHEN MIN(COALESCE(c.hits,0),MAX(d.hits-COALESCE(a.hits,0),0))>0 "
+                "THEN 1 ELSE 0 END),0) AS uv FROM daily_ip d "
+                "LEFT JOIN daily_automated_ip a ON a.day=d.day AND a.ip=d.ip "
+                "LEFT JOIN daily_crawler_ip c ON c.day=d.day AND c.ip=d.ip WHERE {}".format(today_where),
+                today_parameters,
+            ).fetchone()
             ingest = connection.execute("SELECT updated_at,error FROM ingest_state ORDER BY updated_at DESC LIMIT 1").fetchone()
         by_day = {row["day"]: row for row in rows}
         data = []
@@ -420,6 +432,7 @@ class Store:
         } for row in top]
         return {
             "data": data,
+            "today_crawler": {"pv": int(today_crawler["pv"]), "uv": int(today_crawler["uv"])},
             "top_ip": top_ip,
             "regions": [{"country_code": row["country_code"], "province": row["province"], "count": int(row["hits"])} for row in regions],
             "excluded": excluded,

@@ -236,7 +236,7 @@ class MonitorTestCase(unittest.TestCase):
         stylesheet = (Path(__file__).parent.parent / "static" / "dashboard-v2.css").read_text(encoding="utf-8")
         template = (Path(__file__).parent.parent / "templates" / "dashboard.html").read_text(encoding="utf-8")
         self.assertIn(".refresh-control .primary-button{flex:0 0 106px;width:106px", stylesheet)
-        self.assertIn("dashboard-v2.css?v=4", template)
+        self.assertIn("dashboard-v2.css?v=5", template)
 
     def test_current_ip_filter_switch_is_wired_to_runtime_settings(self):
         script = (Path(__file__).parent.parent / "static" / "dashboard.js").read_text(encoding="utf-8")
@@ -244,7 +244,7 @@ class MonitorTestCase(unittest.TestCase):
         self.assertIn('role="switch"', template)
         self.assertIn("body.exclude_current_ip=excludeCurrentIp.checked?1:0", script)
         self.assertIn("state.stats.exclude_current_ip", script)
-        self.assertIn("dashboard.js?v=4", template)
+        self.assertIn("dashboard.js?v=5", template)
 
     def test_ranking_renders_declared_crawler_badge(self):
         script = (Path(__file__).parent.parent / "static" / "dashboard.js").read_text(encoding="utf-8")
@@ -252,6 +252,15 @@ class MonitorTestCase(unittest.TestCase):
         self.assertIn('badge.textContent="爬虫"', script)
         self.assertIn("item.crawler", script)
         self.assertIn(".crawler-badge", stylesheet)
+        self.assertIn("margin-left:auto", stylesheet)
+        self.assertIn("grid-template-columns:54px 230px", stylesheet)
+
+    def test_dashboard_renders_today_crawler_pv_and_uv(self):
+        script = (Path(__file__).parent.parent / "static" / "dashboard.js").read_text(encoding="utf-8")
+        template = (Path(__file__).parent.parent / "templates" / "dashboard.html").read_text(encoding="utf-8")
+        self.assertIn('id="today-crawler-pv"', template)
+        self.assertIn('id="today-crawler-uv"', template)
+        self.assertIn("state.stats.today_crawler", script)
 
     def test_wrong_user_and_wrong_password_have_same_public_error(self):
         wrong_user = self.login(username="someone")
@@ -600,9 +609,20 @@ class MonitorTestCase(unittest.TestCase):
         result = store.stats(1, [])
         self.assertEqual(result["data"][0]["pv"], 10)
         self.assertEqual(result["data"][0]["uv"], 2)
+        self.assertEqual(result["today_crawler"], {"pv": 8, "uv": 1})
         self.assertEqual(result["top_ip"][0]["ip"], "1.2.3.4")
         self.assertTrue(result["top_ip"][0]["crawler"])
         self.assertFalse(result["top_ip"][1]["crawler"])
+
+    def test_stats_excludes_malicious_declared_crawler_from_crawler_kpi(self):
+        store = Store(self.settings.db_path)
+        today = date.today().isoformat()
+        counts = {(today, "1.2.3.4"): 8, (today, "5.6.7.8"): 2}
+        automated = {(today, "1.2.3.4"): 8}
+        crawlers = {(today, "1.2.3.4"): 8}
+        store.ingest(self.settings.log_path, 1, 100, counts, automated, FakeResolver(), crawlers)
+        result = store.stats(1, [])
+        self.assertEqual(result["today_crawler"], {"pv": 0, "uv": 0})
 
     def test_collector_reclassifies_already_read_active_log_prefix(self):
         store = Store(self.settings.db_path)
