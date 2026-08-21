@@ -53,7 +53,7 @@ class MonitorTestCase(unittest.TestCase):
             recovery_codes_path=self.recovery_file, username="admin", public_origin="https://status.test",
             trusted_proxies=(ipaddress.ip_network("127.0.0.1/32"),), secure_cookies=True,
             allow_password_only=False, session_idle_seconds=1800, session_absolute_seconds=43200,
-            retention_days=90, collector_interval_seconds=1, collector_batch_lines=2000,
+            default_view_days=7, retention_days=90, collector_interval_seconds=1, collector_batch_lines=2000,
         )
         self.app = create_app(self.settings, start_collector=False)
         self.app.testing = True
@@ -168,6 +168,7 @@ class MonitorTestCase(unittest.TestCase):
             settings = Settings.from_env()
         self.assertEqual(settings.public_origin, "")
         self.assertTrue(settings.secure_cookies)
+        self.assertEqual(settings.default_view_days, 7)
         self.assertEqual(settings.trusted_proxies, (
             ipaddress.ip_network("127.0.0.1/32"), ipaddress.ip_network("::1/128"),
         ))
@@ -188,6 +189,13 @@ class MonitorTestCase(unittest.TestCase):
         self.assertIn("dashboard-v2.css", dashboard.get_data(as_text=True))
         self.assertIn("筛选访问 IP", dashboard.get_data(as_text=True))
         self.assertIn("imging-monitor-brand", dashboard.get_data(as_text=True))
+
+    def test_dashboard_uses_persisted_default_view_days(self):
+        self.assertEqual(self.login().status_code, 303)
+        self.app.extensions["imging_store"].update_runtime_settings({"default_view_days": 12})
+        response = self.client.get("/", base_url="https://status.test", headers={"User-Agent": "test-agent"})
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('<option value="12" data-custom-days selected>最近 12 天</option>', response.get_data(as_text=True))
 
     def test_wrong_user_and_wrong_password_have_same_public_error(self):
         wrong_user = self.login(username="someone")
@@ -351,6 +359,7 @@ class MonitorTestCase(unittest.TestCase):
         self.assertEqual(self.login().status_code, 303)
         response = self.client.get("/api/settings", base_url="https://status.test", headers={"User-Agent": "test-agent"})
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.get_json()["settings"]["default_view_days"]["value"], 7)
         self.assertEqual(response.get_json()["settings"]["retention_days"]["value"], 90)
         without_csrf = self.client.post(
             "/api/settings", base_url="https://status.test", headers={"Origin": "https://status.test", "User-Agent": "test-agent"},
@@ -367,14 +376,25 @@ class MonitorTestCase(unittest.TestCase):
         saved = self.client.post(
             "/api/settings", base_url="https://status.test",
             headers={"Origin": "https://status.test", "User-Agent": "test-agent", "X-CSRF-Token": csrf},
-            json={"retention_days": 30, "collector_interval_seconds": 2, "collector_batch_lines": 5000},
+            json={"default_view_days": 14, "retention_days": 30, "collector_interval_seconds": 2, "collector_batch_lines": 5000},
         )
         self.assertEqual(saved.status_code, 200)
+        self.assertEqual(saved.get_json()["settings"]["default_view_days"]["value"], 14)
         self.assertEqual(saved.get_json()["settings"]["collector_batch_lines"]["value"], 5000)
         values = Store(self.settings.db_path).runtime_settings({
-            "retention_days": 90, "collector_interval_seconds": 1, "collector_batch_lines": 2000,
+            "default_view_days": 7, "retention_days": 90, "collector_interval_seconds": 1, "collector_batch_lines": 2000,
         })
-        self.assertEqual(values, {"retention_days": 30, "collector_interval_seconds": 2, "collector_batch_lines": 5000})
+        self.assertEqual(values, {
+            "default_view_days": 14, "retention_days": 30,
+            "collector_interval_seconds": 2, "collector_batch_lines": 5000,
+        })
+        inconsistent = self.client.post(
+            "/api/settings", base_url="https://status.test",
+            headers={"Origin": "https://status.test", "User-Agent": "test-agent", "X-CSRF-Token": csrf},
+            json={"default_view_days": 31, "retention_days": 30},
+        )
+        self.assertEqual(inconsistent.status_code, 400)
+        self.assertIn("不能超过", inconsistent.get_json()["error"])
 
     def test_out_of_range_database_setting_falls_back_to_environment_default(self):
         store = Store(self.settings.db_path)

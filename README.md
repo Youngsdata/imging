@@ -198,7 +198,7 @@ docker compose -f compose.monitor.yml up -d
 
 旧前置 JSON 日志可通过 `python -m monitor.cli import-legacy` 导入。必须指定带时区的 `--before` 切换边界，并用 `--host` 只保留主站域名；相同快照重复执行不会重复计数。完整部署、历史迁移、日志轮转和持久化说明见源码仓库 `README.md`。
 
-保存初始化时仅显示一次的 TOTP URI 和恢复码；缺少认证密钥时服务会拒绝启动。登录后可在“统计设置”中修改 SQLite 聚合数据保留天数、空闲扫描间隔和单批读取行数，无需重启；原始日志仍应按 `monitor/logrotate.example` 在宿主机轮转。
+保存初始化时仅显示一次的 TOTP URI 和恢复码；缺少认证密钥时服务会拒绝启动。登录后可在“统计设置”中修改默认查看天数、SQLite 聚合数据保留天数、空闲扫描间隔和单批读取行数，无需重启；默认查看范围保存后立即切换。原始日志仍应按 `monitor/logrotate.example` 在宿主机轮转。
 
 ## 标签
 

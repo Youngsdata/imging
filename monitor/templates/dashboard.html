@@ -17,7 +17,7 @@
   </header>
   <main class="dashboard-shell" aria-busy="true">
     <section class="control-strip" aria-label="统计范围">
-      <div class="range-control"><label for="days">统计范围</label><select id="days"><option value="7">最近 7 天</option><option value="14">最近 14 天</option><option value="30">最近 30 天</option><option value="90">最近 90 天</option></select></div>
+      <div class="range-control"><label for="days">统计范围</label><select id="days">{% if default_view_days not in (7, 14, 30, 90) %}<option value="{{ default_view_days }}" data-custom-days selected>最近 {{ default_view_days }} 天</option>{% endif %}<option value="7"{% if default_view_days == 7 %} selected{% endif %}>最近 7 天</option><option value="14"{% if default_view_days == 14 %} selected{% endif %}>最近 14 天</option><option value="30"{% if default_view_days == 30 %} selected{% endif %}>最近 30 天</option><option value="90"{% if default_view_days == 90 %} selected{% endif %}>最近 90 天</option></select></div>
       <button id="refresh" class="primary-button" type="button"><span class="refresh-icon" aria-hidden="true">↻</span><span>更新统计</span></button>
       <p id="ingest-status" class="ingest-status" role="status" aria-live="polite">正在读取日志…</p>
     </section>
@@ -36,7 +36,8 @@
   <dialog id="settings-dialog" class="settings-dialog" aria-labelledby="settings-title">
     <form id="settings-form" class="settings-form">
       <header><div><p>RUNTIME CONTROL</p><h2 id="settings-title">统计运行参数</h2></div><button id="settings-close" class="dialog-close" type="button" aria-label="关闭设置">×</button></header>
-      <p class="settings-intro">参数保存在 SQLite，采集器下一轮读取时生效，无需重启容器。</p>
+      <p class="settings-intro">参数保存在 SQLite；默认查看范围保存后立即生效，采集参数由采集器下一轮读取，无需重启容器。</p>
+      <label><span>默认查看天数</span><div class="number-field"><input id="setting-default-view-days" type="number" inputmode="numeric" required><em>天</em></div><small>每次打开统计页默认展示的范围，不能超过统计数据保留天数。</small></label>
       <label><span>统计数据保留天数</span><div class="number-field"><input id="setting-retention-days" type="number" inputmode="numeric" required><em>天</em></div><small>缩短后将在下一轮采集时清理过期聚合数据，已清理数据无法从 SQLite 恢复。</small></label>
       <label><span>空闲扫描间隔</span><div class="number-field"><input id="setting-interval-seconds" type="number" inputmode="numeric" required><em>秒</em></div><small>有日志积压时会连续处理，不受此间隔限制。</small></label>
       <label><span>单批读取行数</span><div class="number-field"><input id="setting-batch-lines" type="number" inputmode="numeric" required><em>行</em></div><small>批次越大，追赶积压越快，但单次事务占用内存更多。</small></label>

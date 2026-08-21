@@ -6,6 +6,7 @@ from urllib.parse import urlparse
 
 
 RUNTIME_SETTING_LIMITS = {
+    "default_view_days": (1, 366),
     "retention_days": (7, 366),
     "collector_interval_seconds": (1, 60),
     "collector_batch_lines": (100, 50000),
@@ -51,6 +52,7 @@ class Settings:
     allow_password_only: bool
     session_idle_seconds: int
     session_absolute_seconds: int
+    default_view_days: int
     retention_days: int
     collector_interval_seconds: int
     collector_batch_lines: int
@@ -82,6 +84,7 @@ class Settings:
             allow_password_only=_boolean("IMGING_MONITOR_ALLOW_PASSWORD_ONLY", False),
             session_idle_seconds=_integer("IMGING_MONITOR_SESSION_IDLE_SECONDS", 1800, 300, 86400),
             session_absolute_seconds=_integer("IMGING_MONITOR_SESSION_ABSOLUTE_SECONDS", 43200, 900, 604800),
+            default_view_days=_integer("IMGING_MONITOR_DEFAULT_VIEW_DAYS", 7, 1, 366),
             retention_days=_integer("IMGING_MONITOR_RETENTION_DAYS", 90, 7, 366),
             collector_interval_seconds=_integer("IMGING_MONITOR_COLLECTOR_INTERVAL_SECONDS", 1, 1, 60),
             collector_batch_lines=_integer("IMGING_MONITOR_COLLECTOR_BATCH_LINES", 2000, 100, 50000),

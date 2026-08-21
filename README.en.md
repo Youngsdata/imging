@@ -198,7 +198,7 @@ If the main container is already managed by `deploy.sh`, use the same `IMGING_LO
 
 Import an old front-proxy JSON snapshot with `python -m monitor.cli import-legacy`. Supply a timezone-aware `--before` cutover boundary and use `--host` to retain only application hosts. Re-running the same snapshot does not duplicate counts. See the source repository `README.md` for the complete deployment, migration, rotation, and persistence procedure.
 
-Save the TOTP URI and recovery codes shown once during initialization. The service fails closed when authentication secrets are missing. After signing in, use “Statistics settings” to change the SQLite aggregate retention, idle scan interval, and batch size without restarting. Raw logs must still be rotated on the host with `monitor/logrotate.example`.
+Save the TOTP URI and recovery codes shown once during initialization. The service fails closed when authentication secrets are missing. After signing in, use “Statistics settings” to change the default view range, SQLite aggregate retention, idle scan interval, and batch size without restarting. The default range switches immediately after saving. Raw logs must still be rotated on the host with `monitor/logrotate.example`.
 
 ## Image tags
 

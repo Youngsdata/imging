@@ -1,10 +1,10 @@
 "use strict";
-const state={stats:null,mapMode:"china",mapData:{},loading:false};
+const state={stats:null,mapMode:"china",mapData:{},loading:false,pendingReload:false};
 const number=value=>Number(value||0).toLocaleString("zh-CN");
 const byId=id=>document.getElementById(id);
 
 async function loadStats(){
-  if(state.loading)return;
+  if(state.loading){state.pendingReload=true;return;}
   const refresh=byId("refresh"),status=byId("ingest-status"),shell=document.querySelector(".dashboard-shell");
   state.loading=true;refresh.disabled=true;refresh.innerHTML='<span class="spinner" aria-hidden="true"></span><span>统计中</span>';
   status.textContent="正在读取日志…";status.className="ingest-status";document.body.classList.add("is-loading");shell.setAttribute("aria-busy","true");
@@ -17,7 +17,7 @@ async function loadStats(){
   }catch(error){status.textContent=`统计加载失败：${error.message}`;status.className="ingest-status error";}
   finally{
     state.loading=false;refresh.disabled=false;refresh.innerHTML='<span class="refresh-icon" aria-hidden="true">↻</span><span>更新统计</span>';
-    document.body.classList.remove("is-loading");shell.setAttribute("aria-busy","false");if(reloadForRetention)loadStats();
+    document.body.classList.remove("is-loading");shell.setAttribute("aria-busy","false");if(reloadForRetention||state.pendingReload){state.pendingReload=false;loadStats();}
   }
 }
 
@@ -95,7 +95,8 @@ async function renderMap(){
 function moveTooltip(event,box,tooltip){const bounds=box.getBoundingClientRect();tooltip.style.left=Math.min(bounds.width-230,Math.max(8,event.clientX-bounds.left+12))+"px";tooltip.style.top=Math.min(bounds.height-42,Math.max(8,event.clientY-bounds.top+12))+"px";}
 
 const settingsDialog=byId("settings-dialog"),settingsStatus=byId("settings-status"),csrfToken=document.querySelector('meta[name="csrf-token"]').content;
-const settingFields={retention_days:byId("setting-retention-days"),collector_interval_seconds:byId("setting-interval-seconds"),collector_batch_lines:byId("setting-batch-lines")};
+const settingFields={default_view_days:byId("setting-default-view-days"),retention_days:byId("setting-retention-days"),collector_interval_seconds:byId("setting-interval-seconds"),collector_batch_lines:byId("setting-batch-lines")};
+function selectDays(value){const select=byId("days"),days=String(value);let option=Array.from(select.options).find(item=>item.value===days);select.querySelectorAll("[data-custom-days]").forEach(item=>{if(item!==option)item.remove()});if(!option){option=document.createElement("option");option.value=days;option.textContent=`最近 ${days} 天`;option.dataset.customDays="";select.prepend(option)}select.value=days;}
 function showSettingsStatus(message,error=false){settingsStatus.textContent=message;settingsStatus.classList.toggle("error",error)}
 async function openSettings(){
   settingsDialog.showModal();showSettingsStatus("正在读取当前参数…");byId("settings-save").disabled=true;
@@ -107,7 +108,7 @@ async function saveSettings(event){
   event.preventDefault();if(!event.currentTarget.reportValidity())return;const button=byId("settings-save");button.disabled=true;showSettingsStatus("正在保存…");
   const body=Object.fromEntries(Object.entries(settingFields).map(([key,input])=>[key,Number(input.value)]));
   try{const response=await fetch("/api/settings",{method:"POST",credentials:"same-origin",headers:{Accept:"application/json","Content-Type":"application/json","X-CSRF-Token":csrfToken},body:JSON.stringify(body)});const payload=await response.json();if(!response.ok)throw new Error(payload.error||`HTTP ${response.status}`);
-    const retention=payload.settings.retention_days.value;applyRetention(retention);showSettingsStatus("已保存，采集器将在下一轮读取时生效。");loadStats();
+    const retention=payload.settings.retention_days.value,defaultDays=payload.settings.default_view_days.value;selectDays(defaultDays);applyRetention(retention);showSettingsStatus("已保存；默认查看范围已立即切换，采集参数将在下一轮读取时生效。");loadStats();
   }catch(error){showSettingsStatus(`保存失败：${error.message}`,true)}finally{button.disabled=false}
 }
 

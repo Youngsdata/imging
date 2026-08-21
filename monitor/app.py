@@ -54,13 +54,19 @@ def create_app(settings=None, start_collector=True, validate_secrets=True):
     app.extensions["imging_collector"] = collector
 
     runtime_defaults = {
+        "default_view_days": settings.default_view_days,
         "retention_days": settings.retention_days,
         "collector_interval_seconds": settings.collector_interval_seconds,
         "collector_batch_lines": settings.collector_batch_lines,
     }
 
-    def runtime_payload():
+    def runtime_values():
         values = store.runtime_settings(runtime_defaults, RUNTIME_SETTING_LIMITS)
+        values["default_view_days"] = min(values["default_view_days"], values["retention_days"])
+        return values
+
+    def runtime_payload():
+        values = runtime_values()
         return {
             "settings": {
                 key: {"value": values[key], "default": runtime_defaults[key], "min": limits[0], "max": limits[1]}
@@ -188,7 +194,11 @@ def create_app(settings=None, start_collector=True, validate_secrets=True):
     @app.get("/")
     @require_auth
     def dashboard():
-        return render_template("dashboard.html", csrf=g.session["csrf_token"], username=g.session["username"])
+        values = runtime_values()
+        return render_template(
+            "dashboard.html", csrf=g.session["csrf_token"], username=g.session["username"],
+            default_view_days=values["default_view_days"],
+        )
 
     @app.get("/api/stats")
     @require_auth
@@ -197,7 +207,7 @@ def create_app(settings=None, start_collector=True, validate_secrets=True):
             days = int(request.args.get("days", "7"))
         except ValueError:
             days = 7
-        retention_days = store.runtime_settings(runtime_defaults, RUNTIME_SETTING_LIMITS)["retention_days"]
+        retention_days = runtime_values()["retention_days"]
         days = max(1, min(days, retention_days))
         excludes = []
         for item in request.args.get("excludes", "").split(",")[:32]:
@@ -238,6 +248,10 @@ def create_app(settings=None, start_collector=True, validate_secrets=True):
             updates[key] = value
         if not updates:
             return jsonify({"error": "没有可保存的参数"}), 400
+        candidate = runtime_values()
+        candidate.update(updates)
+        if candidate["default_view_days"] > candidate["retention_days"]:
+            return jsonify({"error": "默认查看天数不能超过统计数据保留天数"}), 400
         store.update_runtime_settings(updates)
         return jsonify(runtime_payload())
 
