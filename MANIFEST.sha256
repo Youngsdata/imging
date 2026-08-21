@@ -50,8 +50,8 @@ edcd883d10e955655946b8fe733bb139faa8b7036092827b1849a4b34d727d6b  ./codecs/webp/
 3d70163a00e6264fc5a8fa7c8f3b1fa21a50a00d910f4d2de3ef1bbd2fdc98ab  ./codecs/webp/meta.js
 e71535eeee820d68b68ece7c8af761c39f3ddec93d3d957d2f83b19191339e0d  ./codecs/webp/utils.js
 51ba6b08c9c22d06c6b8e7e01ebd24ff3856ca8b41465e8d4e77490a7d2b2b77  ./compose.monitor.yml
-abcc10ddad71e55878fe68a2f2c60d25e60f157ef8a11d439c5d3a124f3732d5  ./deploy.sh
-32a8df4613c9624908559e73d600ce532c04c923bfa04a5d480dc4359fdf0f06  ./dist/index.html
+459c3f789a6e34a2839cee7a69c81ee4a36a5367450799320e796a11361aab19  ./deploy.sh
+36719b7275bd07924f48e5d034fd93924ad59b64d2251b2bf7e41c53007c6acb  ./dist/index.html
 14beb3fac411d73f2d4c9d47b7ab427b712813e888cb945c234200d1807d83e3  ./docker/nginx/40-enable-ssl.sh
 0a973d3ccb018f6f9240e5d8ce8373d99d0e93997fd4251579bb62b844db9c03  ./docker/nginx/41-inject-beian.sh
 6955a9ba433b738f4c3bc720223fb7c81af7490f696a9e7bd2d3b7c78d67d076  ./docker/nginx/42-configure-real-ip.sh
@@ -64,7 +64,7 @@ c506426703a6c6e3f232bef4949e69c8730c6c8eaadd77270745f5a164baea22  ./en/benchmark
 8813fc813daf87926907dd5484dd37a6d792f491902fb882fb339b17228bc952  ./en/compare/index.html
 2c32f3a490e299dc80913ea61ef3a4b069b9d11593883c8a28e0a0c1fcbcd62c  ./en/compress-gif/index.html
 eb0c2f26667da83f4150d94f72310874b2500f2e86db23ea703ed2da07e8e4cc  ./en/heic-to-jpg/index.html
-93898fea2d7e902b4ab7efe04d7e87986a423ebf6b18ef35c9c3ad7599b743e2  ./en/index.html
+5cc92f629bce9959ad60ef630cc610d434c15cc752c467dbddecf59bfe43b107  ./en/index.html
 a87db36809971bd02a27ceec736e10067a2a352db652b7165472d63f5bff4518  ./en/llms.txt
 8243760f277f9f62114d1d4774f2cdbb43f821c9df55deb048d4b4edd2a97330  ./en/online-design/index.html
 a5fcbeb22d6f71c3a536964098e95da339f833248a40463015bf68a5afe94988  ./en/pdf-compress/index.html
@@ -72,7 +72,7 @@ a5fcbeb22d6f71c3a536964098e95da339f833248a40463015bf68a5afe94988  ./en/pdf-compr
 140ba902c6563f4cb8246e8aec7ff973080be2a6a4c9970dccbcfe6de5219b72  ./en/png-compress/index.html
 be90208e5b93dbbcd97ce35ddbc66d365749bb697d717d34a821c8b904f8ef1f  ./en/privacy/index.html
 4e9f9387c71a917a9eed4d86d1ba4f27d0badf16b29943802ec4fe4cf7e37030  ./en/remove-background/index.html
-1fa3c3dcfda33c6369464be75043c41673d03795db9e4c13c73d101792df03fd  ./en/roadmap/index.html
+7bb01c58e8d58ee3f0c922955a70841f9502602bc86d406980e4425206a3c684  ./en/roadmap/index.html
 ca6357a058175719aef04ee5ddfcedf5496db9ec12e49ac0e6f8ce34a7b98b92  ./en/video-editor/index.html
 fa4a258d17bfe83ebb61774b0730548a5e35de74dc5e9bf7c295a6869ae0847b  ./fonts/AlimamaShuHeiTi-Bold.woff2
 935b452d5f9564beacd41fb586d0286d050e4892864dedc63722c8b795ab1bab  ./licenses/Alimama-ShuHeiTi-LICENSE.txt
@@ -138,7 +138,7 @@ b3d8e286983a1e8eeb784692b00826c3dd07b62b43aa0b95c933cb178b0f4436  ./seo/compress
 9639c52db5e2d8928d981a8306ae645108bd53defac109dca8be4f0aef295cc9  ./seo/png-compress/index.html
 ee0f6947e6511071196a62a3bfc208fe25d32e111e348d5abd98b4568104cfa2  ./seo/privacy/index.html
 cd6bf29ae6fee0fec585f0d40cdc63de26701662225c5d7c1dcae8d953a6e83a  ./seo/remove-background/index.html
-3673d3f0352a5053622e40d492f7f08a5e113d8ebd94574fc566796ad0cf2038  ./seo/roadmap/index.html
+c058c66e04230113407f951e0c8808a688183b85162d8f6f8ebb7bb5c332ac8f  ./seo/roadmap/index.html
 3c54547584e668b4b1f83210357bd040c888980c5fd39f50120c99ee0eb178ff  ./seo/video-editor/index.html
 6b4c27fd4a61cbd79bf37deed323d5bc354c511f7553c34c3c1cbb4d2831f8a3  ./sitemap.xml
 8d1a62df8af3069f5ce7c56fecbd5aa4b14ab3d2796c772c55e86722c7dbab3f  ./video/editor.js

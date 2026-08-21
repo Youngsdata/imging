@@ -8,6 +8,8 @@ fi
 
 readonly CONTAINER_NAME="imging"
 readonly IMAGE="${IMGING_IMAGE:-ghcr.io/youngsdata/imging:latest}"
+readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+readonly DEFAULT_LOG_DIR="$SCRIPT_DIR/imging-logs"
 readonly DEFAULT_HOST_PORT="8080"
 readonly DEFAULT_HTTPS_PORT="443"
 readonly DEFAULT_BIND_ADDRESS="0.0.0.0"
@@ -40,7 +42,8 @@ usage() {
       --port PORT          HTTP 主机端口，默认 8080
       --seccomp MODE       default(默认) 或 unconfined；老内核 libseccomp 过旧导致
                            nginx 报 "Operation not permitted" 时改用 unconfined
-      --log-dir DIR        持久化 JSON access log 的宿主机目录
+      --log-dir DIR        持久化 JSON access log 的宿主机目录；默认自动使用
+                           deploy.sh 所在目录下的 imging-logs
       --trusted-proxies CIDR[,CIDR...]
                            允许提供 X-Forwarded-For 的前置代理；必须使用精确 CIDR
       --timezone TZ        access log 与统计日界线时区，默认 UTC
@@ -469,7 +472,7 @@ host_port="$DEFAULT_HOST_PORT"
 seccomp_mode="$DEFAULT_SECCOMP_MODE"
 beian_icp=""
 beian_owner=""
-log_dir=""
+log_dir="$DEFAULT_LOG_DIR"
 trusted_proxies=""
 timezone="$DEFAULT_TIMEZONE"
 
@@ -483,7 +486,10 @@ if [[ "$container_present" == true ]]; then
   seccomp_mode="${seccomp_mode:-$DEFAULT_SECCOMP_MODE}"
   beian_icp="$(container_label "$ICP_LABEL")"
   beian_owner="$(container_label "$OWNER_LABEL")"
-  log_dir="$(container_label "$LOG_DIR_LABEL")"
+  stored_log_dir="$(container_label "$LOG_DIR_LABEL")"
+  if [[ -n "$stored_log_dir" ]]; then
+    log_dir="$stored_log_dir"
+  fi
   trusted_proxies="$(container_label "$TRUSTED_PROXIES_LABEL")"
   timezone="$(container_label "$TIMEZONE_LABEL")"
   timezone="${timezone:-$DEFAULT_TIMEZONE}"
@@ -512,6 +518,9 @@ if [[ "$log_dir_option_seen" == true ]]; then
     configuration_changed=true
   fi
 elif [[ -n "$log_dir" ]]; then
+  if [[ "$log_dir" == "$DEFAULT_LOG_DIR" ]] && [[ ! -d "$log_dir" ]]; then
+    mkdir -p "$log_dir"
+  fi
   log_dir="$(resolve_directory "$log_dir")"
 fi
 
