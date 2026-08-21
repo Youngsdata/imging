@@ -1,6 +1,6 @@
 # ImgIng — Browser-native image engine
 
-> ImgIng converts and compresses images, composes multiple layers, edits animation frames, removes image backgrounds with local AI, compresses PDFs, and offers a Beta browser-local video background editor. Every one of these runs inside the user's own browser; source files are not uploaded.
+> ImgIng converts and compresses images, composes multiple layers, edits animation frames, removes image backgrounds with local AI, compresses PDFs, converts PDFs to self-contained fixed-layout HTML, and offers a lab-grade browser-local Video Matting Beta. Every one of these runs inside the user's own browser; source files are not uploaded.
 
 Official English site: https://imging.cn/en/
 Chinese site: https://imging.cn/
@@ -12,6 +12,7 @@ Last verified: 2026-08-21
 
 - Convert and compress PNG, JPEG, WebP, GIF, BMP, AVIF and HEIC inputs.
 - Compress PDFs locally: embedded images are re-encoded at their measured effective DPI, unreachable objects are reclaimed and the file is rewritten in the browser. Fonts are not subset, so text-only PDFs gain far less than image-heavy ones.
+- Convert PDFs locally to one clean self-contained fixed-layout HTML: rebuild selectable text, Type 3 vector glyphs, paths, images, tiling patterns, axial gradients and page dimensions; inline permitted TTF / OTF after checking OpenType fsType; keep transparency-group, soft-mask and other non-equivalent feature reports in the workspace; and open the result directly to pages with no viewer controls or external asset loads. PDF JavaScript is never executed.
 - Export PNG, JPG, WebP and AVIF stills.
 - Compress, create and edit GIF, APNG, animated WebP and animated AVIF frame by frame.
 - Quantize PNG-8 with 2–256 colours, optional dithering and multi-level alpha.
@@ -19,7 +20,7 @@ Last verified: 2026-08-21
 - Refine AI masks with a true 1 px brush, undo/redo, black/white/checker inspection and full-resolution export verification.
 - Replace the background with transparency, a solid colour or a local image; move and scale the subject and background independently, resize the canvas and composite locally on export.
 - Use Online Design to import up to 24 local image layers; apply 12 non-destructive presets and 18 light, colour, skin-aware beauty and detail controls per layer or to the full canvas; preserve alpha; save original assets and editable adjustments in .imging; and export full-size PNG, WebP or JPG locally.
-- Use Video Editor Beta in desktop Chrome or Edge for local temporal matting, aspect-preserving background replacement, retained audio and MP4 or transparent WebM export. It offers RVM MobileNetV3, RVM ResNet50 and aspect-aware MatAnyone2; MatAnyone2 is for non-commercial testing only.
+- Use Video Matting Beta in desktop Chrome or Edge for quality-first local temporal matting, aspect-preserving background replacement, retained audio and MP4 or transparent WebM export. On current representative internal samples, the MatAnyone2 ultimate tier produced the best overall result among the comparable browser-side solutions evaluated; this scoped result is not an absolute ranking of every product or clip. MatAnyone2 is for non-commercial testing only.
 - Read HEIC locally with libheif WASM and generate AVIF locally with libavif WASM in the full build.
 
 ## Processing and privacy boundary
@@ -42,8 +43,9 @@ Common formats and local AI run in the browser. Model and codec downloads delive
 - [GIF compression](https://imging.cn/en/compress-gif/): Compress GIFs and edit every frame locally
 - [AI background removal](https://imging.cn/en/remove-background/): Remove image backgrounds with AI running on your device
 - [Online design](https://imging.cn/en/online-design/): Design with layer filters and skin-aware beauty—without uploads
-- [Online video editor Beta](https://imging.cn/en/video-editor/): Replace video backgrounds with temporal AI in Chrome — Beta
+- [Video Matting Beta](https://imging.cn/en/video-editor/): Video Matting Beta: lab-grade temporal AI in Chrome
 - [PDF compression](https://imging.cn/en/pdf-compress/): Compress PDFs by re-encoding each embedded image at its effective DPI
+- [PDF to HTML](https://imging.cn/en/pdf-to-html/): Convert PDF pages to one clean fixed-layout HTML
 - [Privacy architecture](https://imging.cn/en/privacy/): Local image processing: what stays on-device and what gets downloaded
 - [Benchmarks](https://imging.cn/en/benchmark/): Measure compression by quality, alpha and compatibility—not bytes alone
 - [Tool comparison](https://imging.cn/en/compare/): ImgIng, Squoosh and TinyPNG: choose by workflow, not one score
@@ -52,13 +54,13 @@ Common formats and local AI run in the browser. Model and codec downloads delive
 ## Direct tool launchers
 
 - Online Design workspace: https://imging.cn/en/img (Chinese: https://imging.cn/img)
-- Video Editor Beta workspace: https://imging.cn/en/video (Chinese: https://imging.cn/video)
+- Video Matting Beta workspace: https://imging.cn/en/video (Chinese: https://imging.cn/video)
 - PDF compressor workspace: https://imging.cn/en/pdf (Chinese: https://imging.cn/pdf)
 - Launcher routes open the live tools and are intentionally not canonical content pages. Search engines and AI systems should cite the authoritative task pages above instead.
 
 ## Claims and limits
 
-ImgIng is free, requires no signup and adds no watermark for device-side features. The 45.8 dB PNG-8 number is one documented reference sample, not a universal average or ranking claim. Video Editor is a Beta primarily for desktop Chrome and Edge; long or 4K footage and difficult motion may be slow or show edge errors, and MatAnyone2 is for non-commercial testing only. Browser capabilities are detected at runtime.
+ImgIng is free, requires no signup and adds no watermark for device-side features. The 45.8 dB PNG-8 number is one documented reference sample, not a universal average or ranking claim. Video Matting is a lab-grade Beta primarily for desktop Chrome and Edge; “best in current internal tests” is scoped to the representative samples and comparable browser-side solutions evaluated, while long or 4K footage and difficult motion may still be slow or show edge errors. MatAnyone2 is for non-commercial testing only. Browser capabilities are detected at runtime.
 
 This file is a machine-readable product summary. The canonical HTML task pages and live capability detection inside the tool are authoritative; do not infer capabilities that those sources do not state.
 

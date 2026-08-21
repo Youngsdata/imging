@@ -3,7 +3,7 @@
 
 # imging · Client-side image and animation toolkit
 
-imging brings image compression, format conversion, online design, background removal, and an animation workshop into one self-hostable page. Common formats such as PNG, JPEG, and WebP are processed locally in the browser. Online Design can save editable `.imging` projects containing open JSON, original assets, and a preview. Bundled WASM codecs encode AVIF and decode HEIC on the client, while self-hosted ISNet, BEN2, and BiRefNet HR-Matting models provide quick, professional, or maximum-fidelity AI cutouts without uploading the image.
+imging brings image compression, format conversion, online design, background removal, animation, and PDF tools into one self-hostable page. Common formats such as PNG, JPEG, and WebP are processed locally in the browser. Online Design can save editable `.imging` projects containing open JSON, original assets, and a preview. Bundled WASM codecs encode AVIF and decode HEIC on the client, while self-hosted ISNet, BEN2, and BiRefNet HR-Matting models provide quick, professional, or maximum-fidelity AI cutouts. PDFs can be compressed locally or converted without uploading into one offline HTML that opens directly to clean fixed-layout pages with selectable text and permitted fonts.
 
 **Live demo: <https://imging.cn>**
 
@@ -13,11 +13,12 @@ imging brings image compression, format conversion, online design, background re
 - **Professional local background removal**: quick mode auto-detects or accepts any boundary background color and removes only connected outer regions. AI mode offers the recommended roughly 42 MB ISNet INT8 quick model, a roughly 219 MB BEN2 professional model, and a roughly 447 MB BiRefNet HR-Matting maximum-fidelity model. The latter runs at 2048×2048 for hair, veils, glass, and semi-transparent edges. Each model is downloaded on demand from the same site and cached independently; images are never uploaded.
 - **More than static images**: compress and create GIF, APNG, animated WebP, and animated AVIF, with per-frame reordering, deletion, and duration controls.
 - **Open design projects**: save and open `.imging` projects without re-encoding original images. See the [format specification and JSON Schema](docs/imging-project-format.md).
+- **Clean one-file PDF HTML**: locally rebuild selectable text, Type 3 vector glyphs, paths, images, tiling patterns and axial gradients, check OpenType font embedding permissions, and export only the pages and embedded resources—without zoom, report or original-PDF viewer controls. Non-equivalent transparency groups and soft masks are flagged per page in the workspace.
 - **One-command self-hosting**: Docker images are available for `linux/amd64` and `linux/arm64`, including private-network deployments.
 - **Transparent capability fallback**: only professional or legacy formats that the browser cannot handle are sent to the optional server-side decoder. Server processing is never presented as local processing.
 
 > [!IMPORTANT]
-> The **server-side decoder is a paid capability** for professional and legacy formats such as TIFF, JPEG 2000, PSD, PDF, DICOM, and JXL. For licensing, integration, or private deployment, contact [admin@datadance.com](mailto:admin@datadance.com).
+> The **server-side decoder is a paid capability** for TIFF, JPEG 2000, PSD, DICOM, JXL, and workflows that decode a PDF as an image input. Local PDF compression and PDF-to-one-file-HTML are not part of that server-side capability. For licensing, integration, or private deployment, contact [admin@datadance.com](mailto:admin@datadance.com).
 
 ## Product comparison with mainstream image tools
 
@@ -45,6 +46,7 @@ This is the public imging distribution repository. It contains only deployable b
 - Browser-side AI runtime and self-hosted ISNet / BEN2 / BiRefNet HR-Matting cutout models
 - Nginx Docker image configuration and the one-command deployment script
 - The `.imging` open project specification and machine-readable JSON Schema
+- Browser-local PDF compression and PDF-to-one-file-HTML runtimes
 - Third-party software licenses and notices
 
 This repository does not contain imging's unobfuscated business source code. imging's proprietary pages and related materials are not licensed under an open-source license. Public access to the repository or container image does not grant permission to copy, modify, sublicense, or redistribute those materials. Third-party components remain subject to their respective licenses; see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).

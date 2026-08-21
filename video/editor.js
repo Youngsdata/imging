@@ -1,4 +1,4 @@
-/* 图映 · 在线视频编辑工作台。源视频、AI 推理与音视频重封装均在浏览器本地完成。 */
+/* 图映 · 视频抠像工作台。源视频、AI 推理与音视频重封装均在浏览器本地完成。 */
 (function(){
   'use strict';
   var $=function(id){return document.getElementById(id);},english=document.documentElement.lang==='en';

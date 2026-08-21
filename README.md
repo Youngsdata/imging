@@ -3,7 +3,7 @@
 
 # 图映（imging）· 端侧图片与动图处理工具
 
-图映把图片压缩、格式转换、在线做图、去背景和动图工坊放进一个可自托管的页面。PNG、JPEG、WebP 等常见格式直接在浏览器本地处理；在线做图可保存包含开放 JSON、原始素材和预览图的 `.imging` 可编辑工程；发行包内置的 WASM codecs 能在端侧完成 AVIF 编码和 HEIC 解码，自托管 ISNet / BEN2 / BiRefNet HR-Matting 模型还能完成快速、专业或骨灰级 AI 抠图，图片无需上传。
+图映把图片压缩、格式转换、在线做图、去背景、动图工坊和 PDF 工具放进一个可自托管的页面。PNG、JPEG、WebP 等常见格式直接在浏览器本地处理；在线做图可保存包含开放 JSON、原始素材和预览图的 `.imging` 可编辑工程；发行包内置的 WASM codecs 能在端侧完成 AVIF 编码和 HEIC 解码，自托管 ISNet / BEN2 / BiRefNet HR-Matting 模型还能完成快速、专业或骨灰级 AI 抠图。PDF 可在本地压缩，也可转换为包含可选择文字与获准字体、打开即显示正文且没有查看器菜单的单文件 HTML，文件无需上传。
 
 **在线体验：<https://imging.cn>**
 
@@ -13,11 +13,12 @@
 - **本地专业去背景**：快速模式自动识别或手选四周任意底色，只移除外框连通区域并反混合去色边；AI 可选默认推荐、约 42 MB 的 ISNet INT8 快速模型，约 219 MB 的 BEN2 专业模型，或约 447 MB、按 2048×2048 处理的 BiRefNet HR-Matting 骨灰级模型。三档都从本站按需下载并独立缓存在浏览器，图片不会上传；输出支持 WebP、PNG 或 AVIF。
 - **不只压单图**：支持 GIF、APNG、动图 WebP、动图 AVIF 的压缩与合成，并提供逐帧排序、删帧和时长调整。
 - **开放设计工程**：在线做图支持保存和打开 `.imging` 工程，原始图片不重新编码；格式规范和 JSON Schema 见 [`docs/imging-project-format.md`](docs/imging-project-format.md)。
+- **PDF 纯净单文件 HTML**：在浏览器本地按固定版式重建可选择文字、Type 3 矢量字形、路径、图片、平铺图案和轴向渐变，并检查 OpenType 字体嵌入许可；成品只包含页面正文与内联资源，不带缩放、报告或原 PDF 等查看器菜单。透明组、软蒙版等非等价特性会在工作台逐页提示。
 - **一键自托管**：提供 `linux/amd64`、`linux/arm64` Docker 镜像，可部署在私有网络。
 - **按能力透明降级**：浏览器无法处理的专业或老格式才交给可选的服务端解码器，不会把“服务端处理”伪装成“本地处理”。
 
 > [!IMPORTANT]
-> TIFF、JPEG 2000、PSD、PDF、DICOM、JXL 等专业或老格式所需的**服务端解码器为付费能力**。如需购买、集成或私有化部署，请联系 [admin@datadance.com](mailto:admin@datadance.com)。
+> TIFF、JPEG 2000、PSD、DICOM、JXL，以及“把 PDF 当作图片输入”的专业格式解码所需的**服务端解码器为付费能力**；本地 PDF 压缩与 PDF 转单文件 HTML 不属于这项服务端能力。如需购买、集成或私有化部署，请联系 [admin@datadance.com](mailto:admin@datadance.com)。
 
 ## 与主流图片工具的产品力对比
 
@@ -45,6 +46,7 @@
 - 浏览器端 AI 运行时与自托管 ISNet / BEN2 / BiRefNet HR-Matting 抠图模型
 - Nginx Docker 镜像配置与一键启动脚本
 - `.imging` 开放工程格式规范与机器可读 JSON Schema
+- 浏览器本地 PDF 压缩与 PDF 转单文件 HTML 运行时
 - 第三方软件许可证与声明
 
 本仓库不包含图映的明文业务源码。图映自有页面及相关材料没有以开源许可证授权；公开可见、可拉取镜像不等于获得复制、修改或再发布授权。第三方组件仍分别适用其原有许可证，详见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。

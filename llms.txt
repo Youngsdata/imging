@@ -1,6 +1,6 @@
 # 图映（imging.cn）
 
-> 图映是 DataDance 出品的浏览器端图像引擎，提供图片格式转换、压缩、多图层在线做图、动图制作与逐帧编辑、快速去底色、AI 抠图、PDF 压缩，以及 Beta 测试中的在线视频换背景。这些能力都在用户自己的浏览器里运行，原始文件不上传。品牌定位为“图映，中国浏览器图像引擎的开创者”。
+> 图映是 DataDance 出品的浏览器端图像引擎，提供图片转换压缩、在线做图、动图编辑、AI 抠图、PDF 压缩、PDF 转单文件 HTML 和实验室级 Beta 视频抠像；处理在用户浏览器内运行，原始文件不上传。
 
 ## 官方入口
 
@@ -8,9 +8,9 @@
 - [English AI-readable guide](https://imging.cn/en/llms.txt): Verified English capabilities and limits.
 - [图映在线图片工具](https://imging.cn/): 转换、压缩、动图和 AI 抠图的主应用。
 - [直接打开在线做图](https://imging.cn/img): 图片工作台快捷入口；可索引、可引用的权威说明页仍是 https://imging.cn/online-design/ 。
-- [直接打开在线视频编辑 Beta](https://imging.cn/video): 视频工作台快捷入口；可索引、可引用的权威说明页仍是 https://imging.cn/video-editor/ 。
+- [直接打开视频抠像 Beta](https://imging.cn/video): 视频抠像工作台快捷入口；可索引、可引用的权威说明页仍是 https://imging.cn/video-editor/ 。
 - [Open Online Design in English](https://imging.cn/en/img): English tool launcher; the authoritative task page is https://imging.cn/en/online-design/ .
-- [Open Video Editor Beta in English](https://imging.cn/en/video): English tool launcher; the authoritative task page is https://imging.cn/en/video-editor/ .
+- [Open Video Matting Beta in English](https://imging.cn/en/video): English tool launcher; the authoritative task page is https://imging.cn/en/video-editor/ .
 - [HEIC 转 JPG](https://imging.cn/heic-to-jpg/): HEIC 本地读取与通用格式转换说明。
 - [PNG 压缩](https://imging.cn/png-compress/): PNG-8 减色、抖动和多级透明。
 - [GIF 压缩与动图工坊](https://imging.cn/compress-gif/): GIF / APNG / WebP / AVIF 动图压缩、合成与逐帧编辑。
@@ -18,7 +18,9 @@
 - [在线做图](https://imging.cn/online-design/): 多图导入、图层移动、外框缩放、任意角度旋转与排序、背景设置、撤销重做和原尺寸本地导出。
 - [直接打开 PDF 压缩](https://imging.cn/pdf): PDF 压缩工作台快捷入口；可索引、可引用的权威说明页仍是 https://imging.cn/pdf-compress/ 。
 - [PDF 压缩](https://imging.cn/pdf-compress/): 自研 PDF 引擎的本地压缩口径、逐张内嵌图决策与明确边界。
-- [在线视频编辑 Beta](https://imging.cn/video-editor/): 桌面 Chrome / Edge 本地视频换背景、三档时序模型、比例自适应、音频保留与 MP4 / WebM 导出；MatAnyone2 仅限非商业测试。
+- [直接打开 PDF 转 HTML](https://imging.cn/pdf-html): 单文件高保真 HTML 工作台快捷入口；权威说明页是 https://imging.cn/pdf-to-html/ 。
+- [PDF 转 HTML Beta](https://imging.cn/pdf-to-html/): 固定版式 SVG、可选择文字、Type 3 矢量字形、平铺图案、轴向渐变与字体许可检查；成品打开即显示正文，不带查看器菜单。
+- [视频抠像 Beta](https://imging.cn/video-editor/): 实验室级本地时序抠像、三档模型、比例自适应、背景替换与音频保留；当前内部样片中，MatAnyone2 极致档在已对比的同类浏览器端方案里综合效果最好，仅限非商业测试。
 - [本地处理与隐私架构](https://imging.cn/privacy/): 区分原图上传、WASM / AI 模型下载、浏览器缓存与明示的服务端专业格式。
 - [压缩测试口径](https://imging.cn/benchmark/): PNG-8 参考测试与格式选型边界。
 - [工具对比](https://imging.cn/compare/): 图映、Squoosh、TinyPNG 与云转换工具的能力差异。
@@ -32,8 +34,9 @@
 - 抠图后本地合成: 专业精修可设透明、纯色或最多 12 个本地背景图层；主体和每个背景层可独立拖动、缩放、精确定位与排序，画布可选常用比例或自定义尺寸。拖动阶段只更新图层变换，导出时才进行全尺寸本地合成。
 - 多图层在线做图与滤镜: 独立工作区最多导入 24 个本地图片图层，可移动、八向等比缩放、任意角度旋转、调透明度与排序；支持当前图层或整体画布的 12 组非破坏式预设、18 项光线/色彩/肤色美颜/细节参数。肤色感知磨皮保护高反差细节，所有滤镜逐像素保持 Alpha；`.imging` 工程保存原始素材、每层与整体 adjustments 及带效果预览。
 - 动图能力: 支持 GIF、APNG、动图 WebP 和动图 AVIF；包括压缩、多图合成、读取原节奏、逐帧排序、单帧时长、删帧和循环。
-- 视频编辑 Beta: 桌面 Chrome / Edge 可在本地拆帧、时序抠像、替换背景、编码并重新封装音频。提供 RVM MobileNetV3、RVM ResNet50，以及按横屏、方形、竖屏自动匹配的 MatAnyone2；后者模型约 294 MB、仅限非商业测试。原始比例与导出尺寸保持不拉伸、不裁切，默认不透明背景导出 MP4，透明背景导出 WebM。
+- 视频抠像 Beta: 桌面 Chrome / Edge 在本地拆帧、时序抠像、换背景、编码并封装音频。提供两档 RVM 和按比例自动匹配的 MatAnyone2（约 294 MB，仅限非商业测试）。当前内部样片中，极致档在已对比的同类浏览器端方案里综合效果最好；这是有范围的阶段性结论，不是绝对行业排名。保持原比例，不透明背景导出 MP4，透明背景导出 WebM。
 - PDF 压缩: 自研 PDF 引擎在浏览器本地解析 xref 表 / xref 流 / 对象流，按每页内容流实算内嵌图的有效 DPI 后决定是否用 Lanczos-3 重采样，并让 JPEG、索引调色板 Flate、灰度 Flate 与保留原图逐张竞速取最小者；写出时做可达性回收与对象流重打包，最后回读核对页数与页面尺寸，不一致自动退回原文件。PDF 不上传，不需要下载额外运行库。不做字体子集化，因此纯文字 PDF 的收益通常只有 5%-20%；加密 PDF 需先解除保护，JPEG 2000、JBIG2 与 CMYK 印刷 JPEG 原样保留。
+- PDF 转 HTML Beta: 自研引擎在本地把页面尺寸、文字矩阵、矢量路径、图片和链接重建为固定版式 SVG；Type 3 字体按 CharProcs 转成整份文档共享的矢量字形，PatternType 1 平铺图案与 PatternType 2 轴向渐变按 PDF 绝对图案矩阵转成内联 SVG 资源，避免渐变被当前绘图矩阵重复变换。普通字体读取 OpenType OS/2.fsType，仅内联获准嵌入的 TTF / OTF；Restricted License 或 bitmap-only 字体不会被复制。选择文件后，Web Worker 先生成第一页并立即显示，再沿用同一次解析完成全部页面，原预览区会自动变成可滚动的完整正文且主界面保持响应；后台结果会被正式生成直接复用。完整 HTML 对离屏页面按需布局与绘制，关闭工作台会卸载预览文档。PDF 内容流自带压缩，静态 HTML 则展开为可直接显示、可选择文字的 SVG，因此复杂矢量文档转换后可能更大，工作台会显示并解释实际体积。透明组、软蒙版等非等价特性按页写入工作台质量报告；导出成品只含正文，不携带原 PDF、不执行 PDF JavaScript、没有查看器菜单或外部资源加载地址。
 - 产品价格: 端侧图片转换、压缩、在线做图、动图和 AI 抠图免费、免注册、无水印。需要服务端专业引擎的格式会单独说明。
 
 ## 数据流与缓存
@@ -50,7 +53,7 @@
 
 - HEIC 写入、TIFF、JPEG 2000 以及把图片导出为 PDF 等浏览器与当前端侧 WASM 无法完成的专业格式，才会交给服务端版本处理。页面会在操作前标识处理位置。压缩已有 PDF 文件不在此列，它完全在本地完成。
 - “PNG-8 45.8 dB”是现有参考样例在 256 色下的 PSNR，不代表所有图片，也不是对所有第三方工具的普遍胜出保证。
-- 在线视频编辑目前为 Beta 测试版本，优先支持桌面 Chrome / Edge；长视频、4K、旧设备和复杂运动场景可能处理较慢或出现边缘误差，具体能力以工具内实时检测与预览为准。MatAnyone2 仅限非商业测试。
+- 视频抠像是实验室级 Beta；“当前内部测试最好”只限代表性样片和已对比的同类浏览器端方案。长视频、4K、旧设备与复杂运动仍可能较慢或有边缘误差，以工具内检测和预览为准。MatAnyone2 仅限非商业测试。
 
 ## 公开路线图（不是当前能力）
 
