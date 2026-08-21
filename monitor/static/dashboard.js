@@ -79,10 +79,12 @@ function renderRanking(items){
   items.forEach((item,index)=>{const row=document.createElement("div");row.className="ip-row";
     const displayLocation=localizedLocation(item.geo);row.dataset.search=`${item.ip} ${displayLocation} ${item.geo?.location||""}`.toLocaleLowerCase();
     const rank=document.createElement("span");rank.className="ip-rank";rank.textContent=String(index+1);
-    const ip=document.createElement("button");ip.className="ip-address";ip.type="button";ip.textContent=item.ip;ip.title=`复制 ${item.ip}`;ip.setAttribute("aria-label",`复制 IP ${item.ip}`);ip.addEventListener("click",()=>copyIp(item.ip,ip));
+    const ipCell=document.createElement("span");ipCell.className="ip-cell";
+    const ip=document.createElement("button");ip.className="ip-address";ip.type="button";ip.textContent=item.ip;ip.title=`复制 ${item.ip}`;ip.setAttribute("aria-label",`复制 IP ${item.ip}`);ip.addEventListener("click",()=>copyIp(item.ip,ip));ipCell.append(ip);
+    if(item.crawler){const badge=document.createElement("span");badge.className="crawler-badge";badge.textContent="爬虫";badge.title="公开声明身份的正常爬虫；访问量已计入统计";ipCell.append(badge)}
     const location=document.createElement("span");location.className="ip-location";location.textContent=displayLocation;location.title=location.textContent;
     const bar=document.createElement("span");bar.className="ip-bar";const fill=document.createElement("span");fill.style.width=`${Math.max(2,item.count/max*100)}%`;bar.append(fill);
-    const count=document.createElement("span");count.className="ip-count";count.textContent=number(item.count);row.append(rank,ip,location,bar,count);box.append(row);
+    const count=document.createElement("span");count.className="ip-count";count.textContent=number(item.count);row.append(rank,ipCell,location,bar,count);box.append(row);
   });
   filterRanking();
 }

@@ -51,6 +51,18 @@ CREATE TABLE IF NOT EXISTS automation_scan_state (
     inode INTEGER NOT NULL DEFAULT 0,
     offset INTEGER NOT NULL DEFAULT 0
 );
+CREATE TABLE IF NOT EXISTS crawler_scan_state (
+    path TEXT PRIMARY KEY,
+    inode INTEGER NOT NULL DEFAULT 0,
+    offset INTEGER NOT NULL DEFAULT 0
+);
+CREATE TABLE IF NOT EXISTS daily_crawler_ip (
+    day TEXT NOT NULL,
+    ip TEXT NOT NULL,
+    hits INTEGER NOT NULL,
+    PRIMARY KEY (day, ip),
+    FOREIGN KEY (ip) REFERENCES ip_geo(ip)
+);
 CREATE TABLE IF NOT EXISTS legacy_imports (
     source_id TEXT PRIMARY KEY,
     source_path TEXT NOT NULL,
@@ -65,6 +77,10 @@ CREATE TABLE IF NOT EXISTS legacy_automation_imports (
     FOREIGN KEY (source_id) REFERENCES legacy_imports(source_id)
 );
 CREATE TABLE IF NOT EXISTS legacy_behavior_imports (
+    source_id TEXT PRIMARY KEY,
+    FOREIGN KEY (source_id) REFERENCES legacy_imports(source_id)
+);
+CREATE TABLE IF NOT EXISTS legacy_crawler_imports (
     source_id TEXT PRIMARY KEY,
     FOREIGN KEY (source_id) REFERENCES legacy_imports(source_id)
 );
@@ -163,7 +179,45 @@ class Store:
             )
             self._set_automation_scan_state(connection, path, inode, offset)
 
-    def ingest(self, path, inode, offset, counts, automated, resolver):
+    def get_crawler_scan_state(self, path):
+        with self.connection() as connection:
+            row = connection.execute(
+                "SELECT inode,offset FROM crawler_scan_state WHERE path=?", (str(path),)
+            ).fetchone()
+            return (int(row["inode"]), int(row["offset"])) if row else (0, 0)
+
+    @staticmethod
+    def _set_crawler_scan_state(connection, path, inode, offset):
+        connection.execute(
+            "INSERT INTO crawler_scan_state(path,inode,offset) VALUES(?,?,?) "
+            "ON CONFLICT(path) DO UPDATE SET inode=excluded.inode,offset=excluded.offset",
+            (str(path), int(inode), int(offset)),
+        )
+
+    def record_crawler_hits(self, path, inode, offset, counts, migrate_automated=False, retained_automated=None):
+        retained_automated = retained_automated or {}
+        with self.connection() as connection:
+            connection.executemany(
+                "INSERT INTO daily_crawler_ip(day,ip,hits) VALUES(?,?,?) "
+                "ON CONFLICT(day,ip) DO UPDATE SET hits=hits+excluded.hits",
+                ((day, ip, hits) for (day, ip), hits in counts.items()),
+            )
+            if migrate_automated:
+                # 旧版本把公开声明身份的正常爬虫也计入了自动化排除量；按原始日志精确移回正常统计。
+                connection.executemany(
+                    "UPDATE daily_automated_ip SET hits=MAX(hits-?,0) WHERE day=? AND ip=?",
+                    ((hits, day, ip) for (day, ip), hits in counts.items()),
+                )
+                connection.executemany(
+                    "INSERT INTO daily_automated_ip(day,ip,hits) VALUES(?,?,?) "
+                    "ON CONFLICT(day,ip) DO UPDATE SET hits=hits+excluded.hits",
+                    ((day, ip, hits) for (day, ip), hits in retained_automated.items()),
+                )
+                connection.execute("DELETE FROM daily_automated_ip WHERE hits<=0")
+            self._set_crawler_scan_state(connection, path, inode, offset)
+
+    def ingest(self, path, inode, offset, counts, automated, resolver, crawlers=None):
+        crawlers = crawlers or {}
         ips = sorted({ip for _, ip in counts})
         with self.connection() as connection:
             self._ensure_geos(connection, ips, resolver)
@@ -177,8 +231,14 @@ class Store:
                 "ON CONFLICT(day,ip) DO UPDATE SET hits=hits+excluded.hits",
                 ((day, ip, hits) for (day, ip), hits in automated.items()),
             )
+            connection.executemany(
+                "INSERT INTO daily_crawler_ip(day,ip,hits) VALUES(?,?,?) "
+                "ON CONFLICT(day,ip) DO UPDATE SET hits=hits+excluded.hits",
+                ((day, ip, hits) for (day, ip), hits in crawlers.items()),
+            )
             self.set_ingest_state(connection, path, inode, offset)
             self._set_automation_scan_state(connection, path, inode, offset)
+            self._set_crawler_scan_state(connection, path, inode, offset)
 
     def import_legacy(self, source_id, source_path, content_sha256, filters, lines, counts, automated, resolver):
         with self.connection() as connection:
@@ -222,6 +282,41 @@ class Store:
                 ((day, ip, hits) for (day, ip), hits in automated.items()),
             )
             connection.execute("INSERT INTO legacy_behavior_imports(source_id) VALUES(?)", (source_id,))
+            return True
+
+    def import_legacy_crawlers(self, source_id, crawlers, retained_automated=None):
+        retained_automated = retained_automated or {}
+        with self.connection() as connection:
+            existing = connection.execute(
+                "SELECT 1 FROM legacy_crawler_imports WHERE source_id=?", (source_id,)
+            ).fetchone()
+            if existing:
+                return False
+            was_excluded = connection.execute(
+                "SELECT 1 FROM legacy_automation_imports WHERE source_id=?", (source_id,)
+            ).fetchone()
+            behavior_classified = connection.execute(
+                "SELECT 1 FROM legacy_behavior_imports WHERE source_id=?", (source_id,)
+            ).fetchone()
+            connection.executemany(
+                "INSERT INTO daily_crawler_ip(day,ip,hits) VALUES(?,?,?) "
+                "ON CONFLICT(day,ip) DO UPDATE SET hits=hits+excluded.hits",
+                ((day, ip, hits) for (day, ip), hits in crawlers.items()),
+            )
+            if was_excluded:
+                connection.executemany(
+                    "UPDATE daily_automated_ip SET hits=MAX(hits-?,0) WHERE day=? AND ip=?",
+                    ((hits, day, ip) for (day, ip), hits in crawlers.items()),
+                )
+                if behavior_classified:
+                    # 旧版本把所有声明爬虫直接排除，升级时只把其中仍命中恶意行为规则的请求留在排除量中。
+                    connection.executemany(
+                        "INSERT INTO daily_automated_ip(day,ip,hits) VALUES(?,?,?) "
+                        "ON CONFLICT(day,ip) DO UPDATE SET hits=hits+excluded.hits",
+                        ((day, ip, hits) for (day, ip), hits in retained_automated.items()),
+                    )
+                connection.execute("DELETE FROM daily_automated_ip WHERE hits<=0")
+            connection.execute("INSERT INTO legacy_crawler_imports(source_id) VALUES(?)", (source_id,))
             return True
 
     @staticmethod
@@ -273,6 +368,7 @@ class Store:
         with self.connection() as connection:
             connection.execute("DELETE FROM daily_ip WHERE day < ?", (cutoff,))
             connection.execute("DELETE FROM daily_automated_ip WHERE day < ?", (cutoff,))
+            connection.execute("DELETE FROM daily_crawler_ip WHERE day < ?", (cutoff,))
             connection.execute("DELETE FROM ip_geo WHERE ip NOT IN (SELECT DISTINCT ip FROM daily_ip)")
             connection.execute("DELETE FROM sessions WHERE expires_at < ?", (now,))
             connection.execute("DELETE FROM login_buckets WHERE window_started < ?", (now - 86400,))
@@ -296,8 +392,10 @@ class Store:
                 "WHERE {} GROUP BY d.day ORDER BY d.day".format(where), parameters
             ).fetchall()
             top = connection.execute(
-                "SELECT d.ip,SUM(MAX(d.hits-COALESCE(a.hits,0),0)) AS hits,g.country,g.province,g.city,g.isp,g.country_code,g.location "
+                "SELECT d.ip,SUM(MAX(d.hits-COALESCE(a.hits,0),0)) AS hits,SUM(COALESCE(c.hits,0)) AS crawler_hits,"
+                "g.country,g.province,g.city,g.isp,g.country_code,g.location "
                 "FROM daily_ip d LEFT JOIN daily_automated_ip a ON a.day=d.day AND a.ip=d.ip "
+                "LEFT JOIN daily_crawler_ip c ON c.day=d.day AND c.ip=d.ip "
                 "JOIN ip_geo g ON g.ip=d.ip WHERE {} GROUP BY d.ip "
                 "HAVING SUM(MAX(d.hits-COALESCE(a.hits,0),0))>0 "
                 "ORDER BY SUM(MAX(d.hits-COALESCE(a.hits,0),0)) DESC LIMIT 100".format(top_where), parameters
@@ -316,7 +414,7 @@ class Store:
             row = by_day.get(value)
             data.append({"date": value[5:], "full_date": value, "pv": int(row["pv"]) if row else 0, "uv": int(row["uv"]) if row else 0})
         top_ip = [{
-            "ip": row["ip"], "count": int(row["hits"]),
+            "ip": row["ip"], "count": int(row["hits"]), "crawler": int(row["crawler_hits"] or 0) > 0,
             "geo": {"country": row["country"], "province": row["province"], "city": row["city"],
                     "source": row["isp"], "country_code": row["country_code"], "location": row["location"]}
         } for row in top]

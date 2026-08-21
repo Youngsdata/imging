@@ -267,6 +267,7 @@
 .dashboard-page .ip-row:nth-child(1) .ip-rank{background:var(--dash-green);color:#fff}
 .dashboard-page .ip-row:nth-child(2) .ip-rank{background:#202620;color:#fff}
 .dashboard-page .ip-row:nth-child(3) .ip-rank{background:#dfeae3;color:#267454}
+.dashboard-page .ip-cell{display:flex;align-items:center;gap:7px;min-width:0}
 .dashboard-page .ip-address{
   display:flex;
   align-items:center;
@@ -284,6 +285,7 @@
   font:600 12px/1.2 ui-monospace,SFMono-Regular,monospace;
   text-align:left;
 }
+.dashboard-page .crawler-badge{flex:0 0 auto;padding:3px 6px;border:1px solid #abd8c2;border-radius:999px;background:#edf8f2;color:var(--dash-green-dark);font:750 8px/1 "PingFang SC",sans-serif;letter-spacing:.08em}
 .dashboard-page .ip-address::after{content:"复制";padding:2px 4px;border-radius:4px;background:#e4f2e9;color:var(--dash-green-dark);font:700 8px/1.2 "PingFang SC",sans-serif;opacity:0;transform:translateX(-3px);transition:opacity .16s ease,transform .16s ease}
 .dashboard-page .ip-address:hover{background:#f2f8f4;color:var(--dash-green-dark)}
 .dashboard-page .ip-address:hover::after,.dashboard-page .ip-address.copied::after{opacity:1;transform:none}
@@ -334,7 +336,7 @@
   .dashboard-page .ip-head{display:none}
   .dashboard-page .ip-row{grid-template-columns:34px minmax(0,1fr) 70px;grid-template-rows:auto auto 6px;gap:3px 10px;padding:12px 8px}
   .dashboard-page .ip-rank{grid-column:1;grid-row:1/3}
-  .dashboard-page .ip-address{grid-column:2;grid-row:1}
+  .dashboard-page .ip-cell{grid-column:2;grid-row:1}
   .dashboard-page .ip-location{grid-column:2;grid-row:2}
   .dashboard-page .ip-count{grid-column:3;grid-row:1/3;align-self:center}
   .dashboard-page .ip-bar{display:block;grid-column:2/4;grid-row:3;height:5px;margin-top:5px}

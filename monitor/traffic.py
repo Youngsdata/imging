@@ -60,7 +60,8 @@ class AutomatedTrafficClassifier:
         if declared:
             if self.include_declared:
                 self._mark(day, ip, (token,), second, result)
-            return result
+                return result
+            # 正常爬虫请求计入统计，但不能因声明了爬虫身份而绕过后续行为规则。
 
         path_window = self.path_windows[(ip, uri)]
         self._expire_window(path_window, second, 60)

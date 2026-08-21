@@ -107,6 +107,11 @@ class MonitorTestCase(unittest.TestCase):
         self.assertEqual(response.headers["Referrer-Policy"], "same-origin")
         self.assertNotIn('name="otp"', response.get_data(as_text=True))
         self.assertIn("login-v2.css", response.get_data(as_text=True))
+        self.assertIn('rel="icon" href="/static/favicon.svg"', response.get_data(as_text=True))
+        favicon = self.client.get("/static/favicon.svg", base_url="https://status.test")
+        self.assertEqual(favicon.status_code, 200)
+        self.assertEqual(favicon.mimetype, "image/svg+xml")
+        favicon.close()
 
     def test_login_rejects_missing_origin_and_csrf(self):
         response = self.client.post(
@@ -201,6 +206,7 @@ class MonitorTestCase(unittest.TestCase):
         self.assertIn("dashboard-v2.css", dashboard.get_data(as_text=True))
         self.assertIn("筛选访问 IP", dashboard.get_data(as_text=True))
         self.assertIn("imging-monitor-brand", dashboard.get_data(as_text=True))
+        self.assertIn('rel="icon" href="/static/favicon.svg"', dashboard.get_data(as_text=True))
         self.assertIn('id="auto-refresh"', dashboard.get_data(as_text=True))
         self.assertIn('id="setting-exclude-current-ip"', dashboard.get_data(as_text=True))
         self.assertIn('<option value="10">10 秒</option>', dashboard.get_data(as_text=True))
@@ -230,7 +236,7 @@ class MonitorTestCase(unittest.TestCase):
         stylesheet = (Path(__file__).parent.parent / "static" / "dashboard-v2.css").read_text(encoding="utf-8")
         template = (Path(__file__).parent.parent / "templates" / "dashboard.html").read_text(encoding="utf-8")
         self.assertIn(".refresh-control .primary-button{flex:0 0 106px;width:106px", stylesheet)
-        self.assertIn("dashboard-v2.css?v=3", template)
+        self.assertIn("dashboard-v2.css?v=4", template)
 
     def test_current_ip_filter_switch_is_wired_to_runtime_settings(self):
         script = (Path(__file__).parent.parent / "static" / "dashboard.js").read_text(encoding="utf-8")
@@ -238,7 +244,14 @@ class MonitorTestCase(unittest.TestCase):
         self.assertIn('role="switch"', template)
         self.assertIn("body.exclude_current_ip=excludeCurrentIp.checked?1:0", script)
         self.assertIn("state.stats.exclude_current_ip", script)
-        self.assertIn("dashboard.js?v=3", template)
+        self.assertIn("dashboard.js?v=4", template)
+
+    def test_ranking_renders_declared_crawler_badge(self):
+        script = (Path(__file__).parent.parent / "static" / "dashboard.js").read_text(encoding="utf-8")
+        stylesheet = (Path(__file__).parent.parent / "static" / "dashboard-v2.css").read_text(encoding="utf-8")
+        self.assertIn('badge.textContent="爬虫"', script)
+        self.assertIn("item.crawler", script)
+        self.assertIn(".crawler-badge", stylesheet)
 
     def test_wrong_user_and_wrong_password_have_same_public_error(self):
         wrong_user = self.login(username="someone")
@@ -399,6 +412,14 @@ class MonitorTestCase(unittest.TestCase):
             }).encode()
             self.assertEqual(collector._parse(raw)[:6], (today, "1.2.3.4", True, 36000, "", True))
 
+    def test_declared_crawler_still_runs_through_malicious_behavior_rules(self):
+        classifier = AutomatedTrafficClassifier(include_declared=False)
+        automated = Counter()
+        today = date.today().isoformat()
+        for second in range(11):
+            automated.update(classifier.feed((today, "1.2.3.4", True, 36000 + second, "/en/", False, 1)))
+        self.assertEqual(automated[(today, "1.2.3.4")], 11)
+
     def test_collector_classifies_repeated_same_path_burst_as_automated(self):
         classifier = AutomatedTrafficClassifier()
         automated = Counter()
@@ -486,13 +507,39 @@ class MonitorTestCase(unittest.TestCase):
         self.assertFalse(second["imported"])
         self.assertFalse(third["imported"])
         self.assertEqual(first["accepted_hits"], 3)
-        self.assertEqual(first["automated_hits"], 1)
+        self.assertEqual(first["automated_hits"], 0)
+        self.assertEqual(first["crawler_hits"], 1)
         self.assertEqual(first["invalid_lines"], 1)
         result = store.stats(7, [])
-        self.assertEqual(result["data"][-1]["pv"], 2)
-        self.assertEqual(result["data"][-1]["uv"], 2)
+        self.assertEqual(result["data"][-1]["pv"], 3)
+        self.assertEqual(result["data"][-1]["uv"], 3)
+        self.assertTrue(next(item for item in result["top_ip"] if item["ip"] == "8.8.8.8")["crawler"])
         with store.connection() as connection:
             self.assertEqual(connection.execute("SELECT COUNT(*) FROM legacy_imports").fetchone()[0], 1)
+
+    def test_legacy_import_migrates_previously_excluded_crawlers_once(self):
+        today = date.today().isoformat()
+        source = self.settings.db_path.parent / "legacy-crawler.json"
+        source.write_text(json.dumps({
+            "@timestamp": today + "T10:00:00+08:00", "http_host": "imging.cn",
+            "clientip": "8.8.8.8", "status": "200",
+            "agent": "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
+        }) + "\n", encoding="utf-8")
+        store = Store(self.settings.db_path)
+        first = import_legacy_log(source, store, FakeResolver(), today + "T11:00:00+08:00", ["imging.cn"], 90)
+        with store.connection() as connection:
+            connection.execute("DELETE FROM legacy_crawler_imports WHERE source_id=?", (first["source_id"],))
+            connection.execute("DELETE FROM daily_crawler_ip")
+            connection.execute(
+                "INSERT INTO daily_automated_ip(day,ip,hits) VALUES(?,?,?)", (today, "8.8.8.8", 1),
+            )
+        migrated = import_legacy_log(source, store, FakeResolver(), today + "T11:00:00+08:00", ["imging.cn"], 90)
+        repeated = import_legacy_log(source, store, FakeResolver(), today + "T11:00:00+08:00", ["imging.cn"], 90)
+        self.assertTrue(migrated["crawler_updated"])
+        self.assertFalse(repeated["crawler_updated"])
+        result = store.stats(1, [])
+        self.assertEqual(result["data"][0]["pv"], 1)
+        self.assertTrue(result["top_ip"][0]["crawler"])
 
     def test_legacy_import_requires_timezone_and_valid_retention(self):
         source = self.settings.db_path.parent / "legacy.json"
@@ -544,6 +591,19 @@ class MonitorTestCase(unittest.TestCase):
         self.assertEqual(result["data"][0]["uv"], 1)
         self.assertEqual([item["ip"] for item in result["top_ip"]], ["5.6.7.8"])
 
+    def test_stats_counts_declared_crawlers_and_marks_ranking(self):
+        store = Store(self.settings.db_path)
+        today = date.today().isoformat()
+        counts = {(today, "1.2.3.4"): 8, (today, "5.6.7.8"): 2}
+        crawlers = {(today, "1.2.3.4"): 8}
+        store.ingest(self.settings.log_path, 1, 100, counts, {}, FakeResolver(), crawlers)
+        result = store.stats(1, [])
+        self.assertEqual(result["data"][0]["pv"], 10)
+        self.assertEqual(result["data"][0]["uv"], 2)
+        self.assertEqual(result["top_ip"][0]["ip"], "1.2.3.4")
+        self.assertTrue(result["top_ip"][0]["crawler"])
+        self.assertFalse(result["top_ip"][1]["crawler"])
+
     def test_collector_reclassifies_already_read_active_log_prefix(self):
         store = Store(self.settings.db_path)
         today = date.today().isoformat()
@@ -557,23 +617,30 @@ class MonitorTestCase(unittest.TestCase):
             "@timestamp": today + "T10:01:{:02d}+08:00".format(second), "clientip": "9.9.9.9", "status": "301",
             "request_uri": "/en/", "user_agent": "Mozilla/5.0 Chrome/151.0",
         } for second in range(12))
+        rows.extend({
+            "@timestamp": today + "T10:02:{:02d}+08:00".format(second), "clientip": "7.7.7.7", "status": "200",
+            "request_uri": "/en/", "user_agent": "Googlebot/2.1",
+        } for second in range(11))
         content = "\n".join(json.dumps(row) for row in rows) + "\n"
         self.settings.log_path.write_text(content, encoding="utf-8")
         inode = self.settings.log_path.stat().st_ino
         offset = self.settings.log_path.stat().st_size
         store.ingest(
             self.settings.log_path, inode, offset,
-            {(today, "1.2.3.4"): 1, (today, "5.6.7.8"): 1, (today, "9.9.9.9"): 12}, {}, FakeResolver(),
+            {(today, "1.2.3.4"): 1, (today, "5.6.7.8"): 1, (today, "9.9.9.9"): 12, (today, "7.7.7.7"): 11},
+            {(today, "1.2.3.4"): 1, (today, "7.7.7.7"): 11}, FakeResolver(),
         )
         with store.connection() as connection:
             connection.execute("DELETE FROM automation_scan_state")
+            connection.execute("DELETE FROM crawler_scan_state")
         collector = LogCollector(self.settings, store, FakeResolver())
         collector._open()
         collector._close()
         result = store.stats(1, [])
-        self.assertEqual(result["data"][0]["pv"], 1)
-        self.assertEqual(result["data"][0]["uv"], 1)
-        self.assertEqual([item["ip"] for item in result["top_ip"]], ["5.6.7.8"])
+        self.assertEqual(result["data"][0]["pv"], 2)
+        self.assertEqual(result["data"][0]["uv"], 2)
+        self.assertEqual({item["ip"] for item in result["top_ip"]}, {"1.2.3.4", "5.6.7.8"})
+        self.assertTrue(next(item for item in result["top_ip"] if item["ip"] == "1.2.3.4")["crawler"])
 
     def test_runtime_settings_are_authenticated_validated_and_persisted(self):
         self.assertEqual(self.login().status_code, 303)

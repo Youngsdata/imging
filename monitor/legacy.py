@@ -36,9 +36,11 @@ def import_legacy_log(source, store, resolver, before, hosts, retention_days):
 
     cutoff_day = date.today() - timedelta(days=retention_days - 1)
     counts = Counter()
-    automated = Counter()
+    crawlers = Counter()
     behavioral = Counter()
     classifier = AutomatedTrafficClassifier(include_declared=False)
+    declared_behavioral = Counter()
+    declared_classifier = AutomatedTrafficClassifier(include_declared=False)
     content_hash = hashlib.sha256()
     total_lines = 0
     accepted_hits = 0
@@ -69,7 +71,7 @@ def import_legacy_log(source, store, resolver, before, hosts, retention_days):
             agent = payload.get("user_agent") or payload.get("agent") or ""
             declared = is_automated_user_agent(agent)
             if declared:
-                automated[(timestamp.date().isoformat(), ip)] += 1
+                crawlers[(timestamp.date().isoformat(), ip)] += 1
             request_parts = str(payload.get("request") or "").split()
             uri = str(payload.get("request_uri") or (request_parts[1] if len(request_parts) > 1 else ""))
             second = timestamp.hour * 3600 + timestamp.minute * 60 + timestamp.second
@@ -78,6 +80,11 @@ def import_legacy_log(source, store, resolver, before, hosts, retention_days):
                 timestamp.date().isoformat(), ip, declared, second, uri.split("?", 1)[0][:1024],
                 not referer or referer == "-", hash(str(agent)[:512]),
             )))
+            if declared:
+                declared_behavioral.update(declared_classifier.feed((
+                    timestamp.date().isoformat(), ip, True, second, uri.split("?", 1)[0][:1024],
+                    not referer or referer == "-", hash(str(agent)[:512]),
+                )))
             accepted_hits += 1
 
     final_stat = source.stat()
@@ -95,7 +102,8 @@ def import_legacy_log(source, store, resolver, before, hosts, retention_days):
     identity.update(b"\0")
     identity.update(json.dumps(filters, sort_keys=True, separators=(",", ":")).encode("utf-8"))
     source_id = identity.hexdigest()
-    imported = store.import_legacy(source_id, source, content_sha256, filters, total_lines, counts, automated, resolver)
+    imported = store.import_legacy(source_id, source, content_sha256, filters, total_lines, counts, {}, resolver)
+    crawler_updated = store.import_legacy_crawlers(source_id, crawlers, declared_behavioral)
     behavior_updated = store.import_legacy_behavior(source_id, behavioral)
     return {
         "source_id": source_id,
@@ -103,7 +111,9 @@ def import_legacy_log(source, store, resolver, before, hosts, retention_days):
         "imported": imported,
         "lines": total_lines,
         "accepted_hits": accepted_hits,
-        "automated_hits": sum(automated.values()) + sum(behavioral.values()),
+        "automated_hits": sum(behavioral.values()),
+        "crawler_hits": sum(crawlers.values()),
+        "crawler_updated": crawler_updated,
         "behavior_updated": behavior_updated,
         "invalid_lines": invalid_lines,
         "day_ip_pairs": len(counts),

@@ -21,7 +21,7 @@ class LogCollector(threading.Thread):
         self.inode = 0
         self.offset = 0
         self.last_prune_key = None
-        self.traffic_classifier = AutomatedTrafficClassifier()
+        self.traffic_classifier = AutomatedTrafficClassifier(include_declared=False)
         self.runtime_defaults = {
             "retention_days": settings.retention_days,
             "collector_interval_seconds": settings.collector_interval_seconds,
@@ -55,6 +55,7 @@ class LogCollector(threading.Thread):
         self.inode = int(stat.st_ino)
         self.offset = saved_offset if saved_inode == self.inode and saved_offset <= stat.st_size else 0
         self._classify_existing_prefix(self.offset)
+        self._classify_existing_crawler_prefix(self.offset)
         self.handle.seek(self.offset)
 
     def _classify_existing_prefix(self, limit):
@@ -70,15 +71,40 @@ class LogCollector(threading.Thread):
                 if not raw:
                     break
                 parsed = self._parse(raw)
-                if parsed:
+                if parsed and not parsed[2]:
+                    # 声明爬虫由独立迁移扫描处理，避免升级数据库时先重算行为、再迁移爬虫造成重复扣减。
                     automated.update(self.traffic_classifier.feed(parsed))
         self.store.record_automated_hits(self.settings.log_path, self.inode, limit, automated)
+
+    def _classify_existing_crawler_prefix(self, limit):
+        scan_inode, scan_offset = self.store.get_crawler_scan_state(self.settings.log_path)
+        start = scan_offset if scan_inode == self.inode and scan_offset <= limit else 0
+        if start >= limit:
+            return
+        crawlers = Counter()
+        retained_automated = Counter()
+        classifier = AutomatedTrafficClassifier(include_declared=False)
+        with open(str(self.settings.log_path), "rb") as handle:
+            handle.seek(start)
+            while handle.tell() < limit:
+                raw = handle.readline(limit - handle.tell())
+                if not raw:
+                    break
+                parsed = self._parse(raw)
+                if parsed and parsed[2]:
+                    crawlers[(parsed[0], parsed[1])] += 1
+                    retained_automated.update(classifier.feed(parsed))
+        self.store.record_crawler_hits(
+            self.settings.log_path, self.inode, limit, crawlers, migrate_automated=True,
+            retained_automated=retained_automated,
+        )
 
     def _collect_once(self):
         if self.handle is None:
             self._open()
         counts = Counter()
         automated = Counter()
+        crawlers = Counter()
         lines = 0
         while lines < self.runtime["collector_batch_lines"]:
             raw = self.handle.readline()
@@ -88,10 +114,12 @@ class LogCollector(threading.Thread):
             parsed = self._parse(raw)
             if parsed:
                 counts[(parsed[0], parsed[1])] += 1
+                if parsed[2]:
+                    crawlers[(parsed[0], parsed[1])] += 1
                 automated.update(self.traffic_classifier.feed(parsed))
         self.offset = self.handle.tell()
         if counts or lines:
-            self.store.ingest(self.settings.log_path, self.inode, self.offset, counts, automated, self.resolver)
+            self.store.ingest(self.settings.log_path, self.inode, self.offset, counts, automated, self.resolver, crawlers)
         else:
             stat = os.stat(str(self.settings.log_path))
             if int(stat.st_ino) == self.inode and stat.st_size < self.offset:
@@ -108,10 +136,12 @@ class LogCollector(threading.Thread):
                         parsed = self._parse(raw)
                         if parsed:
                             counts[(parsed[0], parsed[1])] += 1
+                            if parsed[2]:
+                                crawlers[(parsed[0], parsed[1])] += 1
                             automated.update(self.traffic_classifier.feed(parsed))
                 self._close()
                 if counts:
-                    self.store.ingest(self.settings.log_path, self.inode, self.offset, counts, automated, self.resolver)
+                    self.store.ingest(self.settings.log_path, self.inode, self.offset, counts, automated, self.resolver, crawlers)
         return lines >= self.runtime["collector_batch_lines"]
 
     def _parse(self, raw):
