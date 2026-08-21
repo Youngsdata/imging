@@ -2,10 +2,12 @@ import ipaddress
 import io
 import json
 import hashlib
+import os
 import re
 import tempfile
 import time
 import unittest
+from dataclasses import replace
 from datetime import date, timedelta
 from pathlib import Path
 from unittest.mock import patch
@@ -19,6 +21,7 @@ from monitor.fetch_assets import ASSETS, fetch
 from monitor.legacy import import_legacy_log
 from monitor.security import PASSWORD_HASHER
 from monitor.security import client_ip
+from monitor.security import expected_origin
 from monitor.store import Store
 from monitor import supervisor
 
@@ -118,6 +121,56 @@ class MonitorTestCase(unittest.TestCase):
                   "otp": pyotp.TOTP(self.totp_secret).now()},
         )
         self.assertEqual(response.status_code, 303)
+
+    def test_automatic_origin_accepts_any_https_deployment_host(self):
+        settings = replace(self.settings, public_origin="")
+        app = create_app(settings, start_collector=False)
+        app.testing = True
+        client = app.test_client()
+        login = client.get("/login", base_url="https://monitor.customer.example")
+        csrf = re.search(rb'name="csrf" value="([^"]+)"', login.data).group(1).decode()
+        response = client.post(
+            "/login", base_url="https://monitor.customer.example",
+            headers={"Origin": "https://monitor.customer.example", "User-Agent": "test-agent"},
+            data={"csrf": csrf, "username": "admin", "password": self.password,
+                  "otp": pyotp.TOTP(self.totp_secret).now()},
+        )
+        self.assertEqual(response.status_code, 303)
+
+    def test_automatic_origin_still_rejects_cross_site_login(self):
+        settings = replace(self.settings, public_origin="")
+        app = create_app(settings, start_collector=False)
+        app.testing = True
+        client = app.test_client()
+        login = client.get("/login", base_url="https://monitor.customer.example")
+        csrf = re.search(rb'name="csrf" value="([^"]+)"', login.data).group(1).decode()
+        response = client.post(
+            "/login", base_url="https://monitor.customer.example",
+            headers={"Origin": "https://attacker.example", "User-Agent": "test-agent"},
+            data={"csrf": csrf, "username": "admin", "password": self.password,
+                  "otp": pyotp.TOTP(self.totp_secret).now()},
+        )
+        self.assertEqual(response.status_code, 400)
+
+    def test_automatic_origin_uses_https_from_trusted_proxy(self):
+        settings = replace(
+            self.settings, public_origin="",
+            trusted_proxies=(ipaddress.ip_network("172.17.0.11/32"),),
+        )
+        with self.app.test_request_context(
+            "/login", base_url="http://status2.imging.cn", environ_base={"REMOTE_ADDR": "172.17.0.11"},
+            headers={"X-Forwarded-Proto": "https"},
+        ):
+            self.assertEqual(expected_origin(settings), "https://status2.imging.cn")
+
+    def test_default_origin_is_portable_and_trusts_only_loopback(self):
+        with patch.dict(os.environ, {}, clear=True):
+            settings = Settings.from_env()
+        self.assertEqual(settings.public_origin, "")
+        self.assertTrue(settings.secure_cookies)
+        self.assertEqual(settings.trusted_proxies, (
+            ipaddress.ip_network("127.0.0.1/32"), ipaddress.ip_network("::1/128"),
+        ))
 
     def test_successful_login_sets_host_only_session(self):
         response = self.login()

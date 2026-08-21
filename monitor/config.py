@@ -57,10 +57,10 @@ class Settings:
 
     @classmethod
     def from_env(cls):
-        public_origin = os.getenv("IMGING_MONITOR_PUBLIC_ORIGIN", "https://status.imging.cn").rstrip("/")
-        parsed = urlparse(public_origin)
+        public_origin = os.getenv("IMGING_MONITOR_PUBLIC_ORIGIN", "").strip().rstrip("/")
         allow_insecure = _boolean("IMGING_MONITOR_ALLOW_INSECURE_HTTP", False)
-        if parsed.scheme not in ({"http", "https"} if allow_insecure else {"https"}) or not parsed.netloc or parsed.path:
+        parsed = urlparse(public_origin) if public_origin else None
+        if parsed and (parsed.scheme not in ({"http", "https"} if allow_insecure else {"https"}) or not parsed.netloc or parsed.path):
             raise ValueError("IMGING_MONITOR_PUBLIC_ORIGIN 必须是无路径的 HTTPS 地址")
         username = os.getenv("IMGING_MONITOR_USERNAME", "admin").strip()
         if not username or len(username) > 64:
@@ -76,9 +76,9 @@ class Settings:
             username=username,
             public_origin=public_origin,
             trusted_proxies=_networks(os.getenv(
-                "IMGING_MONITOR_TRUSTED_PROXIES", "127.0.0.1/32,::1/128,172.16.0.0/12"
+                "IMGING_MONITOR_TRUSTED_PROXIES", "127.0.0.1/32,::1/128"
             )),
-            secure_cookies=parsed.scheme == "https",
+            secure_cookies=not allow_insecure if parsed is None else parsed.scheme == "https",
             allow_password_only=_boolean("IMGING_MONITOR_ALLOW_PASSWORD_ONLY", False),
             session_idle_seconds=_integer("IMGING_MONITOR_SESSION_IDLE_SECONDS", 1800, 300, 86400),
             session_absolute_seconds=_integer("IMGING_MONITOR_SESSION_ABSOLUTE_SECONDS", 43200, 900, 604800),
@@ -97,7 +97,7 @@ class Settings:
 
     @property
     def origin_host(self):
-        return urlparse(self.public_origin).netloc
+        return urlparse(self.public_origin).netloc if self.public_origin else ""
 
     def validate_runtime_secrets(self):
         missing = []

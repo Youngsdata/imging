@@ -120,15 +120,23 @@ def request_is_secure(settings):
     return address_in_networks(remote, settings.trusted_proxies) and request.headers.get("X-Forwarded-Proto", "").lower() == "https"
 
 
+def expected_origin(settings):
+    if settings.public_origin:
+        return settings.public_origin
+    scheme = "https" if request_is_secure(settings) else "http"
+    return "{}://{}".format(scheme, request.host).rstrip("/")
+
+
 def validate_origin(settings):
+    expected = expected_origin(settings)
     origin = request.headers.get("Origin", "").rstrip("/")
     if origin:
-        return hmac.compare_digest(origin, settings.public_origin)
+        return hmac.compare_digest(origin, expected)
     referer = urlparse(request.headers.get("Referer", ""))
     if not referer.scheme or not referer.netloc:
         return False
     referer_origin = "{}://{}".format(referer.scheme, referer.netloc)
-    return hmac.compare_digest(referer_origin, settings.public_origin)
+    return hmac.compare_digest(referer_origin, expected)
 
 
 def require_auth(view):

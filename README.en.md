@@ -192,6 +192,8 @@ IMGING_MONITOR_PUBLIC_ORIGIN=https://status.example.com \
 docker compose -f compose.monitor.yml up -d
 ```
 
+`IMGING_MONITOR_PUBLIC_ORIGIN` is optional. When omitted, monitor validates same-origin requests against the HTTPS host reconstructed through the trusted proxy, so the public image can use any self-hosted domain. Setting it locks the service to that single origin. Both modes retain CSRF, Secure host-only cookies, and trusted-proxy validation.
+
 If the main container is already managed by `deploy.sh`, use the same `IMGING_LOG_DIR` and run `docker compose -f compose.monitor.yml up -d --no-deps imging-monitor` to start only the monitor. It binds to `127.0.0.1:8899` by default. A remote front proxy requires an intranet `IMGING_MONITOR_BIND`; restrict port 8899 with the host firewall and trust only that proxy through `IMGING_MONITOR_TRUSTED_PROXIES`.
 
 Import an old front-proxy JSON snapshot with `python -m monitor.cli import-legacy`. Supply a timezone-aware `--before` cutover boundary and use `--host` to retain only application hosts. Re-running the same snapshot does not duplicate counts. See the source repository `README.md` for the complete deployment, migration, rotation, and persistence procedure.

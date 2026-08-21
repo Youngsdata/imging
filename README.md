@@ -192,6 +192,8 @@ IMGING_MONITOR_PUBLIC_ORIGIN=https://status.example.com \
 docker compose -f compose.monitor.yml up -d
 ```
 
+`IMGING_MONITOR_PUBLIC_ORIGIN` 可省略；省略时 monitor 会按当前请求经可信代理还原后的 HTTPS Host 做同源校验，可部署到任意自有域名。设置后则严格锁定到该单一 Origin。两种模式都保留 CSRF、Secure Host-only Cookie 和可信代理校验。
+
 已有 `deploy.sh` 管理的主容器时，用相同的 `IMGING_LOG_DIR` 执行 `docker compose -f compose.monitor.yml up -d --no-deps imging-monitor`，只启动 monitor。监控端口默认绑定 `127.0.0.1:8899`；远端前置代理需要通过 `IMGING_MONITOR_BIND` 绑定内网地址，并用防火墙和 `IMGING_MONITOR_TRUSTED_PROXIES` 仅允许、信任该代理。
 
 旧前置 JSON 日志可通过 `python -m monitor.cli import-legacy` 导入。必须指定带时区的 `--before` 切换边界，并用 `--host` 只保留主站域名；相同快照重复执行不会重复计数。完整部署、历史迁移、日志轮转和持久化说明见源码仓库 `README.md`。

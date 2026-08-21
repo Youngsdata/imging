@@ -82,7 +82,9 @@ def create_app(settings=None, start_collector=True, validate_secrets=True):
         g.session = None
         g.session_token_hash = None
         if request.path not in {"/healthz"}:
-            if request.host != settings.origin_host and not (not settings.secure_cookies and request.host.startswith(("127.0.0.1:", "localhost:"))):
+            if settings.origin_host and request.host != settings.origin_host and not (
+                not settings.secure_cookies and request.host.startswith(("127.0.0.1:", "localhost:"))
+            ):
                 return "invalid host", 400
             if settings.secure_cookies and not request_is_secure(settings):
                 return "https required", 400
