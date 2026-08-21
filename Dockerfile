@@ -2,7 +2,7 @@ FROM nginx:1.30.4-alpine-slim@sha256:ddde39c6e51f02fde7410c2e9c234cf2d0a4c7bdbbe
 
 ENV TZ=UTC
 
-RUN apk add --no-cache tzdata
+RUN apk add --no-cache tzdata nodejs chromium font-noto-cjk font-noto-emoji
 
 # Keep large, slow-changing assets in independent linked layers. A page/config
 # change then reuses these layers instead of invalidating their BuildKit cache.
@@ -23,6 +23,7 @@ COPY --link ai/background-removal.js /usr/share/nginx/html/ai/background-removal
 COPY --link ai/video-matting.js /usr/share/nginx/html/ai/video-matting.js
 COPY --link video/ /usr/share/nginx/html/video/
 COPY --link pdf/ /usr/share/nginx/html/pdf/
+COPY --link server/ /opt/imging/server/
 COPY --link fonts/ /usr/share/nginx/html/fonts/
 COPY --link seo/ /usr/share/nginx/html/
 COPY --link en/ /usr/share/nginx/html/en/
@@ -37,6 +38,7 @@ COPY --link docker/nginx/ssl.conf /etc/nginx/optional/ssl.conf
 COPY --link --chmod=755 docker/nginx/40-enable-ssl.sh /docker-entrypoint.d/40-enable-ssl.sh
 COPY --link --chmod=755 docker/nginx/41-inject-beian.sh /docker-entrypoint.d/41-inject-beian.sh
 COPY --link --chmod=755 docker/nginx/42-configure-real-ip.sh /docker-entrypoint.d/42-configure-real-ip.sh
+COPY --link --chmod=755 docker/nginx/43-start-html-pdf.sh /docker-entrypoint.d/43-start-html-pdf.sh
 
 RUN mkdir -p /var/log/imging \
     && touch /etc/nginx/snippets/imging-real-ip.conf

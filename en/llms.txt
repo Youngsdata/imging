@@ -46,6 +46,7 @@ Common formats and local AI run in the browser. Model and codec downloads delive
 - [Video Matting Beta](https://imging.cn/en/video-editor/): Video Matting Beta: lab-grade temporal AI in Chrome
 - [PDF compression](https://imging.cn/en/pdf-compress/): Compress PDFs by re-encoding each embedded image at its effective DPI
 - [PDF to HTML](https://imging.cn/en/pdf-to-html/): Convert PDF pages to one clean fixed-layout HTML
+- [HTML to PDF](https://imging.cn/en/html-to-pdf/): Preview true HTML pages, minimize losslessly and save the verified PDF
 - [Privacy architecture](https://imging.cn/en/privacy/): Local image processing: what stays on-device and what gets downloaded
 - [Benchmarks](https://imging.cn/en/benchmark/): Measure compression by quality, alpha and compatibility—not bytes alone
 - [Tool comparison](https://imging.cn/en/compare/): ImgIng, Squoosh and TinyPNG: choose by workflow, not one score
