@@ -23,7 +23,8 @@ def main():
     collector = subprocess.Popen([sys.executable, "-m", "monitor.collector_worker"], preexec_fn=child_setup)
     web = subprocess.Popen([
         "gunicorn", "--bind=0.0.0.0:8899", "--workers=2", "--worker-class=sync",
-        "--timeout=30", "--graceful-timeout=10", "--access-logfile=-", "--error-logfile=-", "monitor.wsgi:app",
+        "--timeout=30", "--graceful-timeout=10", "--no-control-socket",
+        "--access-logfile=-", "--error-logfile=-", "monitor.wsgi:app",
     ], preexec_fn=child_setup)
     children.extend((collector, web))
     try:

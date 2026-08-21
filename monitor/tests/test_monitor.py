@@ -20,6 +20,7 @@ from monitor.legacy import import_legacy_log
 from monitor.security import PASSWORD_HASHER
 from monitor.security import client_ip
 from monitor.store import Store
+from monitor import supervisor
 
 
 class FakeResolver:
@@ -225,6 +226,14 @@ class MonitorTestCase(unittest.TestCase):
             fetch("https://assets.test/example", destination, hashlib.sha256(payload).hexdigest())
         self.assertEqual(destination.read_bytes(), payload)
         self.assertEqual(destination.stat().st_mode & 0o777, 0o644)
+
+    def test_supervisor_disables_unneeded_gunicorn_control_socket(self):
+        with patch("monitor.supervisor.signal.signal"), patch("monitor.supervisor.subprocess.Popen") as popen:
+            popen.return_value.poll.return_value = 0
+            with self.assertRaises(SystemExit) as stopped:
+                supervisor.main()
+        self.assertEqual(stopped.exception.code, 0)
+        self.assertIn("--no-control-socket", popen.call_args_list[1].args[0])
 
     def test_collector_counts_only_success_and_redirect(self):
         collector = LogCollector(self.settings, Store(self.settings.db_path), FakeResolver())
