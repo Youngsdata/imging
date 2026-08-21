@@ -33,7 +33,7 @@ function applyRetention(retention){
 function renderAll(days){
   const data=state.stats.data||[],today=data[data.length-1]||{},total=data.reduce((sum,item)=>sum+item.pv,0);
   byId("today-pv").textContent=number(today.pv);byId("today-uv").textContent=number(today.uv);byId("range-pv").textContent=number(total);
-  byId("range-caption").textContent=`最近 ${days} 天`;byId("caller-note").textContent=state.stats.caller_ip?`已排除当前访问 IP ${state.stats.caller_ip}`:"";
+  byId("range-caption").textContent=`最近 ${days} 天`;byId("caller-note").textContent=state.stats.caller_ip?(state.stats.exclude_current_ip?`已排除当前访问 IP ${state.stats.caller_ip}`:`当前访问 IP ${state.stats.caller_ip} 已计入统计`):"";
   const ingest=state.stats.ingest||{},stamp=ingest.updated_at?new Date(ingest.updated_at*1000).toLocaleTimeString("zh-CN",{hour12:false}):"尚未同步";
   const status=byId("ingest-status");status.textContent=ingest.error?`日志状态：${ingest.error}`:`日志已同步 · ${stamp}`;status.className=`ingest-status ${ingest.error?"error":"live"}`;
   drawChart(data);renderRanking(state.stats.top_ip||[]);renderMap();
@@ -126,19 +126,20 @@ function moveTooltip(event,box,tooltip){const bounds=box.getBoundingClientRect()
 
 const settingsDialog=byId("settings-dialog"),settingsStatus=byId("settings-status"),csrfToken=document.querySelector('meta[name="csrf-token"]').content;
 const settingFields={session_duration_days:byId("setting-session-duration-days"),default_view_days:byId("setting-default-view-days"),retention_days:byId("setting-retention-days"),collector_interval_seconds:byId("setting-interval-seconds"),collector_batch_lines:byId("setting-batch-lines")};
+const excludeCurrentIp=byId("setting-exclude-current-ip");
 function selectDays(value){const select=byId("days"),days=String(value);let option=Array.from(select.options).find(item=>item.value===days);select.querySelectorAll("[data-custom-days]").forEach(item=>{if(item!==option)item.remove()});if(!option){option=document.createElement("option");option.value=days;option.textContent=`最近 ${days} 天`;option.dataset.customDays="";select.prepend(option)}select.value=days;}
 function showSettingsStatus(message,error=false){settingsStatus.textContent=message;settingsStatus.classList.toggle("error",error)}
 async function openSettings(){
   settingsDialog.showModal();showSettingsStatus("正在读取当前参数…");byId("settings-save").disabled=true;
   try{const response=await fetch("/api/settings",{credentials:"same-origin",headers:{Accept:"application/json"}});if(response.status===401){location.assign("/login");return}const payload=await response.json();if(!response.ok)throw new Error(payload.error||`HTTP ${response.status}`);
-    Object.entries(settingFields).forEach(([key,input])=>{const setting=payload.settings[key];input.value=setting.value;input.min=setting.min;input.max=setting.max;input.title=`环境默认值 ${setting.default}`});showSettingsStatus("");
+    Object.entries(settingFields).forEach(([key,input])=>{const setting=payload.settings[key];input.value=setting.value;input.min=setting.min;input.max=setting.max;input.title=`环境默认值 ${setting.default}`});excludeCurrentIp.checked=Boolean(payload.settings.exclude_current_ip.value);showSettingsStatus("");
   }catch(error){showSettingsStatus(`参数读取失败：${error.message}`,true)}finally{byId("settings-save").disabled=false}
 }
 async function saveSettings(event){
   event.preventDefault();if(!event.currentTarget.reportValidity())return;const button=byId("settings-save");button.disabled=true;showSettingsStatus("正在保存…");
-  const body=Object.fromEntries(Object.entries(settingFields).map(([key,input])=>[key,Number(input.value)]));
+  const body=Object.fromEntries(Object.entries(settingFields).map(([key,input])=>[key,Number(input.value)]));body.exclude_current_ip=excludeCurrentIp.checked?1:0;
   try{const response=await fetch("/api/settings",{method:"POST",credentials:"same-origin",headers:{Accept:"application/json","Content-Type":"application/json","X-CSRF-Token":csrfToken},body:JSON.stringify(body)});const payload=await response.json();if(!response.ok)throw new Error(payload.error||`HTTP ${response.status}`);
-    const retention=payload.settings.retention_days.value,defaultDays=payload.settings.default_view_days.value;selectDays(defaultDays);applyRetention(retention);showSettingsStatus("已保存；登录态和默认查看范围已立即生效，采集参数将在下一轮读取时生效。");loadStats();
+    const retention=payload.settings.retention_days.value,defaultDays=payload.settings.default_view_days.value;selectDays(defaultDays);applyRetention(retention);showSettingsStatus("已保存；登录态、默认查看范围和当前 IP 过滤已立即生效，采集参数将在下一轮读取时生效。");loadStats();
   }catch(error){showSettingsStatus(`保存失败：${error.message}`,true)}finally{button.disabled=false}
 }
 

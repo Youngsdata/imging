@@ -8,6 +8,7 @@ from urllib.parse import urlparse
 RUNTIME_SETTING_LIMITS = {
     "session_duration_days": (1, 90),
     "auto_refresh_seconds": (0, 3600),
+    "exclude_current_ip": (0, 1),
     "default_view_days": (1, 366),
     "retention_days": (7, 366),
     "collector_interval_seconds": (1, 60),
@@ -54,6 +55,7 @@ class Settings:
     allow_password_only: bool
     session_duration_days: int
     auto_refresh_seconds: int
+    exclude_current_ip: bool
     default_view_days: int
     retention_days: int
     collector_interval_seconds: int
@@ -86,6 +88,7 @@ class Settings:
             allow_password_only=_boolean("IMGING_MONITOR_ALLOW_PASSWORD_ONLY", True),
             session_duration_days=_integer("IMGING_MONITOR_SESSION_DURATION_DAYS", 30, 1, 90),
             auto_refresh_seconds=_integer("IMGING_MONITOR_AUTO_REFRESH_SECONDS", 60, 0, 3600),
+            exclude_current_ip=_boolean("IMGING_MONITOR_EXCLUDE_CURRENT_IP", True),
             default_view_days=_integer("IMGING_MONITOR_DEFAULT_VIEW_DAYS", 7, 1, 366),
             retention_days=_integer("IMGING_MONITOR_RETENTION_DAYS", 90, 7, 366),
             collector_interval_seconds=_integer("IMGING_MONITOR_COLLECTOR_INTERVAL_SECONDS", 1, 1, 60),

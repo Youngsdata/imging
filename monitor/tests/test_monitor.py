@@ -55,7 +55,8 @@ class MonitorTestCase(unittest.TestCase):
             recovery_codes_path=self.recovery_file, username="admin", public_origin="https://status.test",
             trusted_proxies=(ipaddress.ip_network("127.0.0.1/32"),), secure_cookies=True,
             allow_password_only=True, session_duration_days=30, auto_refresh_seconds=60,
-            default_view_days=7, retention_days=90, collector_interval_seconds=1, collector_batch_lines=2000,
+            exclude_current_ip=True, default_view_days=7, retention_days=90,
+            collector_interval_seconds=1, collector_batch_lines=2000,
         )
         self.app = create_app(self.settings, start_collector=False)
         self.app.testing = True
@@ -177,6 +178,7 @@ class MonitorTestCase(unittest.TestCase):
         self.assertTrue(settings.allow_password_only)
         self.assertEqual(settings.session_duration_days, 30)
         self.assertEqual(settings.auto_refresh_seconds, 60)
+        self.assertTrue(settings.exclude_current_ip)
         self.assertEqual(settings.default_view_days, 7)
         self.assertEqual(settings.trusted_proxies, (
             ipaddress.ip_network("127.0.0.1/32"), ipaddress.ip_network("::1/128"),
@@ -200,6 +202,8 @@ class MonitorTestCase(unittest.TestCase):
         self.assertIn("筛选访问 IP", dashboard.get_data(as_text=True))
         self.assertIn("imging-monitor-brand", dashboard.get_data(as_text=True))
         self.assertIn('id="auto-refresh"', dashboard.get_data(as_text=True))
+        self.assertIn('id="setting-exclude-current-ip"', dashboard.get_data(as_text=True))
+        self.assertIn('<option value="10">10 秒</option>', dashboard.get_data(as_text=True))
         self.assertIn('<option value="60" selected>1 分钟</option>', dashboard.get_data(as_text=True))
 
     def test_dashboard_uses_persisted_default_view_days(self):
@@ -221,6 +225,20 @@ class MonitorTestCase(unittest.TestCase):
         self.assertIn('item.full_date||item.date', script)
         self.assertIn('addEventListener("keydown",chartKeydown)', script)
         self.assertIn('event.key==="ArrowLeft"', script)
+
+    def test_refresh_controls_stay_stable_while_loading(self):
+        stylesheet = (Path(__file__).parent.parent / "static" / "dashboard-v2.css").read_text(encoding="utf-8")
+        template = (Path(__file__).parent.parent / "templates" / "dashboard.html").read_text(encoding="utf-8")
+        self.assertIn(".refresh-control .primary-button{flex:0 0 106px;width:106px", stylesheet)
+        self.assertIn("dashboard-v2.css?v=3", template)
+
+    def test_current_ip_filter_switch_is_wired_to_runtime_settings(self):
+        script = (Path(__file__).parent.parent / "static" / "dashboard.js").read_text(encoding="utf-8")
+        template = (Path(__file__).parent.parent / "templates" / "dashboard.html").read_text(encoding="utf-8")
+        self.assertIn('role="switch"', template)
+        self.assertIn("body.exclude_current_ip=excludeCurrentIp.checked?1:0", script)
+        self.assertIn("state.stats.exclude_current_ip", script)
+        self.assertIn("dashboard.js?v=3", template)
 
     def test_wrong_user_and_wrong_password_have_same_public_error(self):
         wrong_user = self.login(username="someone")
@@ -495,6 +513,26 @@ class MonitorTestCase(unittest.TestCase):
         self.assertEqual(result["top_ip"][0]["ip"], "5.6.7.8")
         self.assertEqual(result["regions"], [{"country_code": "CN", "province": "广东省", "count": 2}])
 
+    def test_current_ip_filter_can_be_disabled_immediately(self):
+        self.assertEqual(self.login().status_code, 303)
+        store = self.app.extensions["imging_store"]
+        today = date.today().isoformat()
+        store.ingest(self.settings.log_path, 1, 100, {(today, "127.0.0.1"): 3, (today, "5.6.7.8"): 2}, {}, FakeResolver())
+        filtered = self.client.get("/api/stats?days=1", base_url="https://status.test", headers={"User-Agent": "test-agent"})
+        self.assertTrue(filtered.get_json()["exclude_current_ip"])
+        self.assertEqual(filtered.get_json()["data"][0]["pv"], 2)
+        csrf = self.session_csrf()
+        saved = self.client.post(
+            "/api/settings", base_url="https://status.test",
+            headers={"Origin": "https://status.test", "User-Agent": "test-agent", "X-CSRF-Token": csrf},
+            json={"exclude_current_ip": 0},
+        )
+        self.assertEqual(saved.status_code, 200)
+        unfiltered = self.client.get("/api/stats?days=1", base_url="https://status.test", headers={"User-Agent": "test-agent"})
+        self.assertFalse(unfiltered.get_json()["exclude_current_ip"])
+        self.assertEqual(unfiltered.get_json()["data"][0]["pv"], 5)
+        self.assertEqual([item["ip"] for item in unfiltered.get_json()["top_ip"]], ["127.0.0.1", "5.6.7.8"])
+
     def test_stats_subtracts_automated_hits_from_pv_uv_and_ranking(self):
         store = Store(self.settings.db_path)
         today = date.today().isoformat()
@@ -543,6 +581,7 @@ class MonitorTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.get_json()["settings"]["session_duration_days"]["value"], 30)
         self.assertEqual(response.get_json()["settings"]["auto_refresh_seconds"]["value"], 60)
+        self.assertEqual(response.get_json()["settings"]["exclude_current_ip"]["value"], 1)
         self.assertEqual(response.get_json()["settings"]["default_view_days"]["value"], 7)
         self.assertEqual(response.get_json()["settings"]["retention_days"]["value"], 90)
         without_csrf = self.client.post(
@@ -560,20 +599,21 @@ class MonitorTestCase(unittest.TestCase):
         saved = self.client.post(
             "/api/settings", base_url="https://status.test",
             headers={"Origin": "https://status.test", "User-Agent": "test-agent", "X-CSRF-Token": csrf},
-            json={"session_duration_days": 45, "auto_refresh_seconds": 300, "default_view_days": 14,
+            json={"session_duration_days": 45, "auto_refresh_seconds": 10, "exclude_current_ip": 0, "default_view_days": 14,
                   "retention_days": 30, "collector_interval_seconds": 2, "collector_batch_lines": 5000},
         )
         self.assertEqual(saved.status_code, 200)
         self.assertEqual(saved.get_json()["settings"]["session_duration_days"]["value"], 45)
-        self.assertEqual(saved.get_json()["settings"]["auto_refresh_seconds"]["value"], 300)
+        self.assertEqual(saved.get_json()["settings"]["auto_refresh_seconds"]["value"], 10)
+        self.assertEqual(saved.get_json()["settings"]["exclude_current_ip"]["value"], 0)
         self.assertEqual(saved.get_json()["settings"]["default_view_days"]["value"], 14)
         self.assertEqual(saved.get_json()["settings"]["collector_batch_lines"]["value"], 5000)
         values = Store(self.settings.db_path).runtime_settings({
-            "session_duration_days": 30, "auto_refresh_seconds": 60, "default_view_days": 7,
+            "session_duration_days": 30, "auto_refresh_seconds": 60, "exclude_current_ip": 1, "default_view_days": 7,
             "retention_days": 90, "collector_interval_seconds": 1, "collector_batch_lines": 2000,
         })
         self.assertEqual(values, {
-            "session_duration_days": 45, "auto_refresh_seconds": 300,
+            "session_duration_days": 45, "auto_refresh_seconds": 10, "exclude_current_ip": 0,
             "default_view_days": 14, "retention_days": 30,
             "collector_interval_seconds": 2, "collector_batch_lines": 5000,
         })

@@ -59,6 +59,7 @@ def create_app(settings=None, start_collector=True, validate_secrets=True):
     runtime_defaults = {
         "session_duration_days": settings.session_duration_days,
         "auto_refresh_seconds": settings.auto_refresh_seconds,
+        "exclude_current_ip": int(settings.exclude_current_ip),
         "default_view_days": settings.default_view_days,
         "retention_days": settings.retention_days,
         "collector_interval_seconds": settings.collector_interval_seconds,
@@ -234,7 +235,8 @@ def create_app(settings=None, start_collector=True, validate_secrets=True):
             days = int(request.args.get("days", "7"))
         except ValueError:
             days = 7
-        retention_days = runtime_values()["retention_days"]
+        values = runtime_values()
+        retention_days = values["retention_days"]
         days = max(1, min(days, retention_days))
         excludes = []
         for item in request.args.get("excludes", "").split(",")[:32]:
@@ -243,10 +245,11 @@ def create_app(settings=None, start_collector=True, validate_secrets=True):
             except ValueError:
                 continue
         caller = client_ip(settings)
-        if caller and caller not in excludes:
+        if values["exclude_current_ip"] and caller and caller not in excludes:
             excludes.append(caller)
         result = store.stats(days, excludes)
         result["caller_ip"] = caller
+        result["exclude_current_ip"] = bool(values["exclude_current_ip"])
         result["retention_days"] = retention_days
         return jsonify(result)
 

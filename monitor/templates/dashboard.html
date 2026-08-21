@@ -6,9 +6,9 @@
   <meta name="robots" content="noindex,nofollow,noarchive">
   <meta name="csrf-token" content="{{ csrf }}">
   <title>imging.cn · 访问监控</title>
-  <link rel="stylesheet" href="/static/app.css">
-  <link rel="stylesheet" href="/static/dashboard-v2.css?v=2">
-  <script src="/static/dashboard.js?v=2" defer></script>
+  <link rel="stylesheet" href="/static/app.css?v=3">
+  <link rel="stylesheet" href="/static/dashboard-v2.css?v=3">
+  <script src="/static/dashboard.js?v=3" defer></script>
 </head>
 <body class="dashboard-page">
   <header class="topbar">
@@ -18,7 +18,7 @@
   <main class="dashboard-shell" aria-busy="true">
     <section class="control-strip" aria-label="统计范围">
       <div class="range-control"><label for="days">统计范围</label><select id="days">{% if default_view_days not in (7, 14, 30, 90) %}<option value="{{ default_view_days }}" data-custom-days selected>最近 {{ default_view_days }} 天</option>{% endif %}<option value="7"{% if default_view_days == 7 %} selected{% endif %}>最近 7 天</option><option value="14"{% if default_view_days == 14 %} selected{% endif %}>最近 14 天</option><option value="30"{% if default_view_days == 30 %} selected{% endif %}>最近 30 天</option><option value="90"{% if default_view_days == 90 %} selected{% endif %}>最近 90 天</option></select></div>
-      <div class="refresh-control"><button id="refresh" class="primary-button" type="button"><span class="refresh-icon" aria-hidden="true">↻</span><span>更新统计</span></button><label for="auto-refresh">自动</label><select id="auto-refresh" aria-label="自动更新间隔">{% if auto_refresh_seconds not in (0, 30, 60, 300, 900) %}<option value="{{ auto_refresh_seconds }}" selected>{{ auto_refresh_seconds }} 秒</option>{% endif %}<option value="0"{% if auto_refresh_seconds == 0 %} selected{% endif %}>关闭</option><option value="30"{% if auto_refresh_seconds == 30 %} selected{% endif %}>30 秒</option><option value="60"{% if auto_refresh_seconds == 60 %} selected{% endif %}>1 分钟</option><option value="300"{% if auto_refresh_seconds == 300 %} selected{% endif %}>5 分钟</option><option value="900"{% if auto_refresh_seconds == 900 %} selected{% endif %}>15 分钟</option></select></div>
+      <div class="refresh-control"><button id="refresh" class="primary-button" type="button"><span class="refresh-icon" aria-hidden="true">↻</span><span>更新统计</span></button><label for="auto-refresh">自动</label><select id="auto-refresh" aria-label="自动更新间隔">{% if auto_refresh_seconds not in (0, 10, 30, 60, 300, 900) %}<option value="{{ auto_refresh_seconds }}" selected>{{ auto_refresh_seconds }} 秒</option>{% endif %}<option value="0"{% if auto_refresh_seconds == 0 %} selected{% endif %}>关闭</option><option value="10"{% if auto_refresh_seconds == 10 %} selected{% endif %}>10 秒</option><option value="30"{% if auto_refresh_seconds == 30 %} selected{% endif %}>30 秒</option><option value="60"{% if auto_refresh_seconds == 60 %} selected{% endif %}>1 分钟</option><option value="300"{% if auto_refresh_seconds == 300 %} selected{% endif %}>5 分钟</option><option value="900"{% if auto_refresh_seconds == 900 %} selected{% endif %}>15 分钟</option></select></div>
       <p id="ingest-status" class="ingest-status" role="status" aria-live="polite">正在读取日志…</p>
     </section>
     <section class="kpi-grid" aria-label="核心指标">
@@ -36,9 +36,10 @@
   <dialog id="settings-dialog" class="settings-dialog" aria-labelledby="settings-title">
     <form id="settings-form" class="settings-form">
       <header><div><p>RUNTIME CONTROL</p><h2 id="settings-title">统计运行参数</h2></div><button id="settings-close" class="dialog-close" type="button" aria-label="关闭设置">×</button></header>
-      <p class="settings-intro">参数保存在 SQLite；登录态和默认查看范围保存后立即生效，采集参数由采集器下一轮读取，无需重启容器。</p>
+      <p class="settings-intro">参数保存在 SQLite；登录态、默认查看范围和当前 IP 过滤保存后立即生效，采集参数由采集器下一轮读取，无需重启容器。</p>
       <label><span>登录态保持天数</span><div class="number-field"><input id="setting-session-duration-days" type="number" inputmode="numeric" required><em>天</em></div><small>默认 30 天，保存后立即调整当前及后续登录的到期时间；修改密码会撤销已有会话。</small></label>
       <label><span>默认查看天数</span><div class="number-field"><input id="setting-default-view-days" type="number" inputmode="numeric" required><em>天</em></div><small>每次打开统计页默认展示的范围，不能超过统计数据保留天数。</small></label>
+      <label class="toggle-setting"><span><b>排除当前访问 IP</b><small>默认开启；关闭后，当前访问 Monitor 的客户端 IP 会重新计入 PV、UV、地域和 IP 排名。</small></span><input id="setting-exclude-current-ip" type="checkbox" role="switch"></label>
       <label><span>统计数据保留天数</span><div class="number-field"><input id="setting-retention-days" type="number" inputmode="numeric" required><em>天</em></div><small>缩短后将在下一轮采集时清理过期聚合数据，已清理数据无法从 SQLite 恢复。</small></label>
       <label><span>空闲扫描间隔</span><div class="number-field"><input id="setting-interval-seconds" type="number" inputmode="numeric" required><em>秒</em></div><small>有日志积压时会连续处理，不受此间隔限制。</small></label>
       <label><span>单批读取行数</span><div class="number-field"><input id="setting-batch-lines" type="number" inputmode="numeric" required><em>行</em></div><small>批次越大，追赶积压越快，但单次事务占用内存更多。</small></label>
