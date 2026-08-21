@@ -6,6 +6,8 @@ from urllib.parse import urlparse
 
 
 RUNTIME_SETTING_LIMITS = {
+    "session_duration_days": (1, 90),
+    "auto_refresh_seconds": (0, 3600),
     "default_view_days": (1, 366),
     "retention_days": (7, 366),
     "collector_interval_seconds": (1, 60),
@@ -50,8 +52,8 @@ class Settings:
     trusted_proxies: tuple
     secure_cookies: bool
     allow_password_only: bool
-    session_idle_seconds: int
-    session_absolute_seconds: int
+    session_duration_days: int
+    auto_refresh_seconds: int
     default_view_days: int
     retention_days: int
     collector_interval_seconds: int
@@ -81,9 +83,9 @@ class Settings:
                 "IMGING_MONITOR_TRUSTED_PROXIES", "127.0.0.1/32,::1/128"
             )),
             secure_cookies=not allow_insecure if parsed is None else parsed.scheme == "https",
-            allow_password_only=_boolean("IMGING_MONITOR_ALLOW_PASSWORD_ONLY", False),
-            session_idle_seconds=_integer("IMGING_MONITOR_SESSION_IDLE_SECONDS", 1800, 300, 86400),
-            session_absolute_seconds=_integer("IMGING_MONITOR_SESSION_ABSOLUTE_SECONDS", 43200, 900, 604800),
+            allow_password_only=_boolean("IMGING_MONITOR_ALLOW_PASSWORD_ONLY", True),
+            session_duration_days=_integer("IMGING_MONITOR_SESSION_DURATION_DAYS", 30, 1, 90),
+            auto_refresh_seconds=_integer("IMGING_MONITOR_AUTO_REFRESH_SECONDS", 60, 0, 3600),
             default_view_days=_integer("IMGING_MONITOR_DEFAULT_VIEW_DAYS", 7, 1, 366),
             retention_days=_integer("IMGING_MONITOR_RETENTION_DAYS", 90, 7, 366),
             collector_interval_seconds=_integer("IMGING_MONITOR_COLLECTOR_INTERVAL_SECONDS", 1, 1, 60),

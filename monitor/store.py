@@ -39,6 +39,18 @@ CREATE TABLE IF NOT EXISTS daily_ip (
     FOREIGN KEY (ip) REFERENCES ip_geo(ip)
 );
 CREATE INDEX IF NOT EXISTS idx_daily_ip_ip ON daily_ip(ip);
+CREATE TABLE IF NOT EXISTS daily_automated_ip (
+    day TEXT NOT NULL,
+    ip TEXT NOT NULL,
+    hits INTEGER NOT NULL,
+    PRIMARY KEY (day, ip),
+    FOREIGN KEY (ip) REFERENCES ip_geo(ip)
+);
+CREATE TABLE IF NOT EXISTS automation_scan_state (
+    path TEXT PRIMARY KEY,
+    inode INTEGER NOT NULL DEFAULT 0,
+    offset INTEGER NOT NULL DEFAULT 0
+);
 CREATE TABLE IF NOT EXISTS legacy_imports (
     source_id TEXT PRIMARY KEY,
     source_path TEXT NOT NULL,
@@ -47,6 +59,10 @@ CREATE TABLE IF NOT EXISTS legacy_imports (
     imported_at INTEGER NOT NULL,
     lines INTEGER NOT NULL,
     hits INTEGER NOT NULL
+);
+CREATE TABLE IF NOT EXISTS legacy_automation_imports (
+    source_id TEXT PRIMARY KEY,
+    FOREIGN KEY (source_id) REFERENCES legacy_imports(source_id)
 );
 CREATE TABLE IF NOT EXISTS sessions (
     token_hash TEXT PRIMARY KEY,
@@ -58,6 +74,10 @@ CREATE TABLE IF NOT EXISTS sessions (
     expires_at INTEGER NOT NULL
 );
 CREATE INDEX IF NOT EXISTS idx_sessions_expires ON sessions(expires_at);
+CREATE TABLE IF NOT EXISTS auth_state (
+    key TEXT PRIMARY KEY,
+    value TEXT NOT NULL
+);
 CREATE TABLE IF NOT EXISTS login_buckets (
     scope TEXT NOT NULL,
     bucket_key TEXT NOT NULL,
@@ -115,7 +135,31 @@ class Store:
             (str(path), int(inode), int(offset), int(time.time()), error[:500]),
         )
 
-    def ingest(self, path, inode, offset, counts, resolver):
+    def get_automation_scan_state(self, path):
+        with self.connection() as connection:
+            row = connection.execute(
+                "SELECT inode,offset FROM automation_scan_state WHERE path=?", (str(path),)
+            ).fetchone()
+            return (int(row["inode"]), int(row["offset"])) if row else (0, 0)
+
+    @staticmethod
+    def _set_automation_scan_state(connection, path, inode, offset):
+        connection.execute(
+            "INSERT INTO automation_scan_state(path,inode,offset) VALUES(?,?,?) "
+            "ON CONFLICT(path) DO UPDATE SET inode=excluded.inode,offset=excluded.offset",
+            (str(path), int(inode), int(offset)),
+        )
+
+    def record_automated_hits(self, path, inode, offset, counts):
+        with self.connection() as connection:
+            connection.executemany(
+                "INSERT INTO daily_automated_ip(day,ip,hits) VALUES(?,?,?) "
+                "ON CONFLICT(day,ip) DO UPDATE SET hits=hits+excluded.hits",
+                ((day, ip, hits) for (day, ip), hits in counts.items()),
+            )
+            self._set_automation_scan_state(connection, path, inode, offset)
+
+    def ingest(self, path, inode, offset, counts, automated, resolver):
         ips = sorted({ip for _, ip in counts})
         with self.connection() as connection:
             self._ensure_geos(connection, ips, resolver)
@@ -124,25 +168,42 @@ class Store:
                 "ON CONFLICT(day,ip) DO UPDATE SET hits=hits+excluded.hits",
                 ((day, ip, hits) for (day, ip), hits in counts.items()),
             )
+            connection.executemany(
+                "INSERT INTO daily_automated_ip(day,ip,hits) VALUES(?,?,?) "
+                "ON CONFLICT(day,ip) DO UPDATE SET hits=hits+excluded.hits",
+                ((day, ip, hits) for (day, ip), hits in automated.items()),
+            )
             self.set_ingest_state(connection, path, inode, offset)
+            self._set_automation_scan_state(connection, path, inode, offset)
 
-    def import_legacy(self, source_id, source_path, content_sha256, filters, lines, counts, resolver):
+    def import_legacy(self, source_id, source_path, content_sha256, filters, lines, counts, automated, resolver):
         with self.connection() as connection:
-            if connection.execute("SELECT 1 FROM legacy_imports WHERE source_id=?", (source_id,)).fetchone():
+            existing = connection.execute("SELECT 1 FROM legacy_imports WHERE source_id=?", (source_id,)).fetchone()
+            classified = connection.execute(
+                "SELECT 1 FROM legacy_automation_imports WHERE source_id=?", (source_id,)
+            ).fetchone()
+            if existing and classified:
                 return False
             self._ensure_geos(connection, sorted({ip for _, ip in counts}), resolver)
+            if not existing:
+                connection.executemany(
+                    "INSERT INTO daily_ip(day,ip,hits) VALUES(?,?,?) "
+                    "ON CONFLICT(day,ip) DO UPDATE SET hits=hits+excluded.hits",
+                    ((day, ip, hits) for (day, ip), hits in counts.items()),
+                )
+                connection.execute(
+                    "INSERT INTO legacy_imports(source_id,source_path,content_sha256,filters_json,imported_at,lines,hits) "
+                    "VALUES(?,?,?,?,?,?,?)",
+                    (source_id, str(source_path), content_sha256, json.dumps(filters, sort_keys=True, separators=(",", ":")),
+                     int(time.time()), int(lines), int(sum(counts.values()))),
+                )
             connection.executemany(
-                "INSERT INTO daily_ip(day,ip,hits) VALUES(?,?,?) "
+                "INSERT INTO daily_automated_ip(day,ip,hits) VALUES(?,?,?) "
                 "ON CONFLICT(day,ip) DO UPDATE SET hits=hits+excluded.hits",
-                ((day, ip, hits) for (day, ip), hits in counts.items()),
+                ((day, ip, hits) for (day, ip), hits in automated.items()),
             )
-            connection.execute(
-                "INSERT INTO legacy_imports(source_id,source_path,content_sha256,filters_json,imported_at,lines,hits) "
-                "VALUES(?,?,?,?,?,?,?)",
-                (source_id, str(source_path), content_sha256, json.dumps(filters, sort_keys=True, separators=(",", ":")),
-                 int(time.time()), int(lines), int(sum(counts.values()))),
-            )
-            return True
+            connection.execute("INSERT INTO legacy_automation_imports(source_id) VALUES(?)", (source_id,))
+            return not existing
 
     @staticmethod
     def _ensure_geos(connection, ips, resolver):
@@ -192,6 +253,7 @@ class Store:
         now = int(time.time())
         with self.connection() as connection:
             connection.execute("DELETE FROM daily_ip WHERE day < ?", (cutoff,))
+            connection.execute("DELETE FROM daily_automated_ip WHERE day < ?", (cutoff,))
             connection.execute("DELETE FROM ip_geo WHERE ip NOT IN (SELECT DISTINCT ip FROM daily_ip)")
             connection.execute("DELETE FROM sessions WHERE expires_at < ?", (now,))
             connection.execute("DELETE FROM login_buckets WHERE window_started < ?", (now - 86400,))
@@ -200,24 +262,32 @@ class Store:
     def stats(self, days, excluded):
         excluded = sorted(set(excluded))
         start = (date.today() - timedelta(days=days - 1)).isoformat()
-        where = "day >= ?"
+        where = "d.day >= ?"
         top_where = "d.day >= ?"
         parameters = [start]
         if excluded:
-            where += " AND ip NOT IN ({})".format(",".join("?" for _ in excluded))
+            where += " AND d.ip NOT IN ({})".format(",".join("?" for _ in excluded))
             top_where += " AND d.ip NOT IN ({})".format(",".join("?" for _ in excluded))
             parameters.extend(excluded)
         with self.connection() as connection:
             rows = connection.execute(
-                "SELECT day,SUM(hits) AS pv,COUNT(*) AS uv FROM daily_ip WHERE {} GROUP BY day ORDER BY day".format(where), parameters
+                "SELECT d.day,SUM(MAX(d.hits-COALESCE(a.hits,0),0)) AS pv,"
+                "SUM(CASE WHEN d.hits>COALESCE(a.hits,0) THEN 1 ELSE 0 END) AS uv "
+                "FROM daily_ip d LEFT JOIN daily_automated_ip a ON a.day=d.day AND a.ip=d.ip "
+                "WHERE {} GROUP BY d.day ORDER BY d.day".format(where), parameters
             ).fetchall()
             top = connection.execute(
-                "SELECT d.ip,SUM(d.hits) AS hits,g.country,g.province,g.city,g.isp,g.country_code,g.location "
-                "FROM daily_ip d JOIN ip_geo g ON g.ip=d.ip WHERE {} GROUP BY d.ip ORDER BY hits DESC LIMIT 100".format(top_where), parameters
+                "SELECT d.ip,SUM(MAX(d.hits-COALESCE(a.hits,0),0)) AS hits,g.country,g.province,g.city,g.isp,g.country_code,g.location "
+                "FROM daily_ip d LEFT JOIN daily_automated_ip a ON a.day=d.day AND a.ip=d.ip "
+                "JOIN ip_geo g ON g.ip=d.ip WHERE {} GROUP BY d.ip "
+                "HAVING SUM(MAX(d.hits-COALESCE(a.hits,0),0))>0 "
+                "ORDER BY SUM(MAX(d.hits-COALESCE(a.hits,0),0)) DESC LIMIT 100".format(top_where), parameters
             ).fetchall()
             regions = connection.execute(
-                "SELECT g.country_code,g.province,SUM(d.hits) AS hits FROM daily_ip d JOIN ip_geo g ON g.ip=d.ip "
-                "WHERE {} GROUP BY g.country_code,g.province".format(top_where), parameters
+                "SELECT g.country_code,g.province,SUM(MAX(d.hits-COALESCE(a.hits,0),0)) AS hits FROM daily_ip d "
+                "LEFT JOIN daily_automated_ip a ON a.day=d.day AND a.ip=d.ip JOIN ip_geo g ON g.ip=d.ip "
+                "WHERE {} GROUP BY g.country_code,g.province "
+                "HAVING SUM(MAX(d.hits-COALESCE(a.hits,0),0))>0".format(top_where), parameters
             ).fetchall()
             ingest = connection.execute("SELECT updated_at,error FROM ingest_state ORDER BY updated_at DESC LIMIT 1").fetchone()
         by_day = {row["day"]: row for row in rows}
@@ -247,23 +317,37 @@ class Store:
                 (token_hash, username, csrf_token, user_agent_hash, now, now, expires_at),
             )
 
-    def get_session(self, token_hash, user_agent_hash, now, idle_seconds):
+    def get_session(self, token_hash, user_agent_hash, now, duration_seconds):
         with self.connection() as connection:
             row = connection.execute("SELECT * FROM sessions WHERE token_hash=?", (token_hash,)).fetchone()
-            if not row or row["expires_at"] <= now or row["last_seen"] + idle_seconds <= now or row["user_agent_hash"] != user_agent_hash:
+            expires_at = int(row["created_at"]) + duration_seconds if row else 0
+            if not row or expires_at <= now or row["user_agent_hash"] != user_agent_hash:
                 connection.execute("DELETE FROM sessions WHERE token_hash=?", (token_hash,))
                 return None
-            if row["last_seen"] + 60 <= now:
-                connection.execute("UPDATE sessions SET last_seen=? WHERE token_hash=?", (now, token_hash))
-            return dict(row)
+            if row["last_seen"] + 60 <= now or row["expires_at"] != expires_at:
+                connection.execute("UPDATE sessions SET last_seen=?,expires_at=? WHERE token_hash=?", (now, expires_at, token_hash))
+            result = dict(row)
+            result["last_seen"] = now
+            result["expires_at"] = expires_at
+            return result
 
     def delete_session(self, token_hash):
         with self.connection() as connection:
             connection.execute("DELETE FROM sessions WHERE token_hash=?", (token_hash,))
 
-    def clear_sessions(self):
+    def sync_auth_generation(self, generation):
         with self.connection() as connection:
-            connection.execute("DELETE FROM sessions")
+            connection.execute("BEGIN IMMEDIATE")
+            row = connection.execute("SELECT value FROM auth_state WHERE key='generation'").fetchone()
+            changed = not row or row["value"] != generation
+            if changed:
+                connection.execute("DELETE FROM sessions")
+            connection.execute(
+                "INSERT INTO auth_state(key,value) VALUES('generation',?) "
+                "ON CONFLICT(key) DO UPDATE SET value=excluded.value",
+                (generation,),
+            )
+            return changed
 
     def allow_login_attempt(self, client_ip, now):
         with self.connection() as connection:

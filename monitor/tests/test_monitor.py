@@ -7,6 +7,7 @@ import re
 import tempfile
 import time
 import unittest
+from collections import Counter, defaultdict
 from dataclasses import replace
 from datetime import date, timedelta
 from pathlib import Path
@@ -52,7 +53,7 @@ class MonitorTestCase(unittest.TestCase):
             password_hash_path=self.password_file, totp_secret_path=self.totp_file,
             recovery_codes_path=self.recovery_file, username="admin", public_origin="https://status.test",
             trusted_proxies=(ipaddress.ip_network("127.0.0.1/32"),), secure_cookies=True,
-            allow_password_only=False, session_idle_seconds=1800, session_absolute_seconds=43200,
+            allow_password_only=True, session_duration_days=30, auto_refresh_seconds=60,
             default_view_days=7, retention_days=90, collector_interval_seconds=1, collector_batch_lines=2000,
         )
         self.app = create_app(self.settings, start_collector=False)
@@ -71,10 +72,12 @@ class MonitorTestCase(unittest.TestCase):
 
     def login(self, password=None, otp=None, username="admin", origin="https://status.test"):
         csrf = self.get_login_csrf()
+        data = {"csrf": csrf, "username": username, "password": password or self.password}
+        if otp is not None:
+            data["otp"] = otp
         return self.client.post(
             "/login", base_url="https://status.test", headers={"Origin": origin, "User-Agent": "test-agent"},
-            data={"csrf": csrf, "username": username, "password": password or self.password,
-                  "otp": otp or pyotp.TOTP(self.totp_secret).now()},
+            data=data,
         )
 
     def session_csrf(self):
@@ -100,6 +103,8 @@ class MonitorTestCase(unittest.TestCase):
         self.assertIn("default-src 'none'", response.headers["Content-Security-Policy"])
         self.assertEqual(response.headers["Cache-Control"], "no-store")
         self.assertEqual(response.headers["Referrer-Policy"], "same-origin")
+        self.assertNotIn('name="otp"', response.get_data(as_text=True))
+        self.assertIn("login-v2.css", response.get_data(as_text=True))
 
     def test_login_rejects_missing_origin_and_csrf(self):
         response = self.client.post(
@@ -168,6 +173,9 @@ class MonitorTestCase(unittest.TestCase):
             settings = Settings.from_env()
         self.assertEqual(settings.public_origin, "")
         self.assertTrue(settings.secure_cookies)
+        self.assertTrue(settings.allow_password_only)
+        self.assertEqual(settings.session_duration_days, 30)
+        self.assertEqual(settings.auto_refresh_seconds, 60)
         self.assertEqual(settings.default_view_days, 7)
         self.assertEqual(settings.trusted_proxies, (
             ipaddress.ip_network("127.0.0.1/32"), ipaddress.ip_network("::1/128"),
@@ -181,6 +189,7 @@ class MonitorTestCase(unittest.TestCase):
         self.assertIn("Secure", cookie)
         self.assertIn("HttpOnly", cookie)
         self.assertIn("SameSite=Strict", cookie)
+        self.assertIn("Max-Age=2592000", cookie)
         self.assertNotIn("Domain=", cookie)
         dashboard = self.client.get("/", base_url="https://status.test", headers={"User-Agent": "test-agent"})
         self.assertEqual(dashboard.status_code, 200)
@@ -189,6 +198,8 @@ class MonitorTestCase(unittest.TestCase):
         self.assertIn("dashboard-v2.css", dashboard.get_data(as_text=True))
         self.assertIn("筛选访问 IP", dashboard.get_data(as_text=True))
         self.assertIn("imging-monitor-brand", dashboard.get_data(as_text=True))
+        self.assertIn('id="auto-refresh"', dashboard.get_data(as_text=True))
+        self.assertIn('<option value="60" selected>1 分钟</option>', dashboard.get_data(as_text=True))
 
     def test_dashboard_uses_persisted_default_view_days(self):
         self.assertEqual(self.login().status_code, 303)
@@ -197,12 +208,17 @@ class MonitorTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn('<option value="12" data-custom-days selected>最近 12 天</option>', response.get_data(as_text=True))
 
+    def test_single_day_chart_draws_visible_pv_and_uv_markers(self):
+        script = (Path(__file__).parent.parent / "static" / "dashboard.js").read_text(encoding="utf-8")
+        self.assertIn("data.length===1", script)
+        self.assertIn("context.arc(p.x,p.y,5", script)
+
     def test_wrong_user_and_wrong_password_have_same_public_error(self):
         wrong_user = self.login(username="someone")
         wrong_password = self.login(password="this password is definitely wrong")
         self.assertEqual(wrong_user.status_code, 200)
         self.assertEqual(wrong_password.status_code, 200)
-        message = "账号、密码或验证码不正确。"
+        message = "账号或密码不正确。"
         self.assertIn(message, wrong_user.get_data(as_text=True))
         self.assertIn(message, wrong_password.get_data(as_text=True))
 
@@ -212,31 +228,65 @@ class MonitorTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 303)
         self.assertEqual(response.headers["Location"], "/login")
 
-    def test_restart_revokes_existing_sessions(self):
+    def test_logout_accepts_same_origin_referer_and_does_not_restore_cookie(self):
         self.assertEqual(self.login().status_code, 303)
+        csrf = self.session_csrf()
+        response = self.client.post(
+            "/logout", base_url="https://status.test",
+            headers={"Referer": "https://status.test/", "User-Agent": "test-agent"}, data={"csrf": csrf},
+        )
+        self.assertEqual(response.status_code, 303)
+        self.assertEqual(response.headers["Location"], "/login")
+        cookies = [value for value in response.headers.getlist("Set-Cookie") if "__Host-imging_session=" in value]
+        self.assertEqual(len(cookies), 1)
+        self.assertIn("Max-Age=0", cookies[0])
+
+    def test_restart_preserves_existing_sessions_when_password_is_unchanged(self):
+        self.assertEqual(self.login().status_code, 303)
+        create_app(self.settings, start_collector=False)
+        response = self.client.get("/", base_url="https://status.test", headers={"User-Agent": "test-agent"})
+        self.assertEqual(response.status_code, 200)
+
+    def test_password_change_revokes_existing_sessions(self):
+        self.assertEqual(self.login().status_code, 303)
+        self.password_file.write_text(PASSWORD_HASHER.hash("a newly rotated password"), encoding="utf-8")
         create_app(self.settings, start_collector=False)
         response = self.client.get("/", base_url="https://status.test", headers={"User-Agent": "test-agent"})
         self.assertEqual(response.status_code, 303)
         self.assertEqual(response.headers["Location"], "/login")
 
-    def test_password_without_totp_is_rejected(self):
-        response = self.login(otp="000000")
-        self.assertEqual(response.status_code, 200)
-        self.assertIn("账号、密码或验证码不正确。", response.get_data(as_text=True))
+    def test_password_only_login_is_the_default(self):
+        response = self.login()
+        self.assertEqual(response.status_code, 303)
+
+    def test_totp_can_be_explicitly_required(self):
+        settings = replace(self.settings, allow_password_only=False)
+        app = create_app(settings, start_collector=False)
+        app.testing = True
+        self.client = app.test_client()
+        missing = self.login(otp="")
+        self.assertEqual(missing.status_code, 200)
+        self.assertIn("验证码", missing.get_data(as_text=True))
+        verified = self.login(otp=pyotp.TOTP(self.totp_secret).now())
+        self.assertEqual(verified.status_code, 303)
 
     def test_invalid_totp_secret_fails_closed_at_startup(self):
         self.totp_file.write_text("invalid", encoding="utf-8")
         with self.assertRaisesRegex(RuntimeError, "TOTP"):
-            create_app(self.settings, start_collector=False)
+            create_app(replace(self.settings, allow_password_only=False), start_collector=False)
 
     def test_recovery_code_is_one_time(self):
         code = "ABCD1234EFGH5678"
-        store = self.app.extensions["imging_store"]
+        settings = replace(self.settings, allow_password_only=False)
+        app = create_app(settings, start_collector=False)
+        app.testing = True
+        self.client = app.test_client()
+        store = app.extensions["imging_store"]
         store.load_recovery_codes([hashlib.sha256(code.encode("ascii")).hexdigest()])
         first = self.login(otp=code)
         self.assertEqual(first.status_code, 303)
         # 新客户端确保第二次是一次全新的登录，而不是沿用已有会话。
-        self.client = self.app.test_client()
+        self.client = app.test_client()
         second = self.login(otp=code)
         self.assertEqual(second.status_code, 200)
 
@@ -303,10 +353,37 @@ class MonitorTestCase(unittest.TestCase):
         redirect = json.dumps({"@timestamp": today + "T10:00:01+08:00", "clientip": "1.2.3.4", "status": "302"}).encode()
         blocked = json.dumps({"@timestamp": today + "T10:00:02+08:00", "clientip": "5.6.7.8", "status": "493"}).encode()
         missing = json.dumps({"@timestamp": today + "T10:00:03+08:00", "clientip": "5.6.7.8", "status": "404"}).encode()
-        self.assertEqual(collector._parse(valid), (today, "1.2.3.4"))
-        self.assertEqual(collector._parse(redirect), (today, "1.2.3.4"))
+        self.assertEqual(collector._parse(valid), (today, "1.2.3.4", False, 36000, ""))
+        self.assertEqual(collector._parse(redirect), (today, "1.2.3.4", False, 36001, ""))
         self.assertIsNone(collector._parse(blocked))
         self.assertIsNone(collector._parse(missing))
+
+    def test_collector_classifies_declared_crawlers_without_blocking_them(self):
+        collector = LogCollector(self.settings, Store(self.settings.db_path), FakeResolver())
+        today = date.today().isoformat()
+        for agent in (
+            "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
+            "Mozilla/5.0 (compatible; GCombinator/1.0; +https://news.gcombinator.com)",
+            "Mozilla/5.0 (ThreatIntelAgent/1.0)",
+        ):
+            raw = json.dumps({
+                "@timestamp": today + "T10:00:00+08:00", "clientip": "1.2.3.4",
+                "status": "200", "user_agent": agent,
+            }).encode()
+            self.assertEqual(collector._parse(raw), (today, "1.2.3.4", True, 36000, ""))
+
+    def test_collector_classifies_repeated_same_path_burst_as_automated(self):
+        automated = Counter()
+        bursts = defaultdict(list)
+        for second in range(21):
+            parsed = (date.today().isoformat(), "1.2.3.4", False, 36000 + second, "/en/")
+            LogCollector._record_classification(parsed, None, automated, bursts)
+        for index in range(12):
+            parsed = (date.today().isoformat(), "5.6.7.8", False, index * 61, "/")
+            LogCollector._record_classification(parsed, None, automated, bursts)
+        LogCollector._apply_burst_classification(bursts, automated)
+        self.assertEqual(automated[(date.today().isoformat(), "1.2.3.4")], 21)
+        self.assertNotIn((date.today().isoformat(), "5.6.7.8"), automated)
 
     def test_legacy_import_filters_host_status_and_cutover_and_is_idempotent(self):
         today = date.today().isoformat()
@@ -316,6 +393,8 @@ class MonitorTestCase(unittest.TestCase):
             {"@timestamp": today + "T10:01:00+08:00", "http_host": "www.imging.cn:443", "clientip": "5.6.7.8", "status": "302"},
             {"@timestamp": today + "T10:02:00+08:00", "http_host": "status.imging.cn", "clientip": "9.9.9.9", "status": "200"},
             {"@timestamp": today + "T10:03:00+08:00", "http_host": "imging.cn", "clientip": "9.9.9.9", "status": "404"},
+            {"@timestamp": today + "T10:04:00+08:00", "http_host": "imging.cn", "clientip": "8.8.8.8", "status": "200",
+             "agent": "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)"},
             {"@timestamp": today + "T12:00:00+08:00", "http_host": "imging.cn", "clientip": "9.9.9.9", "status": "200"},
         ]
         source.write_text("\n".join(json.dumps(row) for row in rows) + "\nnot-json\n", encoding="utf-8")
@@ -323,12 +402,21 @@ class MonitorTestCase(unittest.TestCase):
         first = import_legacy_log(
             source, store, FakeResolver(), today + "T12:00:00+08:00", ["imging.cn", "www.imging.cn"], 90,
         )
+        # 模拟旧版已导入总量、但尚未记录自动化请求分类的数据库。
+        with store.connection() as connection:
+            connection.execute("DELETE FROM legacy_automation_imports")
+            connection.execute("DELETE FROM daily_automated_ip")
         second = import_legacy_log(
             source, store, FakeResolver(), today + "T12:00:00+08:00", ["www.imging.cn", "imging.cn"], 90,
         )
+        third = import_legacy_log(
+            source, store, FakeResolver(), today + "T12:00:00+08:00", ["imging.cn", "www.imging.cn"], 90,
+        )
         self.assertTrue(first["imported"])
         self.assertFalse(second["imported"])
-        self.assertEqual(first["accepted_hits"], 2)
+        self.assertFalse(third["imported"])
+        self.assertEqual(first["accepted_hits"], 3)
+        self.assertEqual(first["automated_hits"], 1)
         self.assertEqual(first["invalid_lines"], 1)
         result = store.stats(7, [])
         self.assertEqual(result["data"][-1]["pv"], 2)
@@ -348,17 +436,61 @@ class MonitorTestCase(unittest.TestCase):
     def test_store_batches_hits_and_excludes_caller(self):
         store = Store(self.settings.db_path)
         today = date.today().isoformat()
-        store.ingest(self.settings.log_path, 1, 100, {(today, "1.2.3.4"): 3, (today, "5.6.7.8"): 2}, FakeResolver())
+        store.ingest(self.settings.log_path, 1, 100, {(today, "1.2.3.4"): 3, (today, "5.6.7.8"): 2}, {}, FakeResolver())
         result = store.stats(7, ["1.2.3.4"])
         self.assertEqual(result["data"][-1]["pv"], 2)
         self.assertEqual(result["data"][-1]["uv"], 1)
         self.assertEqual(result["top_ip"][0]["ip"], "5.6.7.8")
         self.assertEqual(result["regions"], [{"country_code": "CN", "province": "广东省", "count": 2}])
 
+    def test_stats_subtracts_automated_hits_from_pv_uv_and_ranking(self):
+        store = Store(self.settings.db_path)
+        today = date.today().isoformat()
+        counts = {(today, "1.2.3.4"): 8, (today, "5.6.7.8"): 2}
+        automated = {(today, "1.2.3.4"): 8}
+        store.ingest(self.settings.log_path, 1, 100, counts, automated, FakeResolver())
+        result = store.stats(1, [])
+        self.assertEqual(result["data"][0]["pv"], 2)
+        self.assertEqual(result["data"][0]["uv"], 1)
+        self.assertEqual([item["ip"] for item in result["top_ip"]], ["5.6.7.8"])
+
+    def test_collector_reclassifies_already_read_active_log_prefix(self):
+        store = Store(self.settings.db_path)
+        today = date.today().isoformat()
+        rows = [
+            {"@timestamp": today + "T10:00:00+08:00", "clientip": "1.2.3.4", "status": "200",
+             "user_agent": "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)"},
+            {"@timestamp": today + "T10:00:01+08:00", "clientip": "5.6.7.8", "status": "200",
+             "user_agent": "Mozilla/5.0 Chrome/151.0"},
+        ]
+        rows.extend({
+            "@timestamp": today + "T10:01:{:02d}+08:00".format(second), "clientip": "9.9.9.9", "status": "301",
+            "request_uri": "/en/", "user_agent": "Mozilla/5.0 Chrome/151.0",
+        } for second in range(12))
+        content = "\n".join(json.dumps(row) for row in rows) + "\n"
+        self.settings.log_path.write_text(content, encoding="utf-8")
+        inode = self.settings.log_path.stat().st_ino
+        offset = self.settings.log_path.stat().st_size
+        store.ingest(
+            self.settings.log_path, inode, offset,
+            {(today, "1.2.3.4"): 1, (today, "5.6.7.8"): 1, (today, "9.9.9.9"): 12}, {}, FakeResolver(),
+        )
+        with store.connection() as connection:
+            connection.execute("DELETE FROM automation_scan_state")
+        collector = LogCollector(self.settings, store, FakeResolver())
+        collector._open()
+        collector._close()
+        result = store.stats(1, [])
+        self.assertEqual(result["data"][0]["pv"], 1)
+        self.assertEqual(result["data"][0]["uv"], 1)
+        self.assertEqual([item["ip"] for item in result["top_ip"]], ["5.6.7.8"])
+
     def test_runtime_settings_are_authenticated_validated_and_persisted(self):
         self.assertEqual(self.login().status_code, 303)
         response = self.client.get("/api/settings", base_url="https://status.test", headers={"User-Agent": "test-agent"})
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.get_json()["settings"]["session_duration_days"]["value"], 30)
+        self.assertEqual(response.get_json()["settings"]["auto_refresh_seconds"]["value"], 60)
         self.assertEqual(response.get_json()["settings"]["default_view_days"]["value"], 7)
         self.assertEqual(response.get_json()["settings"]["retention_days"]["value"], 90)
         without_csrf = self.client.post(
@@ -376,15 +508,20 @@ class MonitorTestCase(unittest.TestCase):
         saved = self.client.post(
             "/api/settings", base_url="https://status.test",
             headers={"Origin": "https://status.test", "User-Agent": "test-agent", "X-CSRF-Token": csrf},
-            json={"default_view_days": 14, "retention_days": 30, "collector_interval_seconds": 2, "collector_batch_lines": 5000},
+            json={"session_duration_days": 45, "auto_refresh_seconds": 300, "default_view_days": 14,
+                  "retention_days": 30, "collector_interval_seconds": 2, "collector_batch_lines": 5000},
         )
         self.assertEqual(saved.status_code, 200)
+        self.assertEqual(saved.get_json()["settings"]["session_duration_days"]["value"], 45)
+        self.assertEqual(saved.get_json()["settings"]["auto_refresh_seconds"]["value"], 300)
         self.assertEqual(saved.get_json()["settings"]["default_view_days"]["value"], 14)
         self.assertEqual(saved.get_json()["settings"]["collector_batch_lines"]["value"], 5000)
         values = Store(self.settings.db_path).runtime_settings({
-            "default_view_days": 7, "retention_days": 90, "collector_interval_seconds": 1, "collector_batch_lines": 2000,
+            "session_duration_days": 30, "auto_refresh_seconds": 60, "default_view_days": 7,
+            "retention_days": 90, "collector_interval_seconds": 1, "collector_batch_lines": 2000,
         })
         self.assertEqual(values, {
+            "session_duration_days": 45, "auto_refresh_seconds": 300,
             "default_view_days": 14, "retention_days": 30,
             "collector_interval_seconds": 2, "collector_batch_lines": 5000,
         })
@@ -395,6 +532,24 @@ class MonitorTestCase(unittest.TestCase):
         )
         self.assertEqual(inconsistent.status_code, 400)
         self.assertIn("不能超过", inconsistent.get_json()["error"])
+
+    def test_session_duration_change_updates_current_session_immediately(self):
+        self.assertEqual(self.login().status_code, 303)
+        csrf = self.session_csrf()
+        response = self.client.post(
+            "/api/settings", base_url="https://status.test",
+            headers={"Origin": "https://status.test", "User-Agent": "test-agent", "X-CSRF-Token": csrf},
+            json={"session_duration_days": 1},
+        )
+        self.assertEqual(response.status_code, 200)
+        session_cookie = next(value for value in response.headers.getlist("Set-Cookie") if "__Host-imging_session=" in value)
+        max_age = int(re.search(r"Max-Age=(\d+)", session_cookie).group(1))
+        self.assertGreater(max_age, 86390)
+        self.assertLessEqual(max_age, 86400)
+        self.assertEqual(self.client.get("/", base_url="https://status.test", headers={"User-Agent": "test-agent"}).status_code, 200)
+        with self.app.extensions["imging_store"].connection() as connection:
+            session = connection.execute("SELECT created_at,expires_at FROM sessions").fetchone()
+        self.assertEqual(session["expires_at"] - session["created_at"], 86400)
 
     def test_out_of_range_database_setting_falls_back_to_environment_default(self):
         store = Store(self.settings.db_path)
@@ -407,7 +562,7 @@ class MonitorTestCase(unittest.TestCase):
     def test_retention_change_triggers_prune_without_restart(self):
         store = Store(self.settings.db_path)
         old_day = (date.today() - timedelta(days=10)).isoformat()
-        store.ingest(self.settings.log_path, 1, 100, {(old_day, "1.2.3.4"): 3}, FakeResolver())
+        store.ingest(self.settings.log_path, 1, 100, {(old_day, "1.2.3.4"): 3}, {}, FakeResolver())
         store.update_runtime_settings({"retention_days": 7})
         collector = LogCollector(self.settings, store, FakeResolver())
         collector.runtime = store.runtime_settings(collector.runtime_defaults)
@@ -423,9 +578,9 @@ class MonitorTestCase(unittest.TestCase):
         first_removed = (date.today() - timedelta(days=7)).isoformat()
         kept = json.dumps({"@timestamp": oldest_kept + "T10:00:00+08:00", "clientip": "1.2.3.4", "status": "200"}).encode()
         removed = json.dumps({"@timestamp": first_removed + "T10:00:00+08:00", "clientip": "1.2.3.4", "status": "200"}).encode()
-        self.assertEqual(collector._parse(kept), (oldest_kept, "1.2.3.4"))
+        self.assertEqual(collector._parse(kept), (oldest_kept, "1.2.3.4", False, 36000, ""))
         self.assertIsNone(collector._parse(removed))
-        store.ingest(self.settings.log_path, 1, 100, {(oldest_kept, "1.2.3.4"): 2, (first_removed, "5.6.7.8"): 3}, FakeResolver())
+        store.ingest(self.settings.log_path, 1, 100, {(oldest_kept, "1.2.3.4"): 2, (first_removed, "5.6.7.8"): 3}, {}, FakeResolver())
         store.prune(7)
         result = store.stats(90, [])
         self.assertEqual(sum(item["pv"] for item in result["data"]), 2)

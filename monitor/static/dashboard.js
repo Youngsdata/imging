@@ -1,7 +1,8 @@
 "use strict";
-const state={stats:null,mapMode:"china",mapData:{},loading:false,pendingReload:false};
+const state={stats:null,mapMode:"china",mapData:{},loading:false,pendingReload:false,autoRefreshTimer:0};
 const number=value=>Number(value||0).toLocaleString("zh-CN");
 const byId=id=>document.getElementById(id);
+const regionNames=typeof Intl.DisplayNames==="function"?new Intl.DisplayNames(["zh-CN"],{type:"region"}):null;
 
 async function loadStats(){
   if(state.loading){state.pendingReload=true;return;}
@@ -45,7 +46,7 @@ function drawChart(data){
   context.font="11px ui-monospace, monospace";context.textBaseline="middle";context.strokeStyle="rgba(20,24,21,.09)";context.fillStyle="#7b847d";context.lineWidth=1;
   for(let index=0;index<=steps;index++){const y=padding.top+plotH*index/steps,value=Math.round(max*(steps-index)/steps);context.beginPath();context.moveTo(padding.left,y);context.lineTo(width-padding.right,y);context.stroke();context.fillText(number(value),4,y);}
   const point=(item,index,key)=>({x:padding.left+(data.length===1?plotW/2:plotW*index/(data.length-1)),y:padding.top+plotH*(1-item[key]/max)});
-  function line(key,color){if(!data.length)return;const gradient=context.createLinearGradient(0,padding.top,0,padding.top+plotH);gradient.addColorStop(0,color+"45");gradient.addColorStop(1,color+"00");context.beginPath();data.forEach((item,index)=>{const p=point(item,index,key);index?context.lineTo(p.x,p.y):context.moveTo(p.x,p.y)});context.lineTo(point(data[data.length-1],data.length-1,key).x,padding.top+plotH);context.lineTo(point(data[0],0,key).x,padding.top+plotH);context.closePath();context.fillStyle=gradient;context.fill();context.beginPath();data.forEach((item,index)=>{const p=point(item,index,key);index?context.lineTo(p.x,p.y):context.moveTo(p.x,p.y)});context.strokeStyle=color;context.lineWidth=2;context.stroke();}
+  function line(key,color){if(!data.length)return;if(data.length===1){const p=point(data[0],0,key);context.beginPath();context.moveTo(p.x-20,p.y);context.lineTo(p.x+20,p.y);context.strokeStyle=color;context.lineWidth=3;context.stroke();context.beginPath();context.arc(p.x,p.y,5,0,Math.PI*2);context.fillStyle=color;context.fill();context.strokeStyle="#fff";context.lineWidth=2;context.stroke();return}const gradient=context.createLinearGradient(0,padding.top,0,padding.top+plotH);gradient.addColorStop(0,color+"45");gradient.addColorStop(1,color+"00");context.beginPath();data.forEach((item,index)=>{const p=point(item,index,key);index?context.lineTo(p.x,p.y):context.moveTo(p.x,p.y)});context.lineTo(point(data[data.length-1],data.length-1,key).x,padding.top+plotH);context.lineTo(point(data[0],0,key).x,padding.top+plotH);context.closePath();context.fillStyle=gradient;context.fill();context.beginPath();data.forEach((item,index)=>{const p=point(item,index,key);index?context.lineTo(p.x,p.y):context.moveTo(p.x,p.y)});context.strokeStyle=color;context.lineWidth=2;context.stroke();}
   line("pv","#3f9f78");line("uv","#172019");context.fillStyle="#7b847d";context.textAlign="center";context.textBaseline="top";
   const stride=Math.max(1,Math.ceil(data.length/7));data.forEach((item,index)=>{if(index%stride===0||index===data.length-1)context.fillText(item.date,padding.left+(data.length===1?plotW/2:plotW*index/(data.length-1)),height-padding.bottom+9)});
 }
@@ -53,14 +54,20 @@ function drawChart(data){
 function renderRanking(items){
   const box=byId("ip-ranking");box.replaceChildren();const max=Math.max(1,...items.map(item=>item.count));
   items.forEach((item,index)=>{const row=document.createElement("div");row.className="ip-row";
-    row.dataset.search=`${item.ip} ${item.geo?.location||"未知"}`.toLocaleLowerCase();
+    const displayLocation=localizedLocation(item.geo);row.dataset.search=`${item.ip} ${displayLocation} ${item.geo?.location||""}`.toLocaleLowerCase();
     const rank=document.createElement("span");rank.className="ip-rank";rank.textContent=String(index+1);
     const ip=document.createElement("button");ip.className="ip-address";ip.type="button";ip.textContent=item.ip;ip.title=`复制 ${item.ip}`;ip.setAttribute("aria-label",`复制 IP ${item.ip}`);ip.addEventListener("click",()=>copyIp(item.ip,ip));
-    const location=document.createElement("span");location.className="ip-location";location.textContent=item.geo?.location||"未知";location.title=location.textContent;
+    const location=document.createElement("span");location.className="ip-location";location.textContent=displayLocation;location.title=location.textContent;
     const bar=document.createElement("span");bar.className="ip-bar";const fill=document.createElement("span");fill.style.width=`${Math.max(2,item.count/max*100)}%`;bar.append(fill);
     const count=document.createElement("span");count.className="ip-count";count.textContent=number(item.count);row.append(rank,ip,location,bar,count);box.append(row);
   });
   filterRanking();
+}
+function localizedLocation(geo){
+  if(!geo)return"未知";const code=String(geo.country_code||"").toUpperCase();
+  if(!code||code==="CN")return geo.location||"未知";
+  const country=regionNames?.of(code)||geo.country||"未知国家";
+  return geo.source?`${country} · ${geo.source}`:country;
 }
 function filterRanking(){
   const query=byId("ip-filter").value.trim().toLocaleLowerCase(),rows=Array.from(document.querySelectorAll("#ip-ranking .ip-row"));let visible=0;
@@ -83,7 +90,7 @@ function eachCoordinate(geometry,callback){if(!geometry)return;const walk=value=
 function projection(features,mode,width,height){let minX=Infinity,minY=Infinity,maxX=-Infinity,maxY=-Infinity;const raw=([lon,lat])=>mode==="china"?[lon,-Math.log(Math.tan(Math.PI/4+Math.max(-85,Math.min(85,lat))*Math.PI/360))*180/Math.PI]:[lon,-lat];features.forEach(feature=>eachCoordinate(feature.geometry,coordinate=>{const [x,y]=raw(coordinate);minX=Math.min(minX,x);maxX=Math.max(maxX,x);minY=Math.min(minY,y);maxY=Math.max(maxY,y)}));const pad=mode==="china"?24:14,scale=Math.min((width-pad*2)/(maxX-minX),(height-pad*2)/(maxY-minY)),usedW=(maxX-minX)*scale,usedH=(maxY-minY)*scale,offsetX=(width-usedW)/2,offsetY=(height-usedH)/2;return coordinate=>{const [x,y]=raw(coordinate);return[offsetX+(x-minX)*scale,offsetY+(y-minY)*scale]};}
 function geometryPath(geometry,project,mode){let output="";const polygon=rings=>rings.forEach(ring=>{let started=false,previous=null;ring.forEach(coordinate=>{if(mode==="world"&&previous&&Math.abs(coordinate[0]-previous[0])>180){if(started)output+="Z";started=false}const [x,y]=project(coordinate);output+=(started?"L":"M")+x.toFixed(2)+","+y.toFixed(2);started=true;previous=coordinate});if(started)output+="Z"});if(geometry.type==="Polygon")polygon(geometry.coordinates);else if(geometry.type==="MultiPolygon")geometry.coordinates.forEach(polygon);return output;}
 function featureKey(feature,mode){const properties=feature.properties||{};return mode==="china"?normalizeProvince(properties.name):(properties.ISO_A2_EH||properties.ISO_A2||properties.iso_a2||"").toUpperCase();}
-function featureLabel(feature){const p=feature.properties||{};return p.name||p.NAME_ZH||p.ADMIN||p.NAME||"未知地域";}
+function featureLabel(feature){const p=feature.properties||{};return p.NAME_ZH||p.name||p.ADMIN||p.NAME||"未知地域";}
 function heatColor(value,max){if(!value)return"#e8ede9";const ratio=Math.sqrt(value/Math.max(1,max)),start=[220,239,230],end=[33,122,89],mix=index=>Math.round(start[index]+(end[index]-start[index])*ratio);return`rgb(${mix(0)} ${mix(1)} ${mix(2)})`;}
 async function renderMap(){
   const box=byId("map"),tooltip=byId("map-tooltip");box.querySelectorAll("svg,.map-error").forEach(item=>item.remove());
@@ -95,7 +102,7 @@ async function renderMap(){
 function moveTooltip(event,box,tooltip){const bounds=box.getBoundingClientRect();tooltip.style.left=Math.min(bounds.width-230,Math.max(8,event.clientX-bounds.left+12))+"px";tooltip.style.top=Math.min(bounds.height-42,Math.max(8,event.clientY-bounds.top+12))+"px";}
 
 const settingsDialog=byId("settings-dialog"),settingsStatus=byId("settings-status"),csrfToken=document.querySelector('meta[name="csrf-token"]').content;
-const settingFields={default_view_days:byId("setting-default-view-days"),retention_days:byId("setting-retention-days"),collector_interval_seconds:byId("setting-interval-seconds"),collector_batch_lines:byId("setting-batch-lines")};
+const settingFields={session_duration_days:byId("setting-session-duration-days"),default_view_days:byId("setting-default-view-days"),retention_days:byId("setting-retention-days"),collector_interval_seconds:byId("setting-interval-seconds"),collector_batch_lines:byId("setting-batch-lines")};
 function selectDays(value){const select=byId("days"),days=String(value);let option=Array.from(select.options).find(item=>item.value===days);select.querySelectorAll("[data-custom-days]").forEach(item=>{if(item!==option)item.remove()});if(!option){option=document.createElement("option");option.value=days;option.textContent=`最近 ${days} 天`;option.dataset.customDays="";select.prepend(option)}select.value=days;}
 function showSettingsStatus(message,error=false){settingsStatus.textContent=message;settingsStatus.classList.toggle("error",error)}
 async function openSettings(){
@@ -108,10 +115,22 @@ async function saveSettings(event){
   event.preventDefault();if(!event.currentTarget.reportValidity())return;const button=byId("settings-save");button.disabled=true;showSettingsStatus("正在保存…");
   const body=Object.fromEntries(Object.entries(settingFields).map(([key,input])=>[key,Number(input.value)]));
   try{const response=await fetch("/api/settings",{method:"POST",credentials:"same-origin",headers:{Accept:"application/json","Content-Type":"application/json","X-CSRF-Token":csrfToken},body:JSON.stringify(body)});const payload=await response.json();if(!response.ok)throw new Error(payload.error||`HTTP ${response.status}`);
-    const retention=payload.settings.retention_days.value,defaultDays=payload.settings.default_view_days.value;selectDays(defaultDays);applyRetention(retention);showSettingsStatus("已保存；默认查看范围已立即切换，采集参数将在下一轮读取时生效。");loadStats();
+    const retention=payload.settings.retention_days.value,defaultDays=payload.settings.default_view_days.value;selectDays(defaultDays);applyRetention(retention);showSettingsStatus("已保存；登录态和默认查看范围已立即生效，采集参数将在下一轮读取时生效。");loadStats();
   }catch(error){showSettingsStatus(`保存失败：${error.message}`,true)}finally{button.disabled=false}
 }
 
-byId("refresh").addEventListener("click",loadStats);byId("days").addEventListener("change",loadStats);byId("ip-filter").addEventListener("input",filterRanking);document.querySelectorAll("[data-map]").forEach(button=>button.addEventListener("click",()=>{state.mapMode=button.dataset.map;document.querySelectorAll("[data-map]").forEach(item=>{const active=item===button;item.classList.toggle("active",active);item.setAttribute("aria-pressed",String(active))});renderMap()}));
+function scheduleAutoRefresh(){
+  clearTimeout(state.autoRefreshTimer);state.autoRefreshTimer=0;const seconds=Number(byId("auto-refresh").value);
+  if(seconds>0)state.autoRefreshTimer=window.setTimeout(async()=>{await loadStats();scheduleAutoRefresh()},seconds*1000);
+}
+async function refreshNow(){clearTimeout(state.autoRefreshTimer);await loadStats();scheduleAutoRefresh()}
+async function saveAutoRefresh(){
+  const select=byId("auto-refresh"),seconds=Number(select.value),previous=select.dataset.saved||"60";select.disabled=true;
+  try{const response=await fetch("/api/settings",{method:"POST",credentials:"same-origin",headers:{Accept:"application/json","Content-Type":"application/json","X-CSRF-Token":csrfToken},body:JSON.stringify({auto_refresh_seconds:seconds})});if(response.status===401){location.assign("/login");return}const payload=await response.json();if(!response.ok)throw new Error(payload.error||`HTTP ${response.status}`);
+    select.dataset.saved=String(payload.settings.auto_refresh_seconds.value);const status=byId("ingest-status");status.textContent=seconds?`已开启自动更新 · 每 ${select.selectedOptions[0].textContent}`:"已关闭自动更新";status.className="ingest-status live";scheduleAutoRefresh();
+  }catch(error){select.value=previous;const status=byId("ingest-status");status.textContent=`自动更新设置失败：${error.message}`;status.className="ingest-status error";scheduleAutoRefresh()}finally{select.disabled=false}
+}
+
+byId("auto-refresh").dataset.saved=byId("auto-refresh").value;byId("auto-refresh").addEventListener("change",saveAutoRefresh);byId("refresh").addEventListener("click",refreshNow);byId("days").addEventListener("change",refreshNow);byId("ip-filter").addEventListener("input",filterRanking);document.querySelectorAll("[data-map]").forEach(button=>button.addEventListener("click",()=>{state.mapMode=button.dataset.map;document.querySelectorAll("[data-map]").forEach(item=>{const active=item===button;item.classList.toggle("active",active);item.setAttribute("aria-pressed",String(active))});renderMap()}));
 byId("settings-open").addEventListener("click",openSettings);byId("settings-close").addEventListener("click",()=>settingsDialog.close());byId("settings-cancel").addEventListener("click",()=>settingsDialog.close());byId("settings-form").addEventListener("submit",saveSettings);settingsDialog.addEventListener("click",event=>{if(event.target===settingsDialog)settingsDialog.close()});
-new ResizeObserver(()=>{if(state.stats)drawChart(state.stats.data||[])}).observe(byId("trend-chart").parentElement);loadStats();
+new ResizeObserver(()=>{if(state.stats)drawChart(state.stats.data||[])}).observe(byId("trend-chart").parentElement);refreshNow();

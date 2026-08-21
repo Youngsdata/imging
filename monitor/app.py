@@ -1,4 +1,5 @@
 import atexit
+import hashlib
 import ipaddress
 import secrets
 import time
@@ -38,8 +39,10 @@ def create_app(settings=None, start_collector=True, validate_secrets=True):
     totp_secret = read_text_secret(settings.totp_secret_path, required=validate_secrets and not settings.allow_password_only)
     if validate_secrets:
         validate_auth_material(password_hash, totp_secret, require_totp=not settings.allow_password_only)
-    # 容器重启或认证材料轮换后撤销旧会话，避免密码/TOTP 已更换但会话继续有效。
-    store.clear_sessions()
+    # 仅在有效认证材料轮换时撤销会话；普通容器更新继续沿用 SQLite 中未过期的认证状态。
+    auth_material = password_hash + ("\0" + totp_secret if not settings.allow_password_only else "")
+    auth_generation = hashlib.sha256(auth_material.encode("utf-8")).hexdigest()
+    store.sync_auth_generation(auth_generation)
     if settings.recovery_codes_path.is_file():
         store.load_recovery_codes(load_recovery_hashes(settings.recovery_codes_path))
     collector = None
@@ -54,6 +57,8 @@ def create_app(settings=None, start_collector=True, validate_secrets=True):
     app.extensions["imging_collector"] = collector
 
     runtime_defaults = {
+        "session_duration_days": settings.session_duration_days,
+        "auto_refresh_seconds": settings.auto_refresh_seconds,
         "default_view_days": settings.default_view_days,
         "retention_days": settings.retention_days,
         "collector_interval_seconds": settings.collector_interval_seconds,
@@ -76,7 +81,10 @@ def create_app(settings=None, start_collector=True, validate_secrets=True):
 
     def login_response(error="", username="", status=200, csrf=None):
         csrf = csrf or secrets.token_urlsafe(32)
-        response = make_response(render_template("login.html", csrf=csrf, error=error, username=username), status)
+        response = make_response(render_template(
+            "login.html", csrf=csrf, error=error, username=username, require_totp=not settings.allow_password_only,
+            session_days=runtime_values()["session_duration_days"],
+        ), status)
         response.set_cookie(
             settings.login_csrf_cookie_name, csrf, secure=settings.secure_cookies, httponly=True,
             samesite="Strict", path="/", max_age=600,
@@ -94,10 +102,14 @@ def create_app(settings=None, start_collector=True, validate_secrets=True):
                 return "invalid host", 400
             if settings.secure_cookies and not request_is_secure(settings):
                 return "https required", 400
+        if request.path == "/healthz" or request.path.startswith("/static/"):
+            return None
         token = request.cookies.get(settings.cookie_name, "")
         if token:
             digest = token_hash(token)
-            session = store.get_session(digest, user_agent_hash(request.headers.get("User-Agent", "")), int(time.time()), settings.session_idle_seconds)
+            duration_seconds = runtime_values()["session_duration_days"] * 86400
+            g.session_duration_seconds = duration_seconds
+            session = store.get_session(digest, user_agent_hash(request.headers.get("User-Agent", "")), int(time.time()), duration_seconds)
             if session:
                 g.session = session
                 g.session_token_hash = digest
@@ -108,7 +120,8 @@ def create_app(settings=None, start_collector=True, validate_secrets=True):
             "default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; "
             "connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'"
         )
-        response.headers["Referrer-Policy"] = "same-origin" if request.path == "/login" else "no-referrer"
+        # 同源 POST 在部分浏览器不发送 Origin；保留同源 Referer 作为 CSRF 来源校验的安全回退。
+        response.headers["Referrer-Policy"] = "same-origin"
         response.headers["X-Content-Type-Options"] = "nosniff"
         response.headers["X-Frame-Options"] = "DENY"
         response.headers["Permissions-Policy"] = "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
@@ -117,6 +130,17 @@ def create_app(settings=None, start_collector=True, validate_secrets=True):
         if request.path == "/" or request.path.startswith("/api/") or request.path in {"/login", "/logout"}:
             response.headers["Cache-Control"] = "no-store"
             response.headers["Pragma"] = "no-cache"
+        if getattr(g, "session", None):
+            raw_token = request.cookies.get(settings.cookie_name, "")
+            duration_seconds = getattr(g, "session_duration_seconds", 0)
+            if request.endpoint == "update_settings":
+                duration_seconds = runtime_values()["session_duration_days"] * 86400
+            remaining = max(0, int(g.session["created_at"]) + duration_seconds - int(time.time()))
+            if raw_token and remaining > 0:
+                response.set_cookie(
+                    settings.cookie_name, raw_token, secure=settings.secure_cookies, httponly=True,
+                    samesite="Strict", path="/", max_age=remaining,
+                )
         return response
 
     @app.get("/healthz")
@@ -154,28 +178,30 @@ def create_app(settings=None, start_collector=True, validate_secrets=True):
             response = login_response("登录服务繁忙，请稍后再试。", username[:64], 429, supplied_csrf)
             response.headers["Retry-After"] = "5"
             return response
-        second_factor_ok = settings.allow_password_only and not totp_secret
+        second_factor_ok = settings.allow_password_only
         recovery_candidate = "".join(character for character in otp.upper() if character.isalnum())
-        if totp_secret and verify_totp(totp_secret, otp):
+        if not settings.allow_password_only and totp_secret and verify_totp(totp_secret, otp):
             second_factor_ok = True
-        elif password_ok and recovery_candidate and store.consume_recovery_code(recovery_candidate, now):
+        elif not settings.allow_password_only and password_ok and recovery_candidate and store.consume_recovery_code(recovery_candidate, now):
             second_factor_ok = True
         if not (username_ok and password_ok and second_factor_ok):
             delay = store.record_login_failure(source_ip, settings.username, now)
             minimum_response_time(started, max(0.3, delay))
-            return login_response("账号、密码或验证码不正确。", username[:64], 200, supplied_csrf)
+            error = "账号或密码不正确。" if settings.allow_password_only else "账号、密码或验证码不正确。"
+            return login_response(error, username[:64], 200, supplied_csrf)
         store.record_login_success(source_ip, settings.username, now)
         raw_token = secrets.token_urlsafe(32)
         csrf = secrets.token_urlsafe(32)
+        session_duration_seconds = runtime_values()["session_duration_days"] * 86400
         store.create_session(
             token_hash(raw_token), settings.username, csrf, user_agent_hash(request.headers.get("User-Agent", "")),
-            now, now + settings.session_absolute_seconds,
+            now, now + session_duration_seconds,
         )
         minimum_response_time(started)
         response = redirect(url_for("dashboard"), code=303)
         response.set_cookie(
             settings.cookie_name, raw_token, secure=settings.secure_cookies, httponly=True,
-            samesite="Strict", path="/", max_age=settings.session_absolute_seconds,
+            samesite="Strict", path="/", max_age=session_duration_seconds,
         )
         response.delete_cookie(settings.login_csrf_cookie_name, path="/", secure=settings.secure_cookies, httponly=True, samesite="Strict")
         return response
@@ -186,6 +212,7 @@ def create_app(settings=None, start_collector=True, validate_secrets=True):
         if not validate_origin(settings) or not secrets.compare_digest(request.form.get("csrf", ""), g.session["csrf_token"]):
             return "invalid csrf", 403
         store.delete_session(g.session_token_hash)
+        g.session = None
         response = redirect(url_for("login"), code=303)
         response.delete_cookie(settings.cookie_name, path="/", secure=settings.secure_cookies, httponly=True, samesite="Strict")
         response.headers["Clear-Site-Data"] = '"cache", "cookies", "storage"'
@@ -197,7 +224,7 @@ def create_app(settings=None, start_collector=True, validate_secrets=True):
         values = runtime_values()
         return render_template(
             "dashboard.html", csrf=g.session["csrf_token"], username=g.session["username"],
-            default_view_days=values["default_view_days"],
+            default_view_days=values["default_view_days"], auto_refresh_seconds=values["auto_refresh_seconds"],
         )
 
     @app.get("/api/stats")

@@ -130,6 +130,11 @@
 }
 .dashboard-page .primary-button:hover{background:#175f45;filter:none;transform:translateY(-1px)}
 .dashboard-page .primary-button:disabled{cursor:wait;opacity:.72;transform:none}
+.dashboard-page .refresh-control{display:flex;align-items:center;overflow:hidden;border:1px solid var(--dash-green-dark);border-radius:9px;background:#fff}
+.dashboard-page .refresh-control .primary-button{border-radius:7px 0 0 7px}
+.dashboard-page .refresh-control label{padding:0 7px 0 10px;color:#758078;font-size:9px;font-weight:700;letter-spacing:.05em}
+.dashboard-page .refresh-control select{height:38px;padding:0 24px 0 4px;border:0;outline:0;background:#fff;color:#455048;font-size:10px;cursor:pointer}
+.dashboard-page .refresh-control:focus-within{box-shadow:0 0 0 3px rgba(99,185,148,.1)}
 .dashboard-page .refresh-icon{display:inline-block;font-size:15px;line-height:1;transition:transform .25s ease}
 .dashboard-page #refresh:hover .refresh-icon{transform:rotate(35deg)}
 .dashboard-page .spinner{width:13px;height:13px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:dash-spin .75s linear infinite}
@@ -258,7 +263,7 @@
 .dashboard-page .ip-address:hover{background:#f2f8f4;color:var(--dash-green-dark)}
 .dashboard-page .ip-address:hover::after,.dashboard-page .ip-address.copied::after{opacity:1;transform:none}
 .dashboard-page .ip-address.copied::after{content:"已复制";background:var(--dash-green-dark);color:#fff}
-.dashboard-page .ip-location{color:#737c75}
+.dashboard-page .ip-location{min-width:0;color:#737c75;overflow-wrap:anywhere}
 .dashboard-page .ip-bar{height:6px;background:#edf1ed}
 .dashboard-page .ip-bar span{background:linear-gradient(90deg,#98d4b9,var(--dash-green-dark))}
 .dashboard-page .ip-count{color:var(--dash-ink);font-weight:650}
@@ -322,9 +327,11 @@
   .dashboard-page .session-user{display:none}
   .dashboard-page .session-actions .quiet-button{padding:7px 9px;font-size:11px}
   .dashboard-page .dashboard-shell{width:calc(100% - 20px);margin-top:10px}
-  .dashboard-page .control-strip{display:grid;grid-template-columns:1fr 1fr;padding:5px}
-  .dashboard-page .range-control{min-width:0}
+  .dashboard-page .control-strip{display:grid;grid-template-columns:1fr;padding:5px}
+  .dashboard-page .range-control{min-width:0;width:100%}
+  .dashboard-page .range-control label{flex:0 0 auto}
   .dashboard-page .range-control select{width:100%;min-width:0}
+  .dashboard-page .refresh-control{min-width:0;width:100%}.dashboard-page .refresh-control .primary-button{flex:1;padding-inline:10px}.dashboard-page .refresh-control label{padding-left:6px}.dashboard-page .refresh-control select{width:92px;max-width:92px}
   .dashboard-page .ingest-status{grid-column:1/-1;margin:2px 7px 3px}
   .dashboard-page .kpi-grid{grid-template-columns:1fr 1fr;gap:9px}
   .dashboard-page .kpi-grid article{min-height:116px;padding:17px}

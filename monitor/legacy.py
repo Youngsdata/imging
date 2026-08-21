@@ -5,6 +5,8 @@ from collections import Counter
 from datetime import date, datetime, timedelta
 from pathlib import Path
 
+from .traffic import is_automated_user_agent
+
 
 def _parse_before(value):
     parsed = datetime.fromisoformat(value)
@@ -34,6 +36,7 @@ def import_legacy_log(source, store, resolver, before, hosts, retention_days):
 
     cutoff_day = date.today() - timedelta(days=retention_days - 1)
     counts = Counter()
+    automated = Counter()
     content_hash = hashlib.sha256()
     total_lines = 0
     accepted_hits = 0
@@ -61,6 +64,8 @@ def import_legacy_log(source, store, resolver, before, hosts, retention_days):
                 invalid_lines += 1
                 continue
             counts[(timestamp.date().isoformat(), ip)] += 1
+            if is_automated_user_agent(payload.get("user_agent") or payload.get("agent")):
+                automated[(timestamp.date().isoformat(), ip)] += 1
             accepted_hits += 1
 
     final_stat = source.stat()
@@ -78,13 +83,14 @@ def import_legacy_log(source, store, resolver, before, hosts, retention_days):
     identity.update(b"\0")
     identity.update(json.dumps(filters, sort_keys=True, separators=(",", ":")).encode("utf-8"))
     source_id = identity.hexdigest()
-    imported = store.import_legacy(source_id, source, content_sha256, filters, total_lines, counts, resolver)
+    imported = store.import_legacy(source_id, source, content_sha256, filters, total_lines, counts, automated, resolver)
     return {
         "source_id": source_id,
         "content_sha256": content_sha256,
         "imported": imported,
         "lines": total_lines,
         "accepted_hits": accepted_hits,
+        "automated_hits": sum(automated.values()),
         "invalid_lines": invalid_lines,
         "day_ip_pairs": len(counts),
     }

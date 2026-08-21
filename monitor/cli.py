@@ -48,9 +48,9 @@ def initialize(output, username, issuer):
     uri = "otpauth://totp/{}:{}?secret={}&issuer={}".format(
         quote(issuer, safe=""), quote(username, safe=""), quote(totp_secret, safe=""), quote(issuer, safe="")
     )
-    print("\n认证文件已写入 {}（权限 600）。".format(directory))
-    print("请把下面的 TOTP URI 导入认证器：\n{}".format(uri))
-    print("\n恢复码只显示这一次，请离线保存：")
+    print("\n密码登录文件已写入 {}（权限 600）。".format(directory))
+    print("默认只需用户名和密码。若以后设置 IMGING_MONITOR_ALLOW_PASSWORD_ONLY=false，再导入下面的 TOTP URI：\n{}".format(uri))
+    print("\n以下恢复码也仅在启用 TOTP 后使用，只显示这一次：")
     for code in recovery_codes:
         print("  {}".format(code))
 

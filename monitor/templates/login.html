@@ -1,36 +1,48 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="zh-CN" class="login-document">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="robots" content="noindex,nofollow,noarchive">
   <title>imging.cn · 访问监控登录</title>
   <link rel="stylesheet" href="/static/app.css">
+  <link rel="stylesheet" href="/static/login-v2.css">
 </head>
 <body class="login-page">
   <main class="login-shell">
-    <section class="login-observer" aria-hidden="true">
-      <div class="observer-grid"></div>
-      <div class="observer-orbit orbit-one"></div>
-      <div class="observer-orbit orbit-two"></div>
-      <div class="observer-core"><span></span></div>
-      <div class="observer-scan"></div>
-      <p>PRIVATE OBSERVATORY</p>
+    <section class="login-story" aria-labelledby="login-story-title">
+      <div class="login-brand brand"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 512 512"><defs><linearGradient id="imging-login-brand" x1="72" y1="54" x2="442" y2="458" gradientUnits="userSpaceOnUse"><stop stop-color="#0fa79f"/><stop offset=".55" stop-color="#f4553f"/><stop offset="1" stop-color="#0c8a83"/></linearGradient></defs><rect x="48" y="48" width="416" height="416" rx="116" fill="url(#imging-login-brand)"/><rect x="186" y="186" width="140" height="140" rx="38" fill="#fff"/></svg></span><span><small>IMGING.CN / ACCESS PULSE</small><b>访问脉冲</b></span></div>
+      <div class="story-copy">
+        <p class="story-kicker"><span></span> PRIVATE ACCESS</p>
+        <h1 id="login-story-title">每一次访问，<br>都有迹可循。</h1>
+        <p>从主镜像真实访问日志中整理趋势、地域与客户端信号。数据留在你的服务器，管理入口只向经过验证的人开放。</p>
+      </div>
+      <div class="traffic-pulse" aria-hidden="true">
+        <div class="pulse-caption"><span>LIVE SIGNAL</span><b>有效流量脉冲</b></div>
+        <div class="pulse-track"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="pulse-axis"><span>NGINX LOG</span><span>SQLITE</span><span>REGION MAP</span></div>
+      </div>
+      <ul class="story-facts"><li><span>01</span>真实客户端 IP</li><li><span>02</span>离线地域识别</li><li><span>03</span>服务端安全会话</li></ul>
     </section>
-    <section class="login-panel" aria-labelledby="login-title">
-      <div class="brand"><span class="brand-mark">映</span><span>imging.cn</span></div>
-      <p class="eyebrow">访问监控 · 安全入口</p>
-      <h1 id="login-title">验证后进入观测台</h1>
-      <p class="login-copy">此页面包含真实访问 IP 与地域数据。登录需要管理密码和动态验证码。</p>
-      {% if error %}<div class="form-error" role="alert">{{ error }}</div>{% endif %}
-      <form method="post" action="/login" class="login-form" autocomplete="on">
-        <input type="hidden" name="csrf" value="{{ csrf }}">
-        <label><span>账号</span><input name="username" value="{{ username }}" maxlength="64" autocomplete="username" required autofocus></label>
-        <label><span>密码</span><input type="password" name="password" maxlength="1024" autocomplete="current-password" required></label>
-        <label><span>动态验证码或恢复码</span><input name="otp" maxlength="64" inputmode="numeric" autocomplete="one-time-code" required></label>
-        <button type="submit">验证并进入</button>
-      </form>
-      <p class="login-footnote">会话闲置 30 分钟后自动失效。连续失败将触发限流和指数退避。</p>
+    <section class="login-access" aria-labelledby="login-title">
+      <div class="login-panel">
+        <header>
+          <p class="eyebrow">SECURE CONSOLE</p>
+          <h2 id="login-title">进入访问监控</h2>
+          <p class="login-copy">使用管理员账号和密码{% if require_totp %}及动态验证码{% endif %}后，即可查看真实访问 IP、趋势与地域数据。</p>
+        </header>
+        {% if error %}<div class="form-error" role="alert">{{ error }}</div>{% endif %}
+        <form method="post" action="/login" class="login-form" autocomplete="on">
+          <input type="hidden" name="csrf" value="{{ csrf }}">
+          <label class="field"><span>账号</span><input name="username" value="{{ username }}" maxlength="64" autocomplete="username" required autofocus></label>
+          <label class="field"><span>密码</span><input type="password" name="password" maxlength="1024" autocomplete="current-password" required></label>
+          {% if require_totp %}
+          <label class="field"><span>动态验证码或恢复码</span><input name="otp" maxlength="64" inputmode="numeric" autocomplete="one-time-code" placeholder="6 位动态码" required></label>
+          {% endif %}
+          <button type="submit"><span>验证并进入</span><i aria-hidden="true">→</i></button>
+        </form>
+        <footer><span><i></i>安全连接</span><p>登录态保持 {{ session_days }} 天，可在后台修改；连续失败将触发限流。</p></footer>
+      </div>
     </section>
   </main>
 </body>
