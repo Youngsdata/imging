@@ -4,7 +4,7 @@
 (function(){
   'use strict';
   self.window=self;
-  importScripts('core.js?v=1','to-html.js?v=4');
+  importScripts('core.js?v=1','to-html.js?v=5');
   var jobs=new Map();
 
   self.addEventListener('message',function(event){

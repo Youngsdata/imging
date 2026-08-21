@@ -1910,7 +1910,7 @@
         <tbody>
           <tr><th scope="row">页面与文字</th><td class="us">按页面框、旋转、文字矩阵和字距定位，文字保持可选择</td><td>仍由 PDF 运行时渲染</td></tr>
           <tr><th scope="row">特殊字体</th><td class="us">检查 OpenType 嵌入许可；Type 3 字形按原始矢量轮廓重建，并保留选择层</td><td>依赖查看器内部字体处理</td></tr>
-          <tr><th scope="row">图形与颜色</th><td class="us">重建路径、裁剪、图片、平铺图案和轴向渐变</td><td>由查看器实时解释</td></tr>
+          <tr><th scope="row">图形与颜色</th><td class="us">重建路径、裁剪、内联与蒙版图片、ICC / 索引色、平铺图案、轴向 / 径向渐变及常见软蒙版</td><td>由查看器实时解释</td></tr>
           <tr><th scope="row">成品内容</th><td class="us">一个静态 HTML，无外部依赖、无查看器菜单、无原 PDF</td><td>通常包含工具栏、运行时或原文件</td></tr>
           <tr><th scope="row">安全与隐私</th><td class="us">PDF 留在本机；不执行 PDF JavaScript</td><td>取决于查看器和部署方式</td></tr>
         </tbody>
@@ -1918,10 +1918,10 @@
     </div>
     <ol class="hero-steps reveal" aria-label="图映 PDF 转 HTML 的三步">
       <li class="hero-step"><span class="hero-step-no">01</span><div><b>读取真正的 PDF 页面结构</b><p>解析页面树、资源、内容流、图形状态、字体映射、图片、路径、链接与表单外观，不把页面简单截图。</p></div></li>
-      <li class="hero-step"><span class="hero-step-no">02</span><div><b>按原坐标重建固定版式正文</b><p>普通字体生成可选择文字；Type 3 特殊字形使用原始 CharProcs 矢量轮廓；图案与轴向渐变转换为内联 SVG 资源。</p></div></li>
-      <li class="hero-step"><span class="hero-step-no">03</span><div><b>先看质量报告，再保存纯净成品</b><p>原 PDF 只在工作台里供对照，复杂透明组、软蒙版等未完全等价的特性会按页明确报告；最终 HTML 不夹带报告和操作菜单。</p></div></li>
+      <li class="hero-step"><span class="hero-step-no">02</span><div><b>按原坐标重建固定版式正文</b><p>普通字体生成可选择文字；Type 3 特殊字形使用原始 CharProcs 矢量轮廓；图案、轴向 / 径向渐变、图片与常见软蒙版转换为内联 SVG 资源。</p></div></li>
+      <li class="hero-step"><span class="hero-step-no">03</span><div><b>先看质量报告，再保存纯净成品</b><p>原 PDF 只在工作台里供对照，不能等价映射的特殊混合、网格着色和交互特性会标明具体页码；最终 HTML 不夹带报告和操作菜单。</p></div></li>
     </ol>
-    <p class="cmpnote reveal"><strong>诚实边界：</strong>这是固定版式高保真重建，不是把 PDF 自动改写成响应式网页。复杂透明组、软蒙版、网格渐变、多媒体或部分交互表单仍可能需要人工验收；工作台会把这些情况列入逐页质量报告，而不是静默声称百分百一致。</p>
+    <p class="cmpnote reveal"><strong>诚实边界：</strong>这是固定版式高保真重建，不是把 PDF 自动改写成响应式网页。隔离 / 挖空透明组、带特殊传递函数或预乘底色的软蒙版、网格着色、文字轮廓裁剪、JPEG 2000 跨浏览器显示、多媒体和部分交互表单仍可能需要人工验收；工作台会标明具体页码，而不是静默声称百分百一致。</p>
     <div class="reveal" style="margin-top:16px"><a class="btn btn-primary" href="/pdf-html">打开 PDF 转 HTML →</a> <a class="btn btn-ghost" href="/pdf-to-html/">查看完整技术与质量边界</a></div>
   </div>
 </section>
@@ -1942,7 +1942,7 @@
       <a class="taskcard reveal" href="/online-design/"><span class="tasktag">FILTERS · BEAUTY · LOCAL</span><h3>在线做图、专业滤镜与美颜</h3><p>对单独图层或整体画布应用非破坏式滤镜、肤色感知美颜与 18 项精调，并保存为可继续编辑的开放工程。</p><b>了解并打开在线做图 →</b></a>
       <a class="taskcard reveal" href="/video-editor/"><span class="tasktag">LAB-GRADE · BETA</span><h3>视频抠像 Beta</h3><p>实验室级本地时序抠像；当前内部样片测试中，极致模型在已对比的同类浏览器端方案里效果最好，并支持换背景、保留音频与本地导出。</p><b>查看测试口径并打开 →</b></a>
       <a class="taskcard reveal" href="/pdf-compress/"><span class="tasktag">SELF-BUILT PDF ENGINE</span><h3>PDF 压缩</h3><p>自研 PDF 引擎按内容流实算每张内嵌图的有效 DPI，再逐张在 JPEG、调色板与无损之间选最小的那个；PDF 不上传，也不需要下载十几兆的运行库。</p><b>了解压缩口径并打开 →</b></a>
-      <a class="taskcard reveal" href="/pdf-to-html/"><span class="tasktag">CLEAN-PAGE HTML · BETA</span><h3>PDF 转 HTML</h3><p>在本地重建可选择文字、Type 3 矢量字形、路径、图片和图案渐变；纯净单文件打开即读，不带查看器菜单。</p><b>了解技术与质量边界 →</b></a>
+      <a class="taskcard reveal" href="/pdf-to-html/"><span class="tasktag">CLEAN-PAGE HTML · BETA</span><h3>PDF 转 HTML</h3><p>在本地重建可选择文字、Type 3 矢量字形、路径、蒙版图片、ICC / 索引色与轴向 / 径向渐变；纯净单文件打开即读，不带查看器菜单。</p><b>了解技术与质量边界 →</b></a>
       <a class="taskcard reveal" href="/privacy/"><span class="tasktag">PRIVACY · VERIFIED</span><h3>本地处理与隐私架构</h3><p>区分原图上传、WASM 下载、AI 模型缓存和服务端专业格式，公开真实数据边界。</p><b>查看处理路径 →</b></a>
       <a class="taskcard reveal" href="/benchmark/"><span class="tasktag">BENCHMARK · REPRODUCIBLE</span><h3>压缩画质与格式选型</h3><p>看懂 PNG-8 的 PSNR、色彩数和透明度取舍，根据画面类型选对格式。</p><b>查看测试口径 →</b></a>
       <a class="taskcard reveal" href="/compare/"><span class="tasktag">LOCAL VS CLOUD</span><h3>图映、Squoosh 与 TinyPNG 怎么选</h3><p>从隐私、动图、HEIC / AVIF、逐帧编辑和处理位置公开对比。</p><b>查看工具对比 →</b></a>
@@ -2023,10 +2023,11 @@
     <div class="relscroll">
       <div class="relcurrent">
         <time class="reldate" datetime="2026-08-21"><small>CURRENT</small><b>08.21</b></time>
-        <div><strong>当前构建 · 视频抠像 · 实验室级 Beta</strong><span>“在线视频编辑”统一升级为“视频抠像”，并用有范围、可核验的口径说明当前内部样片中的领先效果。</span></div>
+        <div><strong>当前构建 · PDF 转 HTML · 跨版本高保真增强版</strong><span>补齐蒙版图片、常见软蒙版、ICC / 索引色、径向渐变、内联图片和静态注释外观，并在质量报告中标明具体问题页。</span></div>
       </div>
       <div class="relsection"><h3>已经交付</h3><span>VERIFIED RELEASES</span></div>
       <div class="reltimeline">
+        <article class="relitem"><time datetime="2026-08-21">2026-08-21</time><b>PDF 转 HTML：跨版本、蒙版、颜色与逐页质量报告增强</b><p>补齐 PDF 1.0–2.0、蒙版图片、ICC / 索引色、径向渐变与静态注释外观，并让质量报告显示具体问题页。</p></article>
         <article class="relitem"><time datetime="2026-08-21">2026-08-21</time><b>视频抠像：统一产品定位与实验室级质量说明</b><p>统一“视频抠像 / Video Matting”命名，并公开实验室级 Beta 的当前内部样片测试结论与适用边界。</p></article>
         <article class="relitem"><time datetime="2026-08-21">2026-08-21</time><b>主镜像真实 IP 日志与独立访问监控</b><p>新增主镜像真实 IP 日志、独立 monitor 镜像、SQLite 趋势与地域热力图，支持自托管域名和即时生效的默认查看天数。</p></article>
         <article class="relitem"><time datetime="2026-08-21">2026-08-21</time><b>PDF 转 HTML：渐变坐标、矢量体积与渐进完整预览增强</b><p>修复图表渐变错位，跨页共享 Type 3 字形降低体积，并保留首屏先达、完整预览自动接续。</p></article>
@@ -2034,7 +2035,6 @@
         <article class="relitem"><time datetime="2026-08-20">2026-08-20</time><b>导出、下载与工程保存统一使用系统保存窗口</b><p>统一图片、动图、做图工程、视频与 PDF 的推荐文件名、系统保存窗口及移动端下载提示。</p></article>
         <article class="relitem"><time datetime="2026-08-20">2026-08-20</time><b>快捷路径恢复与 PDF 队列内存保护</b><p>修复 /img、/pdf 中英文快捷路径，并为 PDF 批量队列增加懒读取、容量保护和内存释放。</p></article>
         <article class="relitem"><time datetime="2026-08-20">2026-08-20</time><b>PDF 压缩：按有效 DPI 逐张重编码内嵌图片</b><p>新增本地 PDF 压缩：按内容流实算每张内嵌图的有效 DPI，多编码器竞速取最小，产物回读校验。</p></article>
-        <article class="relitem"><time datetime="2026-08-20">2026-08-20</time><b>转换、压缩与导出共用的专业水印图层</b><p>转换、同格式压缩和去背景导出新增中文文字 / 图片 Logo 水印图层与 2.5D 柔光效果。</p></article>
       </div>
       <div class="relsection"><h3>下一个版本</h3><span>PLANNED · NOT SHIPPED</span></div>
       <div class="relnext">
