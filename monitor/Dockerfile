@@ -28,6 +28,8 @@ RUN python -m monitor.fetch_assets world-map
 
 USER 10001:10001
 
+RUN python -c "from pathlib import Path; [path.open('rb').read(1) for path in (Path('/app/data/ip2region_v4.xdb'), Path('/app/data/ip2region_v6.xdb'), Path('/app/monitor/static/data/china.json'), Path('/app/monitor/static/data/world.json'))]"
+
 EXPOSE 8899
 
 HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \

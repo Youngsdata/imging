@@ -49,6 +49,7 @@ def fetch(url, destination, expected_sha256):
             actual = digest.hexdigest()
             if actual != expected_sha256:
                 raise RuntimeError("SHA-256 mismatch for {}: {}".format(url, actual))
+            os.chmod(temporary, 0o644)
             os.replace(temporary, destination)
             return
         except Exception:

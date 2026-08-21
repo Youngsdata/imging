@@ -1,4 +1,5 @@
 import ipaddress
+import io
 import json
 import hashlib
 import re
@@ -7,13 +8,14 @@ import time
 import unittest
 from datetime import date, timedelta
 from pathlib import Path
+from unittest.mock import patch
 
 import pyotp
 
 from monitor.app import create_app
 from monitor.collector import LogCollector
 from monitor.config import Settings
-from monitor.fetch_assets import ASSETS
+from monitor.fetch_assets import ASSETS, fetch
 from monitor.legacy import import_legacy_log
 from monitor.security import PASSWORD_HASHER
 from monitor.security import client_ip
@@ -215,6 +217,14 @@ class MonitorTestCase(unittest.TestCase):
         for name, (_, _, digest) in ASSETS.items():
             with self.subTest(asset=name):
                 self.assertRegex(digest, r"^[0-9a-f]{64}$")
+
+    def test_downloaded_assets_are_readable_by_runtime_user(self):
+        payload = b"pinned public asset"
+        destination = self.settings.db_path.parent / "asset.bin"
+        with patch("monitor.fetch_assets.urlopen", return_value=io.BytesIO(payload)):
+            fetch("https://assets.test/example", destination, hashlib.sha256(payload).hexdigest())
+        self.assertEqual(destination.read_bytes(), payload)
+        self.assertEqual(destination.stat().st_mode & 0o777, 0o644)
 
     def test_collector_counts_only_success_and_redirect(self):
         collector = LogCollector(self.settings, Store(self.settings.db_path), FakeResolver())

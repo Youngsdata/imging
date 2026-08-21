@@ -94,7 +94,7 @@ a665424942bb59e4966c1690f06d8b7df625e563799f762403a9bfd885283f85  ./models/video
 6a0d5ce6cc17702613be548559879b4521ed424cfe14ddc48d1acaa44d616f64  ./models/video-matting/rvm-mobilenetv3-fp16.onnx
 6ab2e8530a3f5decb3d7b2b40e09e213b0f0cd0e138570284b83654500848b5e  ./models/video-matting/rvm-resnet50-fp16.onnx
 2f131ee9a6033bf7c02cb9abade060a0a77e16c467248f8f0d124ea54cd5c63e  ./monitor/.dockerignore
-9774e67b2b31588452ff970fd52dc6a6a93d35198ec63aa673ad9c3941505e30  ./monitor/Dockerfile
+98217b2035e8cec8c41a54ac91fb97cb4e78ae9f96b74d946eea6675d02d7dab  ./monitor/Dockerfile
 979f300c702e0a5b23ec3f86d03adc6f2c71b962fa9d362fe7f0941597eaa6ca  ./monitor/THIRD_PARTY_NOTICES.md
 9bc5ee98629d651fcffa99a81d7f4538161c1840faebbf4ee4d9838336d3bbad  ./monitor/__init__.py
 94dc9fd4f0118fc198bde83b82c508338ba6d5eb6f4c004f0b5ef6ca95fef3f6  ./monitor/app.py
@@ -102,7 +102,7 @@ a665424942bb59e4966c1690f06d8b7df625e563799f762403a9bfd885283f85  ./models/video
 ed82edb3e9b84d98b1c3c118b2cadf670f5f25b4c18442740af7d0b051b4b39c  ./monitor/collector.py
 850b38108262a79e9ba86bf7dc36ba4c8ae1e92aa56e61cccd59ba325e9e71d1  ./monitor/collector_worker.py
 6c849979879f7e8743ded6fcb320ec50e0e46e9019aec34e9ff37f9ce7631dcd  ./monitor/config.py
-43333777db0c5182b58d7aef091ca921e5c953563f9b75d451e9b029e168b0a9  ./monitor/fetch_assets.py
+8f8dfafc3c5f54a292ca9731199400a201b6b282a4dd841a4c7e71b0ee1a2175  ./monitor/fetch_assets.py
 2597a00e5b24146fbf40d6c8140094fb0935611f09f2b9256ebef27ef26e5aea  ./monitor/geo.py
 bdbc58abf206276b2ee63ee6a8bcda7204c391c0d13efa25dc9baaea276fe00d  ./monitor/legacy.py
 83e8af6ab765b4583662d43dcb6aec2fd8aa773686a329e687d5fb120447b327  ./monitor/logrotate.example
@@ -116,7 +116,7 @@ c293833a15ae52d88e6f0967af5cb5f684e136480f9bb974f9fa579e011381f2  ./monitor/requ
 36f3eb0b47cdda7485ca8ecc47f141dadf25eace67995041e707bb5faee504be  ./monitor/templates/dashboard.html
 e33fedcbc661eaf8ad21f836c0cd4fa5cce77bfa65c7f15d5053e3df1fa83fbf  ./monitor/templates/login.html
 01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b  ./monitor/tests/__init__.py
-8cb44e1927b78d63df6dd2c17ffd1953789810c66a4f5364f6fcdf51e280026b  ./monitor/tests/test_monitor.py
+725df34caa74913385fa3bf110d2defd78fe7d7881b0be77ff96c2cb8e6ca43a  ./monitor/tests/test_monitor.py
 907535f472b3ce1c9142bc5b53b9af924f8a38d6c4a41158c6525e5aee8bbeb2  ./monitor/wsgi.py
 402ba30cc5db781b4d70d6bdb81878f5b1afb8ddeffd54229b14ac113b5c12b5  ./pdf/core.js
 1bc22b0f84ee0b3e4a1cf9fb3d3d03b6c9785f8f44305692df23f44a7d23d0a2  ./pdf/optimize.js
