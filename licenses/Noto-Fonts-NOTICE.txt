@@ -1,0 +1,18 @@
+Noto 字体随包说明 / Noto Fonts Notice
+
+本项目随包分发以下官方字体文件：
+
+- fonts/NotoSans-Variable.ttf
+  Source: https://github.com/google/fonts/tree/main/ofl/notosans
+- fonts/NotoSansJP-Regular.otf
+  Source: https://github.com/notofonts/noto-cjk/tree/main/Sans/SubsetOTF/JP
+- fonts/NotoSansKR-Regular.otf
+  Source: https://github.com/notofonts/noto-cjk/tree/main/Sans/SubsetOTF/KR
+
+这些字体用于图映的多语言文字水印与在线做图文字图层，仅在用户选中时按需加载。
+字体依据 SIL Open Font License 1.1 使用和分发。许可证全文见：
+licenses/Noto-SIL-OFL-1.1.txt
+
+The bundled Noto font files are used by ImgIng for multilingual text watermarks and
+editable text layers, and are loaded only when selected. They are used and distributed
+under the SIL Open Font License 1.1. See licenses/Noto-SIL-OFL-1.1.txt.

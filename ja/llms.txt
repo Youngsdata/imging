@@ -26,7 +26,7 @@
 - [PNG画像を高品質に圧縮](https://imging.cn/ja/png-compress/): 透明度を保ちながらPNG-8、パレット、ディザリングを調整し、見た目を守って容量を削減します。
 - [GIF・APNG・WebPアニメーションを圧縮](https://imging.cn/ja/compress-gif/): フレーム時間とループを保ち、GIF、APNG、アニメーションWebPをブラウザー内で圧縮・編集します。
 - [AIで画像背景を削除](https://imging.cn/ja/remove-background/): ローカルAIで人物や商品を切り抜き、透明、単色、背景画像へ置換。画像は端末外へ出ません。
-- [オンライン画像デザイン](https://imging.cn/ja/online-design/): 最大24レイヤー、フィルター、美肌、回転、配置、編集可能な.imgingプロジェクトに対応します。
+- [オンライン画像デザイン](https://imging.cn/ja/online-design/): 最大24の画像または編集可能な多言語文字レイヤー、オンデマンドフォント、フィルター、美肌、回転、配置、.imging v2プロジェクトに対応します。
 - [動画切り抜き Beta](https://imging.cn/ja/video-editor/): 時系列AIで人物動画を切り抜き、比率を保って背景を置換し、MP4または透明WebMで保存します。
 - [PDFをローカルで圧縮](https://imging.cn/ja/pdf-compress/): PDF内画像の実効DPIを解析し、文字、ベクター、リンク、ページ寸法を保ったまま容量を削減します。
 - [PDFを単一HTMLへ変換](https://imging.cn/ja/pdf-to-html/): PDFの固定レイアウト、選択可能な文字、画像、ベクター、許可フォントを閲覧メニューのないHTMLへ再構築します。

@@ -14,7 +14,7 @@ Dernière vérification: 2026-08-22
 
 ## Espaces de travail
 
-- [Créer une image en ligne](https://imging.cn/fr/img)
+- [Créer des images et du texte en ligne](https://imging.cn/fr/img)
 - [Détourage vidéo Beta](https://imging.cn/fr/video)
 - [Compresser un PDF localement](https://imging.cn/fr/pdf)
 - [Convertir un PDF en HTML autonome](https://imging.cn/fr/pdf-html)
@@ -26,7 +26,7 @@ Dernière vérification: 2026-08-22
 - [Compresser un PNG en haute qualité](https://imging.cn/fr/png-compress/): Conservez la transparence et réglez PNG-8, la palette et le tramage pour réduire la taille sans différence visible.
 - [Compresser GIF, APNG et WebP animé](https://imging.cn/fr/compress-gif/): Conservez la durée et la boucle, modifiez les images et compressez GIF, APNG et WebP animé dans le navigateur.
 - [Supprimer l’arrière-plan par IA](https://imging.cn/fr/remove-background/): Détourez personnes et produits avec une IA locale, puis choisissez transparence, couleur unie ou image de fond.
-- [Créer une image en ligne](https://imging.cn/fr/online-design/): Jusqu’à 24 calques, filtres, beauté, rotation, mise en page et projets .imging modifiables dans le navigateur.
+- [Créer des images et du texte en ligne](https://imging.cn/fr/online-design/): Jusqu’à 24 calques d’image ou de texte multilingue modifiable, polices à la demande, filtres, beauté, rotation, mise en page et projets .imging v2.
 - [Détourage vidéo Beta](https://imging.cn/fr/video-editor/): Détourez une personne par IA temporelle, conservez le ratio, remplacez le fond et exportez en MP4 ou WebM transparent.
 - [Compresser un PDF localement](https://imging.cn/fr/pdf-compress/): Analysez le DPI réel des images et réduisez la taille en conservant texte, vecteurs, liens et dimensions des pages.
 - [Convertir un PDF en HTML autonome](https://imging.cn/fr/pdf-to-html/): Reconstituez la mise en page fixe, le texte sélectionnable, les images, les vecteurs et les polices autorisées sans menu de lecteur.

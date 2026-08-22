@@ -14,7 +14,7 @@ Zuletzt geprüft: 2026-08-22
 
 ## Arbeitsbereiche
 
-- [Bilder online mit Ebenen gestalten](https://imging.cn/de/img)
+- [Bilder und Text online gestalten](https://imging.cn/de/img)
 - [Video-Freistellung Beta](https://imging.cn/de/video)
 - [PDF lokal komprimieren](https://imging.cn/de/pdf)
 - [PDF in eine eigenständige HTML-Datei umwandeln](https://imging.cn/de/pdf-html)
@@ -26,7 +26,7 @@ Zuletzt geprüft: 2026-08-22
 - [PNG hochwertig komprimieren](https://imging.cn/de/png-compress/): Transparenz erhalten und PNG-8, Palette sowie Dithering abstimmen, um die Dateigröße sichtbar verlustfrei zu senken.
 - [GIF, APNG und animiertes WebP komprimieren](https://imging.cn/de/compress-gif/): Timings und Schleifen erhalten, Frames bearbeiten und Animationen direkt im Browser komprimieren.
 - [Bildhintergrund mit lokaler KI entfernen](https://imging.cn/de/remove-background/): Personen und Produkte lokal freistellen und durch Transparenz, Farbe oder ein Hintergrundbild ersetzen.
-- [Bilder online mit Ebenen gestalten](https://imging.cn/de/online-design/): Bis zu 24 Ebenen, Filter, Beauty, Drehung, Layout und editierbare .imging-Projekte im Browser.
+- [Bilder und Text online gestalten](https://imging.cn/de/online-design/): Bis zu 24 Bild- oder editierbare mehrsprachige Textebenen, Schriften bei Bedarf, Filter, Beauty, Drehung, Layout und .imging-v2-Projekte im Browser.
 - [Video-Freistellung Beta](https://imging.cn/de/video-editor/): Personen mit temporaler KI freistellen, Seitenverhältnis erhalten, Hintergrund ersetzen und als MP4 oder transparentes WebM speichern.
 - [PDF lokal komprimieren](https://imging.cn/de/pdf-compress/): Effektive Bild-DPI analysieren und die Größe senken, während Text, Vektoren, Links und Seitendimensionen erhalten bleiben.
 - [PDF in eine eigenständige HTML-Datei umwandeln](https://imging.cn/de/pdf-to-html/): Festes PDF-Layout, auswählbaren Text, Bilder, Vektoren und erlaubte Schriften ohne Viewer-Menü rekonstruieren.

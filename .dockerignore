@@ -32,6 +32,7 @@
 !assets/**
 !docs/
 !docs/imging-project-v1.schema.json
+!docs/imging-project-v2.schema.json
 !seo/
 !seo/**
 # imging-locales:start

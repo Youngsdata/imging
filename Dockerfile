@@ -19,6 +19,7 @@ COPY --link models/video-matting/rvm-resnet50-fp16.onnx /usr/share/nginx/html/mo
 COPY --link licenses/ /usr/share/nginx/html/licenses/
 COPY --link assets/ /usr/share/nginx/html/assets/
 COPY --link docs/imging-project-v1.schema.json /usr/share/nginx/html/schemas/imging-project-v1.schema.json
+COPY --link docs/imging-project-v2.schema.json /usr/share/nginx/html/schemas/imging-project-v2.schema.json
 COPY --link ai/background-removal.js /usr/share/nginx/html/ai/background-removal.js
 COPY --link ai/video-matting.js /usr/share/nginx/html/ai/video-matting.js
 COPY --link video/ /usr/share/nginx/html/video/

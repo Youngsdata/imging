@@ -11,6 +11,16 @@
 - 说明：字形数据未作任何修改；图映不就该字体向用户收费
 - 完整声明见 `licenses/Alimama-ShuHeiTi-LICENSE.txt`
 
+## Noto Sans / Noto Sans CJK
+
+- 文件：`fonts/NotoSans-Variable.ttf`（2,049,096 字节）、`fonts/NotoSansJP-Regular.otf`（4,533,028 字节）、`fonts/NotoSansKR-Regular.otf`（4,644,748 字节）
+- 出品方：The Noto Project Authors / Google
+- 授权：SIL Open Font License 1.1
+- 用途：图片水印、在线做图文字图层和专业精修文字水印的拉丁、日文与韩文字体；用户选择后按需下载
+- 说明：字体不会默认整包下载；选中的字体会在浏览器本地加载，并用于预览、工程恢复和最终导出
+- 许可证副本：`licenses/Noto-SIL-OFL-1.1.txt`
+- 上游与文件来源说明：`licenses/Noto-Fonts-NOTICE.txt`
+
 ## @jsquash/avif 2.1.1
 
 - 用途：浏览器端 AVIF 编码与解码
