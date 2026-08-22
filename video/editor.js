@@ -125,5 +125,5 @@
   window.addEventListener('beforeunload',function(e){if(!state.processing)return;e.preventDefault();e.returnValue='';});
   ui.format.value='mp4';renderCapabilities();syncFormat();setBusy(false);resetSteps();
   window.addEventListener('pageshow',function(){if(!state.formatTouched&&state.bgMode!=='transparent')ui.format.value='mp4';syncFormat();});
-  try{if(new URLSearchParams(location.search).get('video')==='1'||/^\/(?:(?:en|ja|de)\/)?video\/?$/.test(location.pathname))setTimeout(open,0);}catch(_e){}
+  try{if(new URLSearchParams(location.search).get('video')==='1'||/^\/(?:(?:en|ja|ko|de|fr)\/)?video\/?$/.test(location.pathname))setTimeout(open,0);}catch(_e){}
 })();

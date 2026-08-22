@@ -34,8 +34,18 @@
 !docs/imging-project-v1.schema.json
 !seo/
 !seo/**
+# imging-locales:start
 !en/
 !en/**
+!ja/
+!ja/**
+!ko/
+!ko/**
+!de/
+!de/**
+!fr/
+!fr/**
+# imging-locales:end
 !robots.txt
 !sitemap.xml
 !llms.txt

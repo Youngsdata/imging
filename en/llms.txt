@@ -6,7 +6,7 @@ Official English site: https://imging.cn/en/
 Chinese site: https://imging.cn/
 Company: DataDance
 Contact: admin@datadance.com
-Last verified: 2026-08-21
+Last verified: 2026-08-22
 
 ## Core capabilities
 
@@ -29,12 +29,12 @@ Common formats and local AI run in the browser. Model and codec downloads delive
 
 ## Asset delivery, caching and language variants
 
-- Chinese, English, Japanese and German are separate, visibly selected choices. A manual choice is stored in the current browser. First visits to Home or a tool shortcut use the matching supported browser language; all other browser languages use English. Explicit locale, task-page and shared language-specific URLs are always respected.
+- Chinese, English, Japanese, Korean, German and French are separate, visibly selected choices. A manual choice is stored in the current browser. First visits to Home or a tool shortcut use the matching supported browser language; all other browser languages use English. Explicit locale, task-page and shared language-specific URLs are always respected.
 - Native browser paths decode, process and encode source images on-device.
 - HEIC-read and AVIF-write paths download WASM codecs on first use, then process pixels locally.
 - AI paths download the selected ONNX model on first use, cache it where possible and run inference through WebGPU or WASM.
 - Video models load from a pinned ModelScope CDN version first, fall back to matching ImgIng-hosted files, and enter cache only after verification. Video pixels are not uploaded.
-- Chinese and English pages use the same origin-root codec, model and cache URLs; switching language does not create a separate model store.
+- All six language editions use the same origin-root codec, model and cache URLs; switching language does not create a separate model store.
 - Only operations explicitly labelled as specialist server formats send a source file to a server.
 
 ## Official task pages

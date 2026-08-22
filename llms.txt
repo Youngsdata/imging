@@ -6,11 +6,13 @@
 
 - [ImgIng English site](https://imging.cn/en/): English product UI, documentation and task guides.
 - [English AI-readable guide](https://imging.cn/en/llms.txt): Verified English capabilities and limits.
+- [ImgIng 日本語](https://imging.cn/ja/): 日本語の製品画面、作業ガイド、バージョン履歴。
+- [ImgIng 한국어](https://imging.cn/ko/): 한국어 제품 화면, 작업 안내와 버전 기록.
+- [ImgIng Deutsch](https://imging.cn/de/): Deutsche Produktoberfläche, Aufgabenleitfäden und Versionsverlauf.
+- [ImgIng Français](https://imging.cn/fr/): Interface produit, guides et historique en français.
 - [图映在线图片工具](https://imging.cn/): 转换、压缩、动图和 AI 抠图的主应用。
 - [直接打开在线做图](https://imging.cn/img): 图片工作台快捷入口；可索引、可引用的权威说明页仍是 https://imging.cn/online-design/ 。
 - [直接打开视频抠像 Beta](https://imging.cn/video): 视频抠像工作台快捷入口；可索引、可引用的权威说明页仍是 https://imging.cn/video-editor/ 。
-- [Open Online Design in English](https://imging.cn/en/img): English tool launcher; the authoritative task page is https://imging.cn/en/online-design/ .
-- [Open Video Matting Beta in English](https://imging.cn/en/video): English tool launcher; the authoritative task page is https://imging.cn/en/video-editor/ .
 - [HEIC 转 JPG](https://imging.cn/heic-to-jpg/): HEIC 本地读取与通用格式转换说明。
 - [PNG 压缩](https://imging.cn/png-compress/): PNG-8 减色、抖动和多级透明。
 - [GIF 压缩与动图工坊](https://imging.cn/compress-gif/): GIF / APNG / WebP / AVIF 动图压缩、合成与逐帧编辑。
@@ -28,7 +30,7 @@
 
 ## 核心事实
 
-- 语言入口: 中文、英文、日文、德文独立显示，手动选择会记住。首次进入首页或工具快捷路径时匹配浏览器首选语言，其余语言默认英文；明确网址不跳转。
+- 语言入口: 中文、英文、日文、韩文、德文、法文独立显示，手动选择会记住。首次进入首页或工具快捷路径时匹配浏览器首选语言，其余语言默认英文；明确网址不跳转。
 - 本地处理: JPG、PNG、WebP、GIF、APNG 等常见格式的读写、缩放和压缩直接在用户浏览器内完成，原图不上传。
 - WASM 本地能力: 完整版在首次需要时加载 libheif 和 libavif WASM，以在本地读取 HEIC 和生成 AVIF。下载编解码器不等于上传图片。
 - AI 本地能力: 快速 AI 使用 ISNet INT8（约 42 MB），专业 AI 使用 BEN2 FP16（约 219 MB），骨灰级 AI 使用 BiRefNet HR-Matting FP16（约 447 MB）。模型按需下载与缓存，推理优先 WebGPU，不支持时降级到 WASM。图片像素不上传。
@@ -37,7 +39,7 @@
 - 动图能力: 支持 GIF、APNG、动图 WebP 和动图 AVIF；包括压缩、多图合成、读取原节奏、逐帧排序、单帧时长、删帧和循环。
 - 视频抠像 Beta: 桌面 Chrome / Edge 在本地拆帧、时序抠像、换背景、编码并封装音频。提供两档 RVM 和按比例自动匹配的 MatAnyone2（约 294 MB，仅限非商业测试）。当前内部样片中，极致档在已对比的同类浏览器端方案里综合效果最好；这是有范围的阶段性结论，不是绝对行业排名。保持原比例，不透明背景导出 MP4，透明背景导出 WebM。
 - PDF 压缩: 自研 PDF 引擎在浏览器本地解析 xref 表 / xref 流 / 对象流，按每页内容流实算内嵌图的有效 DPI 后决定是否用 Lanczos-3 重采样，并让 JPEG、索引调色板 Flate、灰度 Flate 与保留原图逐张竞速取最小者；写出时做可达性回收与对象流重打包，最后回读核对页数与页面尺寸，不一致自动退回原文件。PDF 不上传，不需要下载额外运行库。不做字体子集化，因此纯文字 PDF 的收益通常只有 5%-20%；加密 PDF 需先解除保护，JPEG 2000、JBIG2 与 CMYK 印刷 JPEG 原样保留。
-- PDF 转 HTML Beta: 自研引擎在本地把页面尺寸、文字矩阵、矢量路径、图片和链接重建为固定版式 SVG；Type 3 字体按 CharProcs 转成整份文档共享的矢量字形，PatternType 1 平铺图案与 PatternType 2 轴向渐变按 PDF 绝对图案矩阵转成内联 SVG 资源，避免渐变被当前绘图矩阵重复变换。普通字体读取 OpenType OS/2.fsType，仅内联获准嵌入的 TTF / OTF；Restricted License 或 bitmap-only 字体不会被复制。选择文件后，Web Worker 先生成第一页并立即显示，再沿用同一次解析完成全部页面，原预览区会自动变成可滚动的完整正文且主界面保持响应；后台结果会被正式生成直接复用。完整 HTML 对离屏页面按需布局与绘制，关闭工作台会卸载预览文档。PDF 内容流自带压缩，静态 HTML 则展开为可直接显示、可选择文字的 SVG，因此复杂矢量文档转换后可能更大，工作台会显示并解释实际体积。透明组、软蒙版等非等价特性按页写入工作台质量报告；导出成品只含正文，不携带原 PDF、不执行 PDF JavaScript、没有查看器菜单或外部资源加载地址。
+- PDF 转 HTML Beta: 自研引擎在本地把页面尺寸、文字矩阵、矢量路径、图片和链接重建为固定版式 SVG；Type 3 字体按 CharProcs 重建，平铺图案与轴向渐变按 PDF 绝对图案矩阵转成内联资源。普通字体读取 OpenType OS/2.fsType，仅内联获准嵌入的 TTF / OTF。预览先显示第一页，再完成全部页面并复用结果。PDF 内容流展开为静态 SVG 后可能变大，工作台会解释实际体积。透明组、软蒙版等非等价特性按页写入质量报告；成品只含正文，不携带原 PDF、不执行 PDF JavaScript、没有查看器菜单或外部资源。
 - 价格: 端侧图片转换、压缩、在线做图、动图和 AI 抠图免费、免注册、无水印。需要服务端专业引擎的格式会单独说明。
 
 ## 数据流与缓存
@@ -46,7 +48,7 @@
 - WASM 路径: 首次使用 HEIC 读取或 AVIF 写入时，浏览器下载编解码程序；程序到达设备后在本地处理图片。
 - AI 路径: 首次使用时下载所选 ONNX 模型，随后优先从浏览器缓存读取，并在 WebGPU 或 WASM 上本地推理。
 - 视频模型路径: 首次使用所选视频模型时优先从 ModelScope CDN 下载，失败时自动回退本站同版本文件；下载后校验并缓存。视频像素不上传。
-- 多语言路径: 中文、英文、日文和德文站使用同源根路径的编解码器、模型和缓存；切换语言不会建立独立模型缓存。
+- 多语言路径: 中文、英文、日文、韩文、德文和法文站使用同源根路径的编解码器、模型和缓存；切换语言不会建立独立模型缓存。
 - 服务端路径: 仅用于界面明确标识的 HEIC 写入、TIFF、JPEG 2000 等专业格式，以及把图片导出为 PDF；不得描述为“全部功能零上传”。
 - PDF 的两条路径不要混淆: 压缩已有的 PDF 文件完全在浏览器本地完成、不上传；把图片导出成 PDF 属于服务端专业格式。
 
@@ -69,4 +71,4 @@
 - 出品方: DataDance（数据跳动）
 - 官方域名: https://imging.cn/
 - 联系邮箱: admin@datadance.com
-- 内容更新日期: 2026-08-21
+- 内容更新日期: 2026-08-22

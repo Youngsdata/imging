@@ -1,0 +1,46 @@
+# ImgIng
+
+> 이미지 변환, 압축, 애니메이션, 레이어 디자인과 AI 배경 제거를 브라우저에서 처리합니다. 일반 형식은 업로드하지 않으며 무료, 가입 불필요, 워터마크 없음.
+
+한국어 공식 사이트: https://imging.cn/ko/
+최종 검토: 2026-08-22
+
+## 제품 정보
+
+- 브라우저 로컬
+- 무료 · 가입 불필요 · 워터마크 없음
+- 일반 형식과 로컬 AI 기능은 업로드하지 않습니다. 서버가 필요한 형식은 처리 전에 명확하게 표시합니다.
+- 원본과 결과를 비교하고 실제 출력 파일을 다시 읽어 형식과 크기를 확인합니다.
+
+## 작업 공간
+
+- [온라인 이미지 디자인](https://imging.cn/ko/img)
+- [동영상 배경 제거 Beta](https://imging.cn/ko/video)
+- [PDF를 로컬에서 압축](https://imging.cn/ko/pdf)
+- [PDF를 단일 HTML로 변환](https://imging.cn/ko/pdf-html)
+- [HTML을 실제 크기의 PDF로 변환](https://imging.cn/ko/html-pdf)
+
+## 안내
+
+- [HEIC를 JPG로 변환](https://imging.cn/ko/heic-to-jpg/): iPhone HEIC 사진을 브라우저에서 JPG, WebP 또는 AVIF로 변환합니다. 이미지는 업로드되지 않습니다.
+- [PNG 이미지를 고화질로 압축](https://imging.cn/ko/png-compress/): 투명도를 유지하면서 PNG-8, 팔레트와 디더링을 조정해 눈에 보이는 품질 손실 없이 용량을 줄입니다.
+- [GIF·APNG·애니메이션 WebP 압축](https://imging.cn/ko/compress-gif/): 프레임 시간과 반복을 유지하며 GIF, APNG와 애니메이션 WebP를 브라우저에서 압축하고 편집합니다.
+- [AI로 이미지 배경 제거](https://imging.cn/ko/remove-background/): 로컬 AI로 사람과 상품의 배경을 제거하고 투명, 단색 또는 배경 이미지로 교체합니다. 이미지는 기기 밖으로 나가지 않습니다.
+- [온라인 이미지 디자인](https://imging.cn/ko/online-design/): 최대 24개 레이어, 필터, 뷰티, 회전, 배치와 다시 편집할 수 있는 .imging 프로젝트를 지원합니다.
+- [동영상 배경 제거 Beta](https://imging.cn/ko/video-editor/): 시계열 AI로 인물 동영상의 배경을 제거하고 원본 비율을 유지해 새 배경을 합성한 뒤 MP4 또는 투명 WebM으로 저장합니다.
+- [PDF를 로컬에서 압축](https://imging.cn/ko/pdf-compress/): PDF 이미지의 실제 DPI를 분석해 텍스트, 벡터, 링크와 페이지 크기를 유지하면서 용량을 줄입니다.
+- [PDF를 단일 HTML로 변환](https://imging.cn/ko/pdf-to-html/): PDF의 고정 레이아웃, 선택 가능한 텍스트, 이미지, 벡터와 허용된 글꼴을 뷰어 메뉴 없는 HTML로 재구성합니다.
+- [HTML을 실제 크기의 PDF로 변환](https://imging.cn/ko/html-to-pdf/): HTML을 즉시 미리 보고 CSS, 텍스트, 링크와 실제 페이지 크기를 Chromium PDF로 저장합니다.
+- [로컬 이미지 처리와 개인정보 보호](https://imging.cn/ko/privacy/): 로컬 처리, WASM, AI 모델과 서버 기능의 경계를 명확하게 설명합니다.
+- [이미지 압축 품질 평가](https://imging.cn/ko/benchmark/): 파일 크기, 시각적 품질, 투명도, 애니메이션과 호환성을 함께 측정합니다.
+- [ImgIng와 다른 이미지 도구 비교](https://imging.cn/ko/compare/): 로컬 처리, 개인정보 보호, 형식, 애니메이션, AI와 한계를 같은 기준으로 비교합니다.
+- [업데이트 내역 및 로드맵](https://imging.cn/ko/roadmap/)
+
+## 언어별 페이지
+
+- 中文: https://imging.cn/
+- English: https://imging.cn/en/
+- 日本語: https://imging.cn/ja/
+- 한국어: https://imging.cn/ko/
+- Deutsch: https://imging.cn/de/
+- Français: https://imging.cn/fr/

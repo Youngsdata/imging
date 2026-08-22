@@ -2,17 +2,17 @@
 
 > Bilder konvertieren und komprimieren, Animationen bearbeiten, Ebenen gestalten und Hintergründe mit lokaler KI entfernen – direkt im Browser, kostenlos und ohne Wasserzeichen.
 
-Official Deutsch site: https://imging.cn/de/
-Last reviewed: 2026-08-21
+Offizielle deutsche Website: https://imging.cn/de/
+Zuletzt geprüft: 2026-08-22
 
-## Product facts
+## Produktinformationen
 
 - Im Browser
 - Kostenlos · Ohne Anmeldung · Ohne Wasserzeichen
 - Gängige Formate und lokale KI-Funktionen werden nicht hochgeladen. Serverpflichtige Formate werden vorab eindeutig gekennzeichnet.
 - Original und Ergebnis können verglichen werden; die tatsächlich erzeugte Datei wird erneut gelesen und auf Format sowie Abmessungen geprüft.
 
-## Workspaces
+## Arbeitsbereiche
 
 - [Bilder online mit Ebenen gestalten](https://imging.cn/de/img)
 - [Video-Freistellung Beta](https://imging.cn/de/video)
@@ -20,7 +20,7 @@ Last reviewed: 2026-08-21
 - [PDF in eine eigenständige HTML-Datei umwandeln](https://imging.cn/de/pdf-html)
 - [HTML mit echter Seitengröße in PDF umwandeln](https://imging.cn/de/html-pdf)
 
-## Guides
+## Leitfäden
 
 - [HEIC lokal in JPG konvertieren](https://imging.cn/de/heic-to-jpg/): iPhone-HEIC-Bilder direkt im Browser in JPG, WebP oder AVIF konvertieren. Das Bild wird nicht hochgeladen.
 - [PNG hochwertig komprimieren](https://imging.cn/de/png-compress/): Transparenz erhalten und PNG-8, Palette sowie Dithering abstimmen, um die Dateigröße sichtbar verlustfrei zu senken.
@@ -34,11 +34,13 @@ Last reviewed: 2026-08-21
 - [Lokale Bildverarbeitung und Datenschutz](https://imging.cn/de/privacy/): Die Grenzen zwischen lokaler Verarbeitung, WASM, KI-Modellen und Serverfunktionen verständlich erklärt.
 - [Qualität von Bildkomprimierung bewerten](https://imging.cn/de/benchmark/): Dateigröße, visuelle Qualität, Transparenz, Animation und Kompatibilität gemeinsam messen.
 - [ImgIng mit anderen Bildwerkzeugen vergleichen](https://imging.cn/de/compare/): Lokale Verarbeitung, Datenschutz, Formate, Animation, KI und Grenzen nach denselben Kriterien vergleichen.
-- [Roadmap](https://imging.cn/de/roadmap/)
+- [Versionsverlauf und Roadmap](https://imging.cn/de/roadmap/)
 
-## Language alternatives
+## Sprachversionen
 
 - 中文: https://imging.cn/
 - English: https://imging.cn/en/
 - 日本語: https://imging.cn/ja/
+- 한국어: https://imging.cn/ko/
 - Deutsch: https://imging.cn/de/
+- Français: https://imging.cn/fr/
