@@ -5,8 +5,8 @@
   'use strict';
   var ownScript=document.currentScript;
   var BASE=new URL('./',ownScript&&ownScript.src||location.href).href;
-  var EN=(((document.documentElement&&document.documentElement.lang)||'').toLowerCase().indexOf('en')===0);
-  function copy(zh,en){ return EN?en:zh; }
+  var LANGUAGE=((document.documentElement&&document.documentElement.lang)||'zh-CN').toLowerCase();
+  function copy(zh,en){ return typeof window.TYTr==='function'?window.TYTr(zh,en):(LANGUAGE.indexOf('zh')===0?zh:en); }
   var CACHE_NAME='tuying-ai-model-v1'; // 保留 v1，避免已下载的快速模型在升级后重下。
   var MODEL_RELEASE='v1.0.0';
   var MODEL_CDN_BASE='https://modelscope.cn/models/dragonsoar/imging-background-removal/resolve/'+MODEL_RELEASE+'/';

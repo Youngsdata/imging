@@ -2,8 +2,8 @@
 (function(){
   'use strict';
   var SCRIPT_BASE=(document.currentScript&&document.currentScript.src)||location.href;
-  var $=function(id){return document.getElementById(id);},english=document.documentElement.lang==='en';
-  function tr(zh,en){return english?en:zh;}
+  var $=function(id){return document.getElementById(id);},english=document.documentElement.lang!=='zh-CN';
+  function tr(zh,en){return typeof window.TYTr==='function'?window.TYTr(zh,en):(english?en:zh);}
   var ui={
     view:$('pdfHtmlView'),close:$('pdfHtmlClose'),add:$('pdfHtmlAdd'),addTop:$('pdfHtmlAddTop'),file:$('pdfHtmlFile'),
     run:$('pdfHtmlRun'),runTop:$('pdfHtmlRunTop'),cancel:$('pdfHtmlCancel'),clear:$('pdfHtmlClear'),
@@ -83,7 +83,7 @@
         var bytes=state.bytes;if(!bytes){bytes=new Uint8Array(await file.arrayBuffer());if(state.file===file&&!state.bytes)state.bytes=bytes;}
         if(token!==state.previewToken||state.busy||state.file!==file||!state.open)return;
         var controller=new AbortController();state.previewAbort=controller;
-        var quick=await window.TYPDFToHTML.convert(bytes,{locale:english?'en':'zh-CN',title:outputTitle(),embedFonts:ui.fonts.checked,pageLimit:1,signal:controller.signal});
+        var quick=await window.TYPDFToHTML.convert(bytes,{locale:document.documentElement.lang||'zh-CN',title:outputTitle(),embedFonts:ui.fonts.checked,pageLimit:1,signal:controller.signal});
         finishQuickPreview(token,file,quick.html);
       }catch(error){failQuickPreview(token,error);}finally{if(token===state.previewToken)state.previewAbort=null;}
     })();
@@ -92,7 +92,7 @@
     if(state.previewWorker)return state.previewWorker;
     if(state.previewWorkerFailed||typeof Worker!=='function'||!window.TY_PDF_LOCAL)return null;
     try{
-      var worker=new Worker(new URL('to-html-preview-worker.js?v=4',SCRIPT_BASE));
+      var worker=new Worker(new URL('to-html-preview-worker.js?v=5',SCRIPT_BASE));
       worker.addEventListener('message',function(event){var data=event.data||{},job=state.previewJob;if(!job||data.id!==job.token)return;if(data.type==='preview')finishQuickPreview(job.token,job.file,data.html);else if(data.type==='progress')updatePreviewProgress(job,data);else if(data.type==='complete'){state.previewJob=null;finishFullPreview(job.token,job.file,data.result,job.embedFonts);}else{state.previewJob=null;failQuickPreview(job.token,{name:data.name,message:data.message});}});
       worker.addEventListener('error',function(){var job=state.previewJob;state.previewJob=null;state.previewWorkerFailed=true;try{worker.terminate();}catch(_e){}state.previewWorker=null;if(job&&job.token===state.previewToken)runMainThreadPreview(job.token,job.file);});
       state.previewWorker=worker;return worker;
@@ -104,7 +104,7 @@
     ui.previewTag.dataset.kind='source';ui.previewTag.textContent=tr('正在生成第 1 页快速预览…','Generating a fast first-page preview…');
     function start(){
       if(token!==state.previewToken||state.busy||state.file!==file||!state.open)return;
-      var worker=ensurePreviewWorker();if(worker){state.previewJob={token:token,file:file,embedFonts:ui.fonts.checked};worker.postMessage({type:'preview',id:token,file:file,locale:english?'en':'zh-CN',title:outputTitle(),embedFonts:ui.fonts.checked});}else runMainThreadPreview(token,file);
+      var worker=ensurePreviewWorker();if(worker){state.previewJob={token:token,file:file,embedFonts:ui.fonts.checked};worker.postMessage({type:'preview',id:token,file:file,locale:document.documentElement.lang||'zh-CN',title:outputTitle(),embedFonts:ui.fonts.checked});}else runMainThreadPreview(token,file);
     }
     requestAnimationFrame(function(){if(typeof requestIdleCallback==='function')requestIdleCallback(start,{timeout:180});else setTimeout(start,0);});
   }
@@ -136,7 +136,7 @@
   ];var used={};(r.warnings||[]).forEach(function(warning){if(used[warning.code])return;used[warning.code]=true;var info=issueInfo(warning.code,warning.message),pages=r.report.issuePages&&r.report.issuePages[warning.code];rows.push([info.title,pageRanges(pages),info.text]);});ui.report.innerHTML=rows.map(function(row){return '<div><b>'+escapeHTML(row[0])+'</b><span>'+escapeHTML(row[1])+'</span><small>'+escapeHTML(row[2])+'</small></div>';}).join('');sourceLink();var reusedPreview=state.previewKind==='source-full'&&!!state.previewUrl;if(reusedPreview)state.previewKind='result';else if(state.previewKind!=='result'||!state.previewUrl){revokePreview();state.previewUrl=URL.createObjectURL(new Blob([r.html],{type:'text/html'}));state.previewHtml=r.html;state.previewKind='result';}ui.openPreview.hidden=false;ui.openPreview.href=state.previewUrl;ui.openPreview.textContent=tr('打开完整 HTML ↗','Open full HTML ↗');if(!reusedPreview)showHTMLPreview(state.previewHtml,'result');renderFile();}
 
   function loadScript(name){return new Promise(function(resolve,reject){var script=document.createElement('script');script.src=new URL('../pdf/'+name,SCRIPT_BASE).href;script.async=true;script.onload=function(){resolve(true);};script.onerror=function(){reject(new Error(tr('PDF 转 HTML 引擎加载失败，请检查网络后重试。','Could not load the PDF-to-HTML engine. Check the connection and retry.')));};document.head.appendChild(script);});}
-  function ensureLibrary(){if(window.TYPDFCore&&window.TYPDFToHTML)return Promise.resolve(true);if(state.libPromise)return state.libPromise;if(!window.TY_PDF_LOCAL)return Promise.reject(new Error(tr('此单文件版本未携带 PDF 引擎，请使用 imging.cn 完整版。','This distribution does not bundle the PDF engine. Use the full imging.cn build.')));state.libPromise=(window.TYPDFCore?Promise.resolve():loadScript('core.js?v=1')).then(function(){return window.TYPDFToHTML?true:loadScript('to-html.js?v=5');}).catch(function(error){state.libPromise=null;throw error;});return state.libPromise;}
+  function ensureLibrary(){if(window.TYPDFCore&&window.TYPDFToHTML)return Promise.resolve(true);if(state.libPromise)return state.libPromise;if(!window.TY_PDF_LOCAL)return Promise.reject(new Error(tr('此单文件版本未携带 PDF 引擎，请使用 imging.cn 完整版。','This distribution does not bundle the PDF engine. Use the full imging.cn build.')));state.libPromise=(window.TYPDFCore?Promise.resolve():loadScript('core.js?v=1')).then(function(){return window.TYPDFToHTML?true:loadScript('to-html.js?v=6');}).catch(function(error){state.libPromise=null;throw error;});return state.libPromise;}
   function accept(file){return file&&(file.type==='application/pdf'||/\.pdf$/i.test(file.name));}
   function setFile(file){if(!accept(file)){setProgress(0,tr('文件格式不正确','Wrong file type'),tr('请选择 PDF 文件。','Choose a PDF file.'),'ERROR');return;}var limit=fileLimit();if(file.size>limit){setProgress(0,tr('文件超过当前设备安全上限','File exceeds this device’s safe limit'),tr('当前上限 '+formatBytes(limit)+'。单文件 HTML 会同时保留解析数据与导出数据，需要更多内存。','Current limit: '+formatBytes(limit)+'. A self-contained export holds both parsed and output data in memory.'),'LIMIT');return;}revokePreview();revokeSource();state.file=file;state.bytes=null;state.result=null;state.prefetchedResult=null;state.dirty=false;ui.file.value='';sourceLink();renderFile();renderResult();update();resetSteps();setProgress(0,tr('PDF 已就绪','PDF ready'),file.name+' · '+formatBytes(file.size),'READY');setStatus(tr('已选择 '+file.name+' · 首屏会先出现，完整页面在后台自动接续','Selected '+file.name+' · page 1 appears first and all pages follow automatically'));}
   function outputTitle(){return state.file.name.replace(/\.pdf$/i,'')+(english?' - fixed pages':'-固定版式页面');}
@@ -147,10 +147,10 @@
   function open(event){if(event&&(event.button!==0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey))return;if(event&&event.preventDefault){event.preventDefault();if(window.TYShortcut)window.TYShortcut.enter('pdf-html');}state.open=true;ui.view.hidden=false;document.body.style.overflow='hidden';renderResult();requestAnimationFrame(function(){ui.stage.focus({preventScroll:true});});}
   function close(fromRoute){fromRoute=fromRoute===true;if(state.busy&&!fromRoute&&!confirm(tr('还在转换中，退出会取消任务，是否继续？','Conversion is still running. Leave and cancel it?')))return;if(!state.busy&&state.dirty&&!fromRoute&&!confirm(tr('生成的 HTML 还没有保存。退出后本次结果会保留在内存中，但刷新页面会丢失，是否退出？','The generated HTML has not been saved. It stays in memory after closing, but a page refresh will lose it. Leave?')))return;if(state.abort)state.abort.abort();stopPreviewTask();releaseFrame();state.open=false;ui.view.hidden=true;document.body.style.overflow='';if(window.TYShortcut)window.TYShortcut.leave('pdf-html');}
 
-  [].forEach.call(document.querySelectorAll('a[href="/pdf-html"],a[href="/en/pdf-html"]'),function(link){link.addEventListener('click',open);});
+  [].forEach.call(document.querySelectorAll('a[href="/pdf-html"],a[href="/en/pdf-html"],a[href="/ja/pdf-html"],a[href="/de/pdf-html"]'),function(link){link.addEventListener('click',open);});
   ui.close.addEventListener('click',close);window.addEventListener('imging:shortcutchange',function(event){var kind=event.detail&&event.detail.kind;if(kind==='pdf-html'){if(!state.open)open();}else if(state.open)close(true);});ui.add.addEventListener('click',function(){ui.file.click();});ui.addTop.addEventListener('click',function(){ui.file.click();});ui.file.addEventListener('change',function(){if(ui.file.files[0])setFile(ui.file.files[0]);});ui.fonts.addEventListener('change',function(){if(!state.busy&&state.file&&!state.result){state.prefetchedResult=null;revokePreview();renderResult();}});ui.run.addEventListener('click',run);ui.runTop.addEventListener('click',run);ui.cancel.addEventListener('click',function(){if(state.abort)state.abort.abort();});ui.clear.addEventListener('click',clear);ui.save.addEventListener('click',save);
   ['dragenter','dragover'].forEach(function(type){ui.stage.addEventListener(type,function(event){event.preventDefault();ui.drop.hidden=false;});});['dragleave','dragend'].forEach(function(type){ui.stage.addEventListener(type,function(event){if(event.relatedTarget&&ui.stage.contains(event.relatedTarget))return;ui.drop.hidden=true;});});ui.stage.addEventListener('drop',function(event){event.preventDefault();ui.drop.hidden=true;if(event.dataTransfer&&event.dataTransfer.files[0])setFile(event.dataTransfer.files[0]);});
   document.addEventListener('keydown',function(event){if(state.open&&event.key==='Escape'&&!state.busy)close();});
-  try{if((window.TYShortcut&&window.TYShortcut.kind()==='pdf-html')||/^\/(?:en\/)?pdf-html\/?$/.test(location.pathname))setTimeout(open,0);}catch(_e){}
+  try{if((window.TYShortcut&&window.TYShortcut.kind()==='pdf-html')||/^\/(?:(?:en|ja|de)\/)?pdf-html\/?$/.test(location.pathname))setTimeout(open,0);}catch(_e){}
   update();renderFile();renderResult();
 })();

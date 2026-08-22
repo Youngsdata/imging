@@ -1,8 +1,8 @@
 /* 图映 · 视频抠像工作台。源视频、AI 推理与音视频重封装均在浏览器本地完成。 */
 (function(){
   'use strict';
-  var $=function(id){return document.getElementById(id);},english=document.documentElement.lang==='en';
-  function tr(zh,en){return english?en:zh;}
+  var $=function(id){return document.getElementById(id);},english=document.documentElement.lang!=='zh-CN';
+  function tr(zh,en){return typeof window.TYTr==='function'?window.TYTr(zh,en):(english?en:zh);}
   var ui={view:$('videoView'),open:$('videoOpen'),close:$('videoClose'),add:$('videoAdd'),addTop:$('videoAddTop'),file:$('videoFile'),stage:$('videoStage'),drop:$('videoDrop'),empty:$('videoEmpty'),checker:$('videoChecker'),source:$('videoSource'),preview:$('videoPreview'),meta:$('videoMeta'),metaName:$('videoMetaName'),metaDuration:$('videoMetaDuration'),metaSize:$('videoMetaSize'),metaAudio:$('videoMetaAudio'),bgMode:$('videoBgMode'),bgLabel:$('videoBgLabel'),bgColorField:$('videoBgColorField'),bgColor:$('videoBgColor'),bgColorValue:$('videoBgColorValue'),bgImageField:$('videoBgImageField'),bgPick:$('videoBgPick'),bgFile:$('videoBgFile'),bgName:$('videoBgName'),bgFit:$('videoBgFit'),bgBlurField:$('videoBgBlurField'),bgBlur:$('videoBgBlur'),bgBlurValue:$('videoBgBlurValue'),format:$('videoFormat'),formatHint:$('videoFormatHint'),quality:$('videoQuality'),keepAudio:$('videoKeepAudio'),previewFrame:$('videoPreviewFrame'),process:$('videoProcess'),processTop:$('videoProcessTop'),pause:$('videoPause'),cancel:$('videoCancel'),capSummary:$('videoCapSummary'),capSecure:$('videoCapSecure'),capCodecs:$('videoCapCodecs'),capGpu:$('videoCapGpu'),capDisk:$('videoCapDisk'),capHint:$('videoCapHint'),progressTitle:$('videoProgressTitle'),progressState:$('videoProgressState'),progressText:$('videoProgressText'),progressPercent:$('videoProgressPercent'),progressBar:$('videoProgressBar'),progressElapsed:$('videoProgressElapsed'),progressEta:$('videoProgressEta'),result:$('videoResult'),resultTitle:$('videoResultTitle'),resultText:$('videoResultText'),resultVideo:$('videoResultVideo'),resultSave:$('videoResultSave'),status:$('videoStatus'),backend:$('videoBackend')};
   if(!ui.view||!ui.open)return;
 
@@ -125,5 +125,5 @@
   window.addEventListener('beforeunload',function(e){if(!state.processing)return;e.preventDefault();e.returnValue='';});
   ui.format.value='mp4';renderCapabilities();syncFormat();setBusy(false);resetSteps();
   window.addEventListener('pageshow',function(){if(!state.formatTouched&&state.bgMode!=='transparent')ui.format.value='mp4';syncFormat();});
-  try{if(new URLSearchParams(location.search).get('video')==='1'||/^\/(?:en\/)?video\/?$/.test(location.pathname))setTimeout(open,0);}catch(_e){}
+  try{if(new URLSearchParams(location.search).get('video')==='1'||/^\/(?:(?:en|ja|de)\/)?video\/?$/.test(location.pathname))setTimeout(open,0);}catch(_e){}
 })();

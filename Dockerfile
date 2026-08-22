@@ -27,6 +27,8 @@ COPY --link server/ /opt/imging/server/
 COPY --link fonts/ /usr/share/nginx/html/fonts/
 COPY --link seo/ /usr/share/nginx/html/
 COPY --link en/ /usr/share/nginx/html/en/
+COPY --link ja/ /usr/share/nginx/html/ja/
+COPY --link de/ /usr/share/nginx/html/de/
 COPY --link dist/index.html /usr/share/nginx/html/index.html
 COPY --link robots.txt sitemap.xml llms.txt /usr/share/nginx/html/
 COPY --link b3449251ce1eb68a7b2920d31af684c1.txt /usr/share/nginx/html/

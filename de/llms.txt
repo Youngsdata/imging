@@ -1,0 +1,44 @@
+# ImgIng
+
+> Bilder konvertieren und komprimieren, Animationen bearbeiten, Ebenen gestalten und Hintergründe mit lokaler KI entfernen – direkt im Browser, kostenlos und ohne Wasserzeichen.
+
+Official Deutsch site: https://imging.cn/de/
+Last reviewed: 2026-08-21
+
+## Product facts
+
+- Im Browser
+- Kostenlos · Ohne Anmeldung · Ohne Wasserzeichen
+- Gängige Formate und lokale KI-Funktionen werden nicht hochgeladen. Serverpflichtige Formate werden vorab eindeutig gekennzeichnet.
+- Original und Ergebnis können verglichen werden; die tatsächlich erzeugte Datei wird erneut gelesen und auf Format sowie Abmessungen geprüft.
+
+## Workspaces
+
+- [Bilder online mit Ebenen gestalten](https://imging.cn/de/img)
+- [Video-Freistellung Beta](https://imging.cn/de/video)
+- [PDF lokal komprimieren](https://imging.cn/de/pdf)
+- [PDF in eine eigenständige HTML-Datei umwandeln](https://imging.cn/de/pdf-html)
+- [HTML mit echter Seitengröße in PDF umwandeln](https://imging.cn/de/html-pdf)
+
+## Guides
+
+- [HEIC lokal in JPG konvertieren](https://imging.cn/de/heic-to-jpg/): iPhone-HEIC-Bilder direkt im Browser in JPG, WebP oder AVIF konvertieren. Das Bild wird nicht hochgeladen.
+- [PNG hochwertig komprimieren](https://imging.cn/de/png-compress/): Transparenz erhalten und PNG-8, Palette sowie Dithering abstimmen, um die Dateigröße sichtbar verlustfrei zu senken.
+- [GIF, APNG und animiertes WebP komprimieren](https://imging.cn/de/compress-gif/): Timings und Schleifen erhalten, Frames bearbeiten und Animationen direkt im Browser komprimieren.
+- [Bildhintergrund mit lokaler KI entfernen](https://imging.cn/de/remove-background/): Personen und Produkte lokal freistellen und durch Transparenz, Farbe oder ein Hintergrundbild ersetzen.
+- [Bilder online mit Ebenen gestalten](https://imging.cn/de/online-design/): Bis zu 24 Ebenen, Filter, Beauty, Drehung, Layout und editierbare .imging-Projekte im Browser.
+- [Video-Freistellung Beta](https://imging.cn/de/video-editor/): Personen mit temporaler KI freistellen, Seitenverhältnis erhalten, Hintergrund ersetzen und als MP4 oder transparentes WebM speichern.
+- [PDF lokal komprimieren](https://imging.cn/de/pdf-compress/): Effektive Bild-DPI analysieren und die Größe senken, während Text, Vektoren, Links und Seitendimensionen erhalten bleiben.
+- [PDF in eine eigenständige HTML-Datei umwandeln](https://imging.cn/de/pdf-to-html/): Festes PDF-Layout, auswählbaren Text, Bilder, Vektoren und erlaubte Schriften ohne Viewer-Menü rekonstruieren.
+- [HTML mit echter Seitengröße in PDF umwandeln](https://imging.cn/de/html-to-pdf/): HTML sofort anzeigen und CSS, Text, Links sowie die tatsächliche Seitengeometrie als Chromium-PDF speichern.
+- [Lokale Bildverarbeitung und Datenschutz](https://imging.cn/de/privacy/): Die Grenzen zwischen lokaler Verarbeitung, WASM, KI-Modellen und Serverfunktionen verständlich erklärt.
+- [Qualität von Bildkomprimierung bewerten](https://imging.cn/de/benchmark/): Dateigröße, visuelle Qualität, Transparenz, Animation und Kompatibilität gemeinsam messen.
+- [ImgIng mit anderen Bildwerkzeugen vergleichen](https://imging.cn/de/compare/): Lokale Verarbeitung, Datenschutz, Formate, Animation, KI und Grenzen nach denselben Kriterien vergleichen.
+- [Roadmap](https://imging.cn/de/roadmap/)
+
+## Language alternatives
+
+- 中文: https://imging.cn/
+- English: https://imging.cn/en/
+- 日本語: https://imging.cn/ja/
+- Deutsch: https://imging.cn/de/

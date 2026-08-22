@@ -5,8 +5,8 @@
   'use strict';
   var ownScript=document.currentScript;
   var BASE=new URL('./',ownScript&&ownScript.src||location.href).href;
-  var EN=(((document.documentElement&&document.documentElement.lang)||'').toLowerCase().indexOf('en')===0);
-  function copy(zh,en){return EN?en:zh;}
+  var LANGUAGE=((document.documentElement&&document.documentElement.lang)||'zh-CN').toLowerCase();
+  function copy(zh,en){return typeof window.TYTr==='function'?window.TYTr(zh,en):(LANGUAGE.indexOf('zh')===0?zh:en);}
   function matParts(imageBytes,imageSha,maskSha,firstBytes,firstSha,stepSha){return[
     {name:'imageKey',label:copy('图像特征','image features'),file:'matanyone2_image_key.onnx',bytes:imageBytes,sha256:imageSha},
     {name:'maskMemory',label:copy('蒙版记忆','mask memory'),file:'matanyone2_mask_memory.onnx',bytes:40061996,sha256:maskSha},

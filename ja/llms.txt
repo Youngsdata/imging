@@ -1,0 +1,44 @@
+# ImgIng
+
+> 画像変換、圧縮、アニメーション、レイヤーデザイン、AI背景削除をブラウザー内で実行。主要形式はアップロード不要、無料、登録不要、透かしなし。
+
+Official 日本語 site: https://imging.cn/ja/
+Last reviewed: 2026-08-21
+
+## Product facts
+
+- ブラウザー内
+- 無料・登録不要・透かしなし
+- 主要形式とローカルAI処理では送信されません。サーバーが必要な形式は処理前に明示します。
+- 元データと結果を比較し、実際の出力ファイルを再読込して形式と寸法を確認します。
+
+## Workspaces
+
+- [オンライン画像デザイン](https://imging.cn/ja/img)
+- [動画切り抜き Beta](https://imging.cn/ja/video)
+- [PDFをローカルで圧縮](https://imging.cn/ja/pdf)
+- [PDFを単一HTMLへ変換](https://imging.cn/ja/pdf-html)
+- [HTMLを実寸PDFへ変換](https://imging.cn/ja/html-pdf)
+
+## Guides
+
+- [HEICをJPGに変換](https://imging.cn/ja/heic-to-jpg/): iPhoneのHEIC写真をブラウザー内でJPG、WebP、AVIFへ変換。画像はアップロードされません。
+- [PNG画像を高品質に圧縮](https://imging.cn/ja/png-compress/): 透明度を保ちながらPNG-8、パレット、ディザリングを調整し、見た目を守って容量を削減します。
+- [GIF・APNG・WebPアニメーションを圧縮](https://imging.cn/ja/compress-gif/): フレーム時間とループを保ち、GIF、APNG、アニメーションWebPをブラウザー内で圧縮・編集します。
+- [AIで画像背景を削除](https://imging.cn/ja/remove-background/): ローカルAIで人物や商品を切り抜き、透明、単色、背景画像へ置換。画像は端末外へ出ません。
+- [オンライン画像デザイン](https://imging.cn/ja/online-design/): 最大24レイヤー、フィルター、美肌、回転、配置、編集可能な.imgingプロジェクトに対応します。
+- [動画切り抜き Beta](https://imging.cn/ja/video-editor/): 時系列AIで人物動画を切り抜き、比率を保って背景を置換し、MP4または透明WebMで保存します。
+- [PDFをローカルで圧縮](https://imging.cn/ja/pdf-compress/): PDF内画像の実効DPIを解析し、文字、ベクター、リンク、ページ寸法を保ったまま容量を削減します。
+- [PDFを単一HTMLへ変換](https://imging.cn/ja/pdf-to-html/): PDFの固定レイアウト、選択可能な文字、画像、ベクター、許可フォントを閲覧メニューのないHTMLへ再構築します。
+- [HTMLを実寸PDFへ変換](https://imging.cn/ja/html-to-pdf/): HTMLを即時プレビューし、本来のページ寸法、CSS、文字、リンクを保つChromium PDFを直接保存します。
+- [ローカル画像処理とプライバシー](https://imging.cn/ja/privacy/): 画像処理、WASM、AIモデル、サーバー利用の境界を明確に説明します。
+- [画像圧縮の品質評価方法](https://imging.cn/ja/benchmark/): 容量だけでなく、視覚品質、透明度、アニメーション、互換性を合わせて評価します。
+- [ImgIngと他の画像ツールを比較](https://imging.cn/ja/compare/): ローカル処理、プライバシー、形式、アニメーション、AI、制約を同じ基準で比較します。
+- [Roadmap](https://imging.cn/ja/roadmap/)
+
+## Language alternatives
+
+- 中文: https://imging.cn/
+- English: https://imging.cn/en/
+- 日本語: https://imging.cn/ja/
+- Deutsch: https://imging.cn/de/

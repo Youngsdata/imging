@@ -4,7 +4,7 @@
 (function(){
   'use strict';
   self.window=self;
-  importScripts('core.js?v=1','to-html.js?v=5');
+  importScripts('core.js?v=1','to-html.js?v=6');
   var jobs=new Map();
 
   self.addEventListener('message',function(event){
@@ -18,7 +18,7 @@
     (async function(){
       try{
         var bytes=new Uint8Array(await data.file.arrayBuffer());
-        var result=await self.TYPDFToHTML.convert(bytes,{locale:data.locale==='en'?'en':'zh-CN',title:String(data.title||'PDF-固定版式页面'),embedFonts:data.embedFonts!==false,signal:controller.signal,onFirstPage:function(preview){if(!controller.signal.aborted)self.postMessage({type:'preview',id:id,html:preview.html,sourcePages:preview.sourcePages});},onProgress:function(progress){if(!controller.signal.aborted)self.postMessage({type:'progress',id:id,phase:progress.phase,percent:progress.percent,text:progress.text});}});
+        var locale=/^(?:en|ja|de)$/.test(data.locale)?data.locale:'zh-CN',result=await self.TYPDFToHTML.convert(bytes,{locale:locale,title:String(data.title||'PDF-固定版式页面'),embedFonts:data.embedFonts!==false,signal:controller.signal,onFirstPage:function(preview){if(!controller.signal.aborted)self.postMessage({type:'preview',id:id,html:preview.html,sourcePages:preview.sourcePages});},onProgress:function(progress){if(!controller.signal.aborted)self.postMessage({type:'progress',id:id,phase:progress.phase,percent:progress.percent,text:progress.text});}});
         if(!controller.signal.aborted)self.postMessage({type:'complete',id:id,result:result});
       }catch(error){
         if(!controller.signal.aborted)self.postMessage({type:'error',id:id,name:error&&error.name||'Error',message:error&&error.message||String(error)});
