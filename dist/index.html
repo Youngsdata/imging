@@ -26,8 +26,15 @@
   if(!isRoot&&!match)return;
   if(/bot|crawler|spider|slurp|preview|facebookexternalhit|whatsapp/i.test(navigator.userAgent||''))return;
   var saved='';try{saved=localStorage.getItem(key)||'';}catch(_error){}
-  var browser=((navigator.languages&&navigator.languages[0])||navigator.language||'').trim();
-  var detected=/^zh(?:-|$)/i.test(browser)?'zh-CN':/^ja(?:-|$)/i.test(browser)?'ja':/^ko(?:-|$)/i.test(browser)?'ko':/^de(?:-|$)/i.test(browser)?'de':/^fr(?:-|$)/i.test(browser)?'fr':'en';
+  var browserLanguages=[];
+  try{if(navigator.languages&&navigator.languages.length)browserLanguages=Array.prototype.slice.call(navigator.languages);}catch(_error){}
+  if(!browserLanguages.length&&navigator.language)browserLanguages=[navigator.language];
+  function supportedBrowserLanguage(value){
+    var tag=String(value||'').trim().replace(/_/g,'-');
+    return /^zh(?:-|$)/i.test(tag)?'zh-CN':/^en(?:-|$)/i.test(tag)?'en':/^ja(?:-|$)/i.test(tag)?'ja':/^ko(?:-|$)/i.test(tag)?'ko':/^de(?:-|$)/i.test(tag)?'de':/^fr(?:-|$)/i.test(tag)?'fr':'';
+  }
+  var detected='en';
+  for(var i=0;i<browserLanguages.length;i++){var candidate=supportedBrowserLanguage(browserLanguages[i]);if(candidate){detected=candidate;break;}}
   var preferred=explicit||(saved==='zh-CN'||saved==='en'||saved==='ja'||saved==='ko'||saved==='de'||saved==='fr'?saved:detected);
   if(preferred==='zh-CN')return;
   var path=match?'/'+preferred+'/'+match[1]:'/'+preferred+'/';
@@ -2213,10 +2220,11 @@
     <div class="relscroll">
       <div class="relcurrent">
         <time class="reldate" datetime="2026-08-22"><small>CURRENT</small><b>08.22</b></time>
-        <div><strong>当前构建 · PDF 双向转换 · 正式入口版</strong><span>PDF 转 HTML 与 HTML 转 PDF 完成正式入口升级：首页、工作台、任务说明及六语言页面统一移除 Beta 标识，现有质量边界与处理说明继续如实保留。</span></div>
+        <div><strong>当前构建 · 语言入口 · 浏览器偏好精确匹配版</strong><span>首次访问会按浏览器完整语言偏好顺序选择首个受支持版本，而不是只看第一项；明确网址和用户手动选择继续优先，未支持语言才默认进入英文。</span></div>
       </div>
       <div class="relsection"><h3>已经交付</h3><span>VERIFIED RELEASES</span></div>
       <div class="reltimeline">
+        <article class="relitem"><time datetime="2026-08-22">2026-08-22</time><b>首次访问按完整语言偏好顺序精确进入六语言页面</b><p>首次访问按浏览器完整偏好顺序匹配六语言；手动选择和明确语言网址始终优先，全部不匹配才进入英文。</p></article>
         <article class="relitem"><time datetime="2026-08-22">2026-08-22</time><b>PDF 转 HTML 与 HTML 转 PDF 统一升级为正式入口</b><p>PDF 转 HTML 与 HTML 转 PDF 在六语言首页、工作台和任务说明中统一移除 Beta；真实处理边界继续保留。</p></article>
         <article class="relitem"><time datetime="2026-08-22">2026-08-22</time><b>图片导出、在线做图与高级精修统一支持多语言文字图层</b><p>图片导出、在线做图和高级精修统一加入多语言文字；HTML 转 PDF 完成后锁定预览，避免鼠标悬停触发源页面闪动。</p></article>
         <article class="relitem"><time datetime="2026-08-22">2026-08-22</time><b>新增韩语与法语完整界面，形成六语言统一体验</b><p>新增韩语和法语完整界面；六语言首页、工作台、任务页与版本轨迹保持一致，退出和后退不会跳错语言。</p></article>
@@ -2224,7 +2232,6 @@
         <article class="relitem"><time datetime="2026-08-21">2026-08-21</time><b>PDF 压缩：双向有效 DPI、内联图片与内容感知结构清理</b><p>PDF 压缩新增双向有效 DPI、内联图片统一优化、未使用资源清理与安全内容流合并，异常情况继续保守回退。</p></article>
         <article class="relitem"><time datetime="2026-08-21">2026-08-21</time><b>工作台关闭后可靠恢复首页地址与当前语言</b><p>修复五个工作台在操作后退出但地址未返回首页的问题；X、Esc、后退和刷新均保持当前语言与正确页面。</p></article>
         <article class="relitem"><time datetime="2026-08-21">2026-08-21</time><b>HTML 转 PDF：真实页面、通用无损矢量与字体资源最小化</b><p>HTML 按真实页面生成并核对固定版式页数与尺寸；静态字体和图片只加载一次，小页面不再重复固定等待。</p></article>
-        <article class="relitem"><time datetime="2026-08-21">2026-08-21</time><b>PDF 转 HTML：跨版本、蒙版、颜色与逐页质量报告增强</b><p>补齐 PDF 1.0–2.0、蒙版图片、ICC / 索引色、径向渐变与静态注释外观，并让质量报告显示具体问题页。</p></article>
       </div>
       <div class="relsection"><h3>下一个版本</h3><span>PLANNED · NOT SHIPPED</span></div>
       <div class="relnext">
