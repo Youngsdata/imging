@@ -19,7 +19,7 @@ Last verified: 2026-08-22
 - Remove backgrounds locally with connected-edge colour removal or ISNet, BEN2 and BiRefNet HR-Matting models.
 - Refine AI masks with a true 1 px brush, undo/redo, black/white/checker inspection and full-resolution export verification.
 - Replace the background with transparency, a solid colour or a local image; move and scale the subject and background independently, resize the canvas and composite locally on export.
-- Use Online Design with up to 24 image or editable multilingual text layers; apply 12 non-destructive presets and 18 light, colour, skin-aware beauty and detail controls per image or to the full canvas; preserve alpha; save original assets, text parameters and editable adjustments in .imging v2; and export full-size PNG, WebP or JPG locally.
+- Use Online Design with up to 24 independent pages and 24 image or multilingual text layers per page; preserve page-specific size, background and filters; save .imging v3 projects; and export one page, all pages as ZIP, or high-resolution multi-page HTML locally.
 - Use Video Matting Beta in desktop Chrome or Edge for quality-first local temporal matting, aspect-preserving background replacement, retained audio and MP4 or transparent WebM export. On current representative internal samples, the MatAnyone2 ultimate tier produced the best overall result among the comparable browser-side solutions evaluated; this scoped result is not an absolute ranking of every product or clip. MatAnyone2 is for non-commercial testing only.
 - Read HEIC locally with libheif WASM and generate AVIF locally with libavif WASM in the full build.
 
@@ -29,12 +29,12 @@ Common formats and local AI run in the browser. Model and codec downloads delive
 
 ## Asset delivery, caching and language variants
 
-- Chinese, English, Japanese, Korean, German and French are separate, visibly selected choices. A manual choice is stored in the current browser. First visits to Home or a tool shortcut use the matching supported browser language; all other browser languages use English. Explicit locale, task-page and shared language-specific URLs are always respected.
+- Chinese, English, Japanese, Korean, German, Spanish, Portuguese and French are separate, visibly selected choices. A manual choice is stored in the current browser. First visits to Home or a tool shortcut use the first matching supported browser language; unsupported preferences fall back to English. Explicit locale, task-page and shared language-specific URLs are always respected.
 - Native browser paths decode, process and encode source images on-device.
 - HEIC-read and AVIF-write paths download WASM codecs on first use, then process pixels locally.
 - AI paths download the selected ONNX model on first use, cache it where possible and run inference through WebGPU or WASM.
 - Video models load from a pinned ModelScope CDN version first, fall back to matching ImgIng-hosted files, and enter cache only after verification. Video pixels are not uploaded.
-- All six language editions use the same origin-root codec, model and cache URLs; switching language does not create a separate model store.
+- All eight language editions use the same origin-root codec, model and cache URLs; switching language does not create a separate model store.
 - Only operations explicitly labelled as specialist server formats send a source file to a server.
 
 ## Official task pages
@@ -68,4 +68,4 @@ This file is a machine-readable product summary. The canonical HTML task pages a
 
 ## Public roadmap — not a current capability
 
-Multi-layer Online Design, editable multilingual text, frame scaling, arbitrary-angle rotation, non-destructive colour filters and skin-aware beauty are already shipped. The next public target before August 31, 2026 is crop, flip, free transform, shapes, brush, selections and local adjustments. These remaining items are planned and must not be described as currently available. Only the Shipped section of the roadmap and controls visible in the current tool are released capabilities.
+Multi-page Online Design, editable multilingual text, frame scaling, arbitrary-angle rotation, non-destructive colour filters and skin-aware beauty are already shipped. The next public target before August 31, 2026 is crop, flip and free transform for images, alignment guides, brush, selections and local adjustments. These remaining items are planned and must not be described as currently available. Only the Shipped section of the roadmap and controls visible in the current tool are released capabilities.

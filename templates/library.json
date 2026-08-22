@@ -1,0 +1,2134 @@
+{
+  "schemaVersion": 1,
+  "libraryId": "imging-design-library",
+  "version": "v1",
+  "updatedAt": "2026-08-22T00:00:00.000Z",
+  "ui": {
+    "zh-CN": {
+      "openLibrary": "模板与素材库",
+      "templates": "模板",
+      "materials": "素材",
+      "business": "商务风",
+      "ecommerce": "电商",
+      "all": "全部",
+      "search": "搜索模板或素材",
+      "apply": "使用模板",
+      "insert": "添加到画布",
+      "close": "关闭",
+      "loading": "正在加载…",
+      "empty": "没有找到匹配内容",
+      "free": "免费",
+      "editable": "可编辑图层",
+      "transparent": "透明素材",
+      "networkError": "模板库加载失败，请检查网络后重试",
+      "templateLoaded": "模板已载入，所有元素均为独立图层",
+      "assetLoaded": "透明素材已添加到画布",
+      "confirmTitle": "使用这个模板？",
+      "confirmBody": "当前画布将被模板替换。请先导出需要保留的工程。",
+      "cancel": "取消"
+    },
+    "en": {
+      "openLibrary": "Templates & assets",
+      "templates": "Templates",
+      "materials": "Assets",
+      "business": "Business",
+      "ecommerce": "Ecommerce",
+      "all": "All",
+      "search": "Search templates or assets",
+      "apply": "Use template",
+      "insert": "Add to canvas",
+      "close": "Close",
+      "loading": "Loading…",
+      "empty": "No matching items",
+      "free": "Free",
+      "editable": "Editable layers",
+      "transparent": "Transparent assets",
+      "networkError": "Could not load the library. Check your connection and retry.",
+      "templateLoaded": "Template loaded with independently editable layers",
+      "assetLoaded": "Transparent asset added to the canvas",
+      "confirmTitle": "Use this template?",
+      "confirmBody": "The current canvas will be replaced. Export any project you want to keep first.",
+      "cancel": "Cancel"
+    },
+    "ja": {
+      "openLibrary": "テンプレートと素材",
+      "templates": "テンプレート",
+      "materials": "素材",
+      "business": "ビジネス",
+      "ecommerce": "EC",
+      "all": "すべて",
+      "search": "テンプレートや素材を検索",
+      "apply": "使用する",
+      "insert": "キャンバスに追加",
+      "close": "閉じる",
+      "loading": "読み込み中…",
+      "empty": "一致する項目がありません",
+      "free": "無料",
+      "editable": "編集可能レイヤー",
+      "transparent": "透明素材",
+      "networkError": "ライブラリを読み込めませんでした",
+      "templateLoaded": "編集可能な独立レイヤーとして読み込みました",
+      "assetLoaded": "透明素材を追加しました"
+    },
+    "ko": {
+      "openLibrary": "템플릿 및 소재",
+      "templates": "템플릿",
+      "materials": "소재",
+      "business": "비즈니스",
+      "ecommerce": "이커머스",
+      "all": "전체",
+      "search": "템플릿 또는 소재 검색",
+      "apply": "템플릿 사용",
+      "insert": "캔버스에 추가",
+      "close": "닫기",
+      "loading": "불러오는 중…",
+      "empty": "일치하는 항목이 없습니다",
+      "free": "무료",
+      "editable": "편집 가능한 레이어",
+      "transparent": "투명 소재",
+      "networkError": "라이브러리를 불러오지 못했습니다",
+      "templateLoaded": "독립 편집 레이어로 템플릿을 불러왔습니다",
+      "assetLoaded": "투명 소재를 추가했습니다"
+    },
+    "de": {
+      "openLibrary": "Vorlagen & Assets",
+      "templates": "Vorlagen",
+      "materials": "Assets",
+      "business": "Business",
+      "ecommerce": "E-Commerce",
+      "all": "Alle",
+      "search": "Vorlagen oder Assets suchen",
+      "apply": "Vorlage verwenden",
+      "insert": "Zur Leinwand",
+      "close": "Schließen",
+      "loading": "Laden…",
+      "empty": "Keine passenden Elemente",
+      "free": "Kostenlos",
+      "editable": "Editierbare Ebenen",
+      "transparent": "Transparente Assets",
+      "networkError": "Bibliothek konnte nicht geladen werden",
+      "templateLoaded": "Vorlage mit editierbaren Einzelebenen geladen",
+      "assetLoaded": "Transparentes Asset hinzugefügt"
+    },
+    "fr": {
+      "openLibrary": "Modèles et ressources",
+      "templates": "Modèles",
+      "materials": "Ressources",
+      "business": "Entreprise",
+      "ecommerce": "E-commerce",
+      "all": "Tout",
+      "search": "Rechercher des modèles ou ressources",
+      "apply": "Utiliser le modèle",
+      "insert": "Ajouter au canevas",
+      "close": "Fermer",
+      "loading": "Chargement…",
+      "empty": "Aucun résultat",
+      "free": "Gratuit",
+      "editable": "Calques modifiables",
+      "transparent": "Ressources transparentes",
+      "networkError": "Impossible de charger la bibliothèque",
+      "templateLoaded": "Modèle chargé avec des calques indépendants",
+      "assetLoaded": "Ressource transparente ajoutée"
+    }
+  },
+  "collections": [
+    {
+      "id": "business",
+      "title": {
+        "zh-CN": "商务风",
+        "en": "Business",
+        "ja": "Business",
+        "ko": "Business",
+        "de": "Business",
+        "fr": "Business"
+      },
+      "description": {
+        "zh-CN": "高频商务汇报、招聘、活动、名片与社媒内容。",
+        "en": "High-utility reports, hiring, events, cards and social content.",
+        "ja": "High-utility reports, hiring, events, cards and social content.",
+        "ko": "High-utility reports, hiring, events, cards and social content.",
+        "de": "High-utility reports, hiring, events, cards and social content.",
+        "fr": "High-utility reports, hiring, events, cards and social content."
+      }
+    },
+    {
+      "id": "ecommerce",
+      "title": {
+        "zh-CN": "电商",
+        "en": "Ecommerce",
+        "ja": "Ecommerce",
+        "ko": "Ecommerce",
+        "de": "Ecommerce",
+        "fr": "Ecommerce"
+      },
+      "description": {
+        "zh-CN": "美妆护肤新品、促销、详情页、直播与口碑内容。",
+        "en": "Beauty launches, sales, detail pages, livestreams and reviews.",
+        "ja": "Beauty launches, sales, detail pages, livestreams and reviews.",
+        "ko": "Beauty launches, sales, detail pages, livestreams and reviews.",
+        "de": "Beauty launches, sales, detail pages, livestreams and reviews.",
+        "fr": "Beauty launches, sales, detail pages, livestreams and reviews."
+      }
+    }
+  ],
+  "templates": [
+    {
+      "id": "business-strategy-cover",
+      "collection": "business",
+      "title": {
+        "zh-CN": "蓝黑战略报告",
+        "en": "Midnight strategy report",
+        "ja": "Midnight strategy report",
+        "ko": "Midnight strategy report",
+        "de": "Midnight strategy report",
+        "fr": "Midnight strategy report"
+      },
+      "description": {
+        "zh-CN": "高频商务汇报封面，适合战略、融资与年度规划。",
+        "en": "A high-utility cover for strategy, fundraising and annual planning.",
+        "ja": "A high-utility cover for strategy, fundraising and annual planning.",
+        "ko": "A high-utility cover for strategy, fundraising and annual planning.",
+        "de": "A high-utility cover for strategy, fundraising and annual planning.",
+        "fr": "A high-utility cover for strategy, fundraising and annual planning."
+      },
+      "width": 1920,
+      "height": 1080,
+      "tags": [
+        "strategy",
+        "presentation",
+        "report"
+      ],
+      "layerCount": 9,
+      "project": "v1/projects/business-strategy-cover.imging",
+      "thumbnail": "v1/previews/business-strategy-cover.png",
+      "sourcePreview": "v1/previews/business-strategy-cover.svg",
+      "license": "imging-original-free"
+    },
+    {
+      "id": "business-whitepaper-cover",
+      "collection": "business",
+      "title": {
+        "zh-CN": "极简白皮书封面",
+        "en": "Minimal whitepaper cover",
+        "ja": "Minimal whitepaper cover",
+        "ko": "Minimal whitepaper cover",
+        "de": "Minimal whitepaper cover",
+        "fr": "Minimal whitepaper cover"
+      },
+      "description": {
+        "zh-CN": "留白充足的品牌、研究与咨询白皮书封面。",
+        "en": "A spacious cover for brand, research and consulting whitepapers.",
+        "ja": "A spacious cover for brand, research and consulting whitepapers.",
+        "ko": "A spacious cover for brand, research and consulting whitepapers.",
+        "de": "A spacious cover for brand, research and consulting whitepapers.",
+        "fr": "A spacious cover for brand, research and consulting whitepapers."
+      },
+      "width": 1240,
+      "height": 1754,
+      "tags": [
+        "whitepaper",
+        "minimal",
+        "document"
+      ],
+      "layerCount": 8,
+      "project": "v1/projects/business-whitepaper-cover.imging",
+      "thumbnail": "v1/previews/business-whitepaper-cover.png",
+      "sourcePreview": "v1/previews/business-whitepaper-cover.svg",
+      "license": "imging-original-free"
+    },
+    {
+      "id": "business-quarterly-data",
+      "collection": "business",
+      "title": {
+        "zh-CN": "季度数据简报",
+        "en": "Quarterly data brief",
+        "ja": "Quarterly data brief",
+        "ko": "Quarterly data brief",
+        "de": "Quarterly data brief",
+        "fr": "Quarterly data brief"
+      },
+      "description": {
+        "zh-CN": "KPI、趋势图和结论都可直接替换。",
+        "en": "Replaceable KPI, trend chart and conclusion blocks.",
+        "ja": "Replaceable KPI, trend chart and conclusion blocks.",
+        "ko": "Replaceable KPI, trend chart and conclusion blocks.",
+        "de": "Replaceable KPI, trend chart and conclusion blocks.",
+        "fr": "Replaceable KPI, trend chart and conclusion blocks."
+      },
+      "width": 1080,
+      "height": 1350,
+      "tags": [
+        "data",
+        "kpi",
+        "quarterly"
+      ],
+      "layerCount": 14,
+      "project": "v1/projects/business-quarterly-data.imging",
+      "thumbnail": "v1/previews/business-quarterly-data.png",
+      "sourcePreview": "v1/previews/business-quarterly-data.svg",
+      "license": "imging-original-free"
+    },
+    {
+      "id": "business-conference-poster",
+      "collection": "business",
+      "title": {
+        "zh-CN": "商务发布会海报",
+        "en": "Business conference poster",
+        "ja": "Business conference poster",
+        "ko": "Business conference poster",
+        "de": "Business conference poster",
+        "fr": "Business conference poster"
+      },
+      "description": {
+        "zh-CN": "适合峰会、发布会、品牌活动与直播预告。",
+        "en": "For summits, launches, brand events and livestream announcements.",
+        "ja": "For summits, launches, brand events and livestream announcements.",
+        "ko": "For summits, launches, brand events and livestream announcements.",
+        "de": "For summits, launches, brand events and livestream announcements.",
+        "fr": "For summits, launches, brand events and livestream announcements."
+      },
+      "width": 1080,
+      "height": 1440,
+      "tags": [
+        "event",
+        "conference",
+        "poster"
+      ],
+      "layerCount": 11,
+      "project": "v1/projects/business-conference-poster.imging",
+      "thumbnail": "v1/previews/business-conference-poster.png",
+      "sourcePreview": "v1/previews/business-conference-poster.svg",
+      "license": "imging-original-free"
+    },
+    {
+      "id": "business-hiring-poster",
+      "collection": "business",
+      "title": {
+        "zh-CN": "蓝色招聘海报",
+        "en": "Blue hiring poster",
+        "ja": "Blue hiring poster",
+        "ko": "Blue hiring poster",
+        "de": "Blue hiring poster",
+        "fr": "Blue hiring poster"
+      },
+      "description": {
+        "zh-CN": "岗位、团队优势和投递信息均为独立文字层。",
+        "en": "Role, team benefits and application copy stay as separate text layers.",
+        "ja": "Role, team benefits and application copy stay as separate text layers.",
+        "ko": "Role, team benefits and application copy stay as separate text layers.",
+        "de": "Role, team benefits and application copy stay as separate text layers.",
+        "fr": "Role, team benefits and application copy stay as separate text layers."
+      },
+      "width": 1080,
+      "height": 1440,
+      "tags": [
+        "hiring",
+        "recruitment",
+        "poster"
+      ],
+      "layerCount": 10,
+      "project": "v1/projects/business-hiring-poster.imging",
+      "thumbnail": "v1/previews/business-hiring-poster.png",
+      "sourcePreview": "v1/previews/business-hiring-poster.svg",
+      "license": "imging-original-free"
+    },
+    {
+      "id": "business-social-quote",
+      "collection": "business",
+      "title": {
+        "zh-CN": "商务金句方图",
+        "en": "Business quote square",
+        "ja": "Business quote square",
+        "ko": "Business quote square",
+        "de": "Business quote square",
+        "fr": "Business quote square"
+      },
+      "description": {
+        "zh-CN": "适合创始人观点、客户评价和社媒金句。",
+        "en": "For founder insights, client testimonials and social quotes.",
+        "ja": "For founder insights, client testimonials and social quotes.",
+        "ko": "For founder insights, client testimonials and social quotes.",
+        "de": "For founder insights, client testimonials and social quotes.",
+        "fr": "For founder insights, client testimonials and social quotes."
+      },
+      "width": 1080,
+      "height": 1080,
+      "tags": [
+        "quote",
+        "social",
+        "thought-leadership"
+      ],
+      "layerCount": 6,
+      "project": "v1/projects/business-social-quote.imging",
+      "thumbnail": "v1/previews/business-social-quote.png",
+      "sourcePreview": "v1/previews/business-social-quote.svg",
+      "license": "imging-original-free"
+    },
+    {
+      "id": "business-consulting-cover",
+      "collection": "business",
+      "title": {
+        "zh-CN": "咨询方案封面",
+        "en": "Consulting proposal cover",
+        "ja": "Consulting proposal cover",
+        "ko": "Consulting proposal cover",
+        "de": "Consulting proposal cover",
+        "fr": "Consulting proposal cover"
+      },
+      "description": {
+        "zh-CN": "适合咨询、品牌与数字化转型方案。",
+        "en": "For consulting, branding and digital transformation proposals.",
+        "ja": "For consulting, branding and digital transformation proposals.",
+        "ko": "For consulting, branding and digital transformation proposals.",
+        "de": "For consulting, branding and digital transformation proposals.",
+        "fr": "For consulting, branding and digital transformation proposals."
+      },
+      "width": 1920,
+      "height": 1080,
+      "tags": [
+        "consulting",
+        "proposal",
+        "cover"
+      ],
+      "layerCount": 8,
+      "project": "v1/projects/business-consulting-cover.imging",
+      "thumbnail": "v1/previews/business-consulting-cover.png",
+      "sourcePreview": "v1/previews/business-consulting-cover.svg",
+      "license": "imging-original-free"
+    },
+    {
+      "id": "business-contact-card",
+      "collection": "business",
+      "title": {
+        "zh-CN": "科技商务名片",
+        "en": "Technology business card",
+        "ja": "Technology business card",
+        "ko": "Technology business card",
+        "de": "Technology business card",
+        "fr": "Technology business card"
+      },
+      "description": {
+        "zh-CN": "适合个人品牌、顾问与科技公司联系卡。",
+        "en": "A contact card for personal brands, consultants and technology companies.",
+        "ja": "A contact card for personal brands, consultants and technology companies.",
+        "ko": "A contact card for personal brands, consultants and technology companies.",
+        "de": "A contact card for personal brands, consultants and technology companies.",
+        "fr": "A contact card for personal brands, consultants and technology companies."
+      },
+      "width": 1050,
+      "height": 600,
+      "tags": [
+        "business-card",
+        "contact",
+        "technology"
+      ],
+      "layerCount": 8,
+      "project": "v1/projects/business-contact-card.imging",
+      "thumbnail": "v1/previews/business-contact-card.png",
+      "sourcePreview": "v1/previews/business-contact-card.svg",
+      "license": "imging-original-free"
+    },
+    {
+      "id": "ecommerce-skincare-launch",
+      "collection": "ecommerce",
+      "title": {
+        "zh-CN": "高端护肤上新",
+        "en": "Premium skincare launch",
+        "ja": "Premium skincare launch",
+        "ko": "Premium skincare launch",
+        "de": "Premium skincare launch",
+        "fr": "Premium skincare launch"
+      },
+      "description": {
+        "zh-CN": "护肤新品方图，商品、展台、标题和卖点均可独立调整。",
+        "en": "A skincare launch square with separately editable product, podium, title and benefits.",
+        "ja": "A skincare launch square with separately editable product, podium, title and benefits.",
+        "ko": "A skincare launch square with separately editable product, podium, title and benefits.",
+        "de": "A skincare launch square with separately editable product, podium, title and benefits.",
+        "fr": "A skincare launch square with separately editable product, podium, title and benefits."
+      },
+      "width": 1080,
+      "height": 1080,
+      "tags": [
+        "skincare",
+        "launch",
+        "square"
+      ],
+      "layerCount": 12,
+      "project": "v1/projects/ecommerce-skincare-launch.imging",
+      "thumbnail": "v1/previews/ecommerce-skincare-launch.png",
+      "sourcePreview": "v1/previews/ecommerce-skincare-launch.svg",
+      "license": "imging-original-free"
+    },
+    {
+      "id": "ecommerce-flash-sale",
+      "collection": "ecommerce",
+      "title": {
+        "zh-CN": "红黄限时秒杀",
+        "en": "Red yellow flash sale",
+        "ja": "Red yellow flash sale",
+        "ko": "Red yellow flash sale",
+        "de": "Red yellow flash sale",
+        "fr": "Red yellow flash sale"
+      },
+      "description": {
+        "zh-CN": "高转化促销方图，适合秒杀、节日大促与直播间。",
+        "en": "A conversion-focused square for flash sales, campaigns and livestreams.",
+        "ja": "A conversion-focused square for flash sales, campaigns and livestreams.",
+        "ko": "A conversion-focused square for flash sales, campaigns and livestreams.",
+        "de": "A conversion-focused square for flash sales, campaigns and livestreams.",
+        "fr": "A conversion-focused square for flash sales, campaigns and livestreams."
+      },
+      "width": 1080,
+      "height": 1080,
+      "tags": [
+        "sale",
+        "flash-sale",
+        "promotion"
+      ],
+      "layerCount": 10,
+      "project": "v1/projects/ecommerce-flash-sale.imging",
+      "thumbnail": "v1/previews/ecommerce-flash-sale.png",
+      "sourcePreview": "v1/previews/ecommerce-flash-sale.svg",
+      "license": "imging-original-free"
+    },
+    {
+      "id": "ecommerce-ingredient-detail",
+      "collection": "ecommerce",
+      "title": {
+        "zh-CN": "精华成分详情页",
+        "en": "Serum ingredient detail",
+        "ja": "Serum ingredient detail",
+        "ko": "Serum ingredient detail",
+        "de": "Serum ingredient detail",
+        "fr": "Serum ingredient detail"
+      },
+      "description": {
+        "zh-CN": "适合详情页首屏、成分卖点和产品科技说明。",
+        "en": "For product-detail hero sections, ingredient benefits and product technology.",
+        "ja": "For product-detail hero sections, ingredient benefits and product technology.",
+        "ko": "For product-detail hero sections, ingredient benefits and product technology.",
+        "de": "For product-detail hero sections, ingredient benefits and product technology.",
+        "fr": "For product-detail hero sections, ingredient benefits and product technology."
+      },
+      "width": 1080,
+      "height": 1440,
+      "tags": [
+        "detail-page",
+        "ingredient",
+        "serum"
+      ],
+      "layerCount": 11,
+      "project": "v1/projects/ecommerce-ingredient-detail.imging",
+      "thumbnail": "v1/previews/ecommerce-ingredient-detail.png",
+      "sourcePreview": "v1/previews/ecommerce-ingredient-detail.svg",
+      "license": "imging-original-free"
+    },
+    {
+      "id": "ecommerce-livestream-story",
+      "collection": "ecommerce",
+      "title": {
+        "zh-CN": "美妆直播竖屏",
+        "en": "Beauty livestream story",
+        "ja": "Beauty livestream story",
+        "ko": "Beauty livestream story",
+        "de": "Beauty livestream story",
+        "fr": "Beauty livestream story"
+      },
+      "description": {
+        "zh-CN": "适合直播预约、主播预告和限时优惠。",
+        "en": "For livestream reservations, host announcements and limited offers.",
+        "ja": "For livestream reservations, host announcements and limited offers.",
+        "ko": "For livestream reservations, host announcements and limited offers.",
+        "de": "For livestream reservations, host announcements and limited offers.",
+        "fr": "For livestream reservations, host announcements and limited offers."
+      },
+      "width": 1080,
+      "height": 1920,
+      "tags": [
+        "livestream",
+        "story",
+        "beauty"
+      ],
+      "layerCount": 11,
+      "project": "v1/projects/ecommerce-livestream-story.imging",
+      "thumbnail": "v1/previews/ecommerce-livestream-story.png",
+      "sourcePreview": "v1/previews/ecommerce-livestream-story.svg",
+      "license": "imging-original-free"
+    },
+    {
+      "id": "ecommerce-hydration-blue",
+      "collection": "ecommerce",
+      "title": {
+        "zh-CN": "水感爽肤水上新",
+        "en": "Hydration toner launch",
+        "ja": "Hydration toner launch",
+        "ko": "Hydration toner launch",
+        "de": "Hydration toner launch",
+        "fr": "Hydration toner launch"
+      },
+      "description": {
+        "zh-CN": "清透水感护肤方图，适合爽肤水、喷雾与精华。",
+        "en": "A clean hydration square for toner, mist and serum products.",
+        "ja": "A clean hydration square for toner, mist and serum products.",
+        "ko": "A clean hydration square for toner, mist and serum products.",
+        "de": "A clean hydration square for toner, mist and serum products.",
+        "fr": "A clean hydration square for toner, mist and serum products."
+      },
+      "width": 1080,
+      "height": 1080,
+      "tags": [
+        "hydration",
+        "toner",
+        "blue"
+      ],
+      "layerCount": 11,
+      "project": "v1/projects/ecommerce-hydration-blue.imging",
+      "thumbnail": "v1/previews/ecommerce-hydration-blue.png",
+      "sourcePreview": "v1/previews/ecommerce-hydration-blue.svg",
+      "license": "imging-original-free"
+    },
+    {
+      "id": "ecommerce-sunscreen-summer",
+      "collection": "ecommerce",
+      "title": {
+        "zh-CN": "夏日轻盈防晒",
+        "en": "Summer sunscreen campaign",
+        "ja": "Summer sunscreen campaign",
+        "ko": "Summer sunscreen campaign",
+        "de": "Summer sunscreen campaign",
+        "fr": "Summer sunscreen campaign"
+      },
+      "description": {
+        "zh-CN": "明亮户外感竖图，适合防晒、隔离与身体护理。",
+        "en": "A bright portrait for sunscreen, primer and body care.",
+        "ja": "A bright portrait for sunscreen, primer and body care.",
+        "ko": "A bright portrait for sunscreen, primer and body care.",
+        "de": "A bright portrait for sunscreen, primer and body care.",
+        "fr": "A bright portrait for sunscreen, primer and body care."
+      },
+      "width": 1080,
+      "height": 1350,
+      "tags": [
+        "sunscreen",
+        "summer",
+        "portrait"
+      ],
+      "layerCount": 10,
+      "project": "v1/projects/ecommerce-sunscreen-summer.imging",
+      "thumbnail": "v1/previews/ecommerce-sunscreen-summer.png",
+      "sourcePreview": "v1/previews/ecommerce-sunscreen-summer.svg",
+      "license": "imging-original-free"
+    },
+    {
+      "id": "ecommerce-gift-set-banner",
+      "collection": "ecommerce",
+      "title": {
+        "zh-CN": "高端礼赠套装横幅",
+        "en": "Premium gift set banner",
+        "ja": "Premium gift set banner",
+        "ko": "Premium gift set banner",
+        "de": "Premium gift set banner",
+        "fr": "Premium gift set banner"
+      },
+      "description": {
+        "zh-CN": "适合节日礼盒、品牌套装和首页横幅。",
+        "en": "For seasonal gifts, brand sets and homepage banners.",
+        "ja": "For seasonal gifts, brand sets and homepage banners.",
+        "ko": "For seasonal gifts, brand sets and homepage banners.",
+        "de": "For seasonal gifts, brand sets and homepage banners.",
+        "fr": "For seasonal gifts, brand sets and homepage banners."
+      },
+      "width": 1920,
+      "height": 1080,
+      "tags": [
+        "gift-set",
+        "banner",
+        "premium"
+      ],
+      "layerCount": 12,
+      "project": "v1/projects/ecommerce-gift-set-banner.imging",
+      "thumbnail": "v1/previews/ecommerce-gift-set-banner.png",
+      "sourcePreview": "v1/previews/ecommerce-gift-set-banner.svg",
+      "license": "imging-original-free"
+    },
+    {
+      "id": "ecommerce-review-card",
+      "collection": "ecommerce",
+      "title": {
+        "zh-CN": "护肤口碑评价卡",
+        "en": "Skincare review card",
+        "ja": "Skincare review card",
+        "ko": "Skincare review card",
+        "de": "Skincare review card",
+        "fr": "Skincare review card"
+      },
+      "description": {
+        "zh-CN": "适合真实评价、达人推荐与社交种草。",
+        "en": "For reviews, creator recommendations and social proof.",
+        "ja": "For reviews, creator recommendations and social proof.",
+        "ko": "For reviews, creator recommendations and social proof.",
+        "de": "For reviews, creator recommendations and social proof.",
+        "fr": "For reviews, creator recommendations and social proof."
+      },
+      "width": 1080,
+      "height": 1080,
+      "tags": [
+        "review",
+        "social-proof",
+        "skincare"
+      ],
+      "layerCount": 10,
+      "project": "v1/projects/ecommerce-review-card.imging",
+      "thumbnail": "v1/previews/ecommerce-review-card.png",
+      "sourcePreview": "v1/previews/ecommerce-review-card.svg",
+      "license": "imging-original-free"
+    }
+  ],
+  "materialCategories": [
+    {
+      "id": "cosmetics",
+      "title": {
+        "zh-CN": "美妆护肤商品",
+        "en": "Beauty & skincare products",
+        "ja": "Beauty & skincare products",
+        "ko": "Beauty & skincare products",
+        "de": "Beauty & skincare products",
+        "fr": "Beauty & skincare products"
+      }
+    },
+    {
+      "id": "promotion",
+      "title": {
+        "zh-CN": "促销组件",
+        "en": "Promotion",
+        "ja": "Promotion",
+        "ko": "Promotion",
+        "de": "Promotion",
+        "fr": "Promotion"
+      }
+    },
+    {
+      "id": "display",
+      "title": {
+        "zh-CN": "商品展台",
+        "en": "Product display",
+        "ja": "Product display",
+        "ko": "Product display",
+        "de": "Product display",
+        "fr": "Product display"
+      }
+    },
+    {
+      "id": "business",
+      "title": {
+        "zh-CN": "商务图表",
+        "en": "Business",
+        "ja": "Business",
+        "ko": "Business",
+        "de": "Business",
+        "fr": "Business"
+      }
+    },
+    {
+      "id": "beauty",
+      "title": {
+        "zh-CN": "护肤装饰",
+        "en": "Skincare decoration",
+        "ja": "Skincare decoration",
+        "ko": "Skincare decoration",
+        "de": "Skincare decoration",
+        "fr": "Skincare decoration"
+      }
+    },
+    {
+      "id": "decorate",
+      "title": {
+        "zh-CN": "通用装饰",
+        "en": "Decoration",
+        "ja": "Decoration",
+        "ko": "Decoration",
+        "de": "Decoration",
+        "fr": "Decoration"
+      }
+    },
+    {
+      "id": "abstract",
+      "title": {
+        "zh-CN": "渐变与抽象",
+        "en": "Gradient & abstract",
+        "ja": "Gradient & abstract",
+        "ko": "Gradient & abstract",
+        "de": "Gradient & abstract",
+        "fr": "Gradient & abstract"
+      }
+    },
+    {
+      "id": "commerce",
+      "title": {
+        "zh-CN": "电商图标",
+        "en": "Commerce icons",
+        "ja": "Commerce icons",
+        "ko": "Commerce icons",
+        "de": "Commerce icons",
+        "fr": "Commerce icons"
+      }
+    }
+  ],
+  "materials": [
+    {
+      "id": "gradient-orb-blue",
+      "category": "abstract",
+      "subcategory": "",
+      "name": {
+        "zh-CN": "蓝紫渐变光球",
+        "en": "Blue violet gradient orb",
+        "ja": "Blue violet gradient orb",
+        "ko": "Blue violet gradient orb",
+        "de": "Blue violet gradient orb",
+        "fr": "Blue violet gradient orb"
+      },
+      "width": 520,
+      "height": 520,
+      "tags": [
+        "abstract",
+        "gradient-orb-blue"
+      ],
+      "file": "v1/materials/vector/gradient-orb-blue.svg",
+      "thumbnail": "v1/materials/vector/gradient-orb-blue.svg",
+      "mediaType": "image/svg+xml",
+      "hasTransparency": true,
+      "sourceType": "original-vector",
+      "license": "imging-original-free"
+    },
+    {
+      "id": "gradient-orb-coral",
+      "category": "abstract",
+      "subcategory": "",
+      "name": {
+        "zh-CN": "珊瑚渐变光球",
+        "en": "Coral gradient orb",
+        "ja": "Coral gradient orb",
+        "ko": "Coral gradient orb",
+        "de": "Coral gradient orb",
+        "fr": "Coral gradient orb"
+      },
+      "width": 520,
+      "height": 520,
+      "tags": [
+        "abstract",
+        "gradient-orb-coral"
+      ],
+      "file": "v1/materials/vector/gradient-orb-coral.svg",
+      "thumbnail": "v1/materials/vector/gradient-orb-coral.svg",
+      "mediaType": "image/svg+xml",
+      "hasTransparency": true,
+      "sourceType": "original-vector",
+      "license": "imging-original-free"
+    },
+    {
+      "id": "gradient-orb-mint",
+      "category": "abstract",
+      "subcategory": "",
+      "name": {
+        "zh-CN": "薄荷渐变光球",
+        "en": "Mint gradient orb",
+        "ja": "Mint gradient orb",
+        "ko": "Mint gradient orb",
+        "de": "Mint gradient orb",
+        "fr": "Mint gradient orb"
+      },
+      "width": 520,
+      "height": 520,
+      "tags": [
+        "abstract",
+        "gradient-orb-mint"
+      ],
+      "file": "v1/materials/vector/gradient-orb-mint.svg",
+      "thumbnail": "v1/materials/vector/gradient-orb-mint.svg",
+      "mediaType": "image/svg+xml",
+      "hasTransparency": true,
+      "sourceType": "original-vector",
+      "license": "imging-original-free"
+    },
+    {
+      "id": "gradient-orb-gold",
+      "category": "abstract",
+      "subcategory": "",
+      "name": {
+        "zh-CN": "香槟金渐变光球",
+        "en": "Champagne gradient orb",
+        "ja": "Champagne gradient orb",
+        "ko": "Champagne gradient orb",
+        "de": "Champagne gradient orb",
+        "fr": "Champagne gradient orb"
+      },
+      "width": 520,
+      "height": 520,
+      "tags": [
+        "abstract",
+        "gradient-orb-gold"
+      ],
+      "file": "v1/materials/vector/gradient-orb-gold.svg",
+      "thumbnail": "v1/materials/vector/gradient-orb-gold.svg",
+      "mediaType": "image/svg+xml",
+      "hasTransparency": true,
+      "sourceType": "original-vector",
+      "license": "imging-original-free"
+    },
+    {
+      "id": "dot-grid-dark",
+      "category": "business",
+      "subcategory": "",
+      "name": {
+        "zh-CN": "深色点阵",
+        "en": "Dark dot grid",
+        "ja": "Dark dot grid",
+        "ko": "Dark dot grid",
+        "de": "Dark dot grid",
+        "fr": "Dark dot grid"
+      },
+      "width": 420,
+      "height": 300,
+      "tags": [
+        "business",
+        "dot-grid-dark"
+      ],
+      "file": "v1/materials/vector/dot-grid-dark.svg",
+      "thumbnail": "v1/materials/vector/dot-grid-dark.svg",
+      "mediaType": "image/svg+xml",
+      "hasTransparency": true,
+      "sourceType": "original-vector",
+      "license": "imging-original-free"
+    },
+    {
+      "id": "dot-grid-light",
+      "category": "business",
+      "subcategory": "",
+      "name": {
+        "zh-CN": "浅色点阵",
+        "en": "Light dot grid",
+        "ja": "Light dot grid",
+        "ko": "Light dot grid",
+        "de": "Light dot grid",
+        "fr": "Light dot grid"
+      },
+      "width": 420,
+      "height": 300,
+      "tags": [
+        "business",
+        "dot-grid-light"
+      ],
+      "file": "v1/materials/vector/dot-grid-light.svg",
+      "thumbnail": "v1/materials/vector/dot-grid-light.svg",
+      "mediaType": "image/svg+xml",
+      "hasTransparency": true,
+      "sourceType": "original-vector",
+      "license": "imging-original-free"
+    },
+    {
+      "id": "line-grid-blue",
+      "category": "business",
+      "subcategory": "",
+      "name": {
+        "zh-CN": "蓝色数据网格",
+        "en": "Blue data grid",
+        "ja": "Blue data grid",
+        "ko": "Blue data grid",
+        "de": "Blue data grid",
+        "fr": "Blue data grid"
+      },
+      "width": 540,
+      "height": 360,
+      "tags": [
+        "business",
+        "line-grid-blue"
+      ],
+      "file": "v1/materials/vector/line-grid-blue.svg",
+      "thumbnail": "v1/materials/vector/line-grid-blue.svg",
+      "mediaType": "image/svg+xml",
+      "hasTransparency": true,
+      "sourceType": "original-vector",
+      "license": "imging-original-free"
+    },
+    {
+      "id": "glass-card",
+      "category": "business",
+      "subcategory": "",
+      "name": {
+        "zh-CN": "透明玻璃卡片",
+        "en": "Transparent glass card",
+        "ja": "Transparent glass card",
+        "ko": "Transparent glass card",
+        "de": "Transparent glass card",
+        "fr": "Transparent glass card"
+      },
+      "width": 640,
+      "height": 360,
+      "tags": [
+        "business",
+        "glass-card"
+      ],
+      "file": "v1/materials/vector/glass-card.svg",
+      "thumbnail": "v1/materials/vector/glass-card.svg",
+      "mediaType": "image/svg+xml",
+      "hasTransparency": true,
+      "sourceType": "original-vector",
+      "license": "imging-original-free"
+    },
+    {
+      "id": "outline-frame-blue",
+      "category": "business",
+      "subcategory": "",
+      "name": {
+        "zh-CN": "商务蓝描边框",
+        "en": "Business blue outline frame",
+        "ja": "Business blue outline frame",
+        "ko": "Business blue outline frame",
+        "de": "Business blue outline frame",
+        "fr": "Business blue outline frame"
+      },
+      "width": 760,
+      "height": 980,
+      "tags": [
+        "business",
+        "outline-frame-blue"
+      ],
+      "file": "v1/materials/vector/outline-frame-blue.svg",
+      "thumbnail": "v1/materials/vector/outline-frame-blue.svg",
+      "mediaType": "image/svg+xml",
+      "hasTransparency": true,
+      "sourceType": "original-vector",
+      "license": "imging-original-free"
+    },
+    {
+      "id": "quote-mark",
+      "category": "business",
+      "subcategory": "",
+      "name": {
+        "zh-CN": "巨型引号",
+        "en": "Large quotation mark",
+        "ja": "Large quotation mark",
+        "ko": "Large quotation mark",
+        "de": "Large quotation mark",
+        "fr": "Large quotation mark"
+      },
+      "width": 220,
+      "height": 180,
+      "tags": [
+        "business",
+        "quote-mark"
+      ],
+      "file": "v1/materials/vector/quote-mark.svg",
+      "thumbnail": "v1/materials/vector/quote-mark.svg",
+      "mediaType": "image/svg+xml",
+      "hasTransparency": true,
+      "sourceType": "original-vector",
+      "license": "imging-original-free"
+    },
+    {
+      "id": "chart-bars-blue",
+      "category": "business",
+      "subcategory": "",
+      "name": {
+        "zh-CN": "商务柱状图",
+        "en": "Business bar chart",
+        "ja": "Business bar chart",
+        "ko": "Business bar chart",
+        "de": "Business bar chart",
+        "fr": "Business bar chart"
+      },
+      "width": 520,
+      "height": 300,
+      "tags": [
+        "business",
+        "chart-bars-blue"
+      ],
+      "file": "v1/materials/vector/chart-bars-blue.svg",
+      "thumbnail": "v1/materials/vector/chart-bars-blue.svg",
+      "mediaType": "image/svg+xml",
+      "hasTransparency": true,
+      "sourceType": "original-vector",
+      "license": "imging-original-free"
+    },
+    {
+      "id": "chart-line-lime",
+      "category": "business",
+      "subcategory": "",
+      "name": {
+        "zh-CN": "增长折线",
+        "en": "Growth line chart",
+        "ja": "Growth line chart",
+        "ko": "Growth line chart",
+        "de": "Growth line chart",
+        "fr": "Growth line chart"
+      },
+      "width": 560,
+      "height": 280,
+      "tags": [
+        "business",
+        "chart-line-lime"
+      ],
+      "file": "v1/materials/vector/chart-line-lime.svg",
+      "thumbnail": "v1/materials/vector/chart-line-lime.svg",
+      "mediaType": "image/svg+xml",
+      "hasTransparency": true,
+      "sourceType": "original-vector",
+      "license": "imging-original-free"
+    },
+    {
+      "id": "pill-blue",
+      "category": "promotion",
+      "subcategory": "",
+      "name": {
+        "zh-CN": "蓝色圆角标签",
+        "en": "Blue pill badge",
+        "ja": "Blue pill badge",
+        "ko": "Blue pill badge",
+        "de": "Blue pill badge",
+        "fr": "Blue pill badge"
+      },
+      "width": 330,
+      "height": 94,
+      "tags": [
+        "promotion",
+        "pill-blue"
+      ],
+      "file": "v1/materials/vector/pill-blue.svg",
+      "thumbnail": "v1/materials/vector/pill-blue.svg",
+      "mediaType": "image/svg+xml",
+      "hasTransparency": true,
+      "sourceType": "original-vector",
+      "license": "imging-original-free"
+    },
+    {
+      "id": "pill-red",
+      "category": "promotion",
+      "subcategory": "",
+      "name": {
+        "zh-CN": "红色圆角标签",
+        "en": "Red pill badge",
+        "ja": "Red pill badge",
+        "ko": "Red pill badge",
+        "de": "Red pill badge",
+        "fr": "Red pill badge"
+      },
+      "width": 330,
+      "height": 94,
+      "tags": [
+        "promotion",
+        "pill-red"
+      ],
+      "file": "v1/materials/vector/pill-red.svg",
+      "thumbnail": "v1/materials/vector/pill-red.svg",
+      "mediaType": "image/svg+xml",
+      "hasTransparency": true,
+      "sourceType": "original-vector",
+      "license": "imging-original-free"
+    },
+    {
+      "id": "sale-burst-yellow",
+      "category": "promotion",
+      "subcategory": "",
+      "name": {
+        "zh-CN": "黄色促销爆炸贴",
+        "en": "Yellow sale burst",
+        "ja": "Yellow sale burst",
+        "ko": "Yellow sale burst",
+        "de": "Yellow sale burst",
+        "fr": "Yellow sale burst"
+      },
+      "width": 360,
+      "height": 360,
+      "tags": [
+        "promotion",
+        "sale-burst-yellow"
+      ],
+      "file": "v1/materials/vector/sale-burst-yellow.svg",
+      "thumbnail": "v1/materials/vector/sale-burst-yellow.svg",
+      "mediaType": "image/svg+xml",
+      "hasTransparency": true,
+      "sourceType": "original-vector",
+      "license": "imging-original-free"
+    },
+    {
+      "id": "coupon-ticket-red",
+      "category": "promotion",
+      "subcategory": "",
+      "name": {
+        "zh-CN": "红色优惠券",
+        "en": "Red coupon ticket",
+        "ja": "Red coupon ticket",
+        "ko": "Red coupon ticket",
+        "de": "Red coupon ticket",
+        "fr": "Red coupon ticket"
+      },
+      "width": 560,
+      "height": 220,
+      "tags": [
+        "promotion",
+        "coupon-ticket-red"
+      ],
+      "file": "v1/materials/vector/coupon-ticket-red.svg",
+      "thumbnail": "v1/materials/vector/coupon-ticket-red.svg",
+      "mediaType": "image/svg+xml",
+      "hasTransparency": true,
+      "sourceType": "original-vector",
+      "license": "imging-original-free"
+    },
+    {
+      "id": "price-tag-black",
+      "category": "promotion",
+      "subcategory": "",
+      "name": {
+        "zh-CN": "黑色价格吊牌",
+        "en": "Black price tag",
+        "ja": "Black price tag",
+        "ko": "Black price tag",
+        "de": "Black price tag",
+        "fr": "Black price tag"
+      },
+      "width": 420,
+      "height": 210,
+      "tags": [
+        "promotion",
+        "price-tag-black"
+      ],
+      "file": "v1/materials/vector/price-tag-black.svg",
+      "thumbnail": "v1/materials/vector/price-tag-black.svg",
+      "mediaType": "image/svg+xml",
+      "hasTransparency": true,
+      "sourceType": "original-vector",
+      "license": "imging-original-free"
+    },
+    {
+      "id": "ribbon-red",
+      "category": "promotion",
+      "subcategory": "",
+      "name": {
+        "zh-CN": "红色促销飘带",
+        "en": "Red promotional ribbon",
+        "ja": "Red promotional ribbon",
+        "ko": "Red promotional ribbon",
+        "de": "Red promotional ribbon",
+        "fr": "Red promotional ribbon"
+      },
+      "width": 560,
+      "height": 150,
+      "tags": [
+        "promotion",
+        "ribbon-red"
+      ],
+      "file": "v1/materials/vector/ribbon-red.svg",
+      "thumbnail": "v1/materials/vector/ribbon-red.svg",
+      "mediaType": "image/svg+xml",
+      "hasTransparency": true,
+      "sourceType": "original-vector",
+      "license": "imging-original-free"
+    },
+    {
+      "id": "sparkle-gold",
+      "category": "decorate",
+      "subcategory": "",
+      "name": {
+        "zh-CN": "金色四角星",
+        "en": "Gold sparkle",
+        "ja": "Gold sparkle",
+        "ko": "Gold sparkle",
+        "de": "Gold sparkle",
+        "fr": "Gold sparkle"
+      },
+      "width": 220,
+      "height": 220,
+      "tags": [
+        "decorate",
+        "sparkle-gold"
+      ],
+      "file": "v1/materials/vector/sparkle-gold.svg",
+      "thumbnail": "v1/materials/vector/sparkle-gold.svg",
+      "mediaType": "image/svg+xml",
+      "hasTransparency": true,
+      "sourceType": "original-vector",
+      "license": "imging-original-free"
+    },
+    {
+      "id": "sparkle-white",
+      "category": "decorate",
+      "subcategory": "",
+      "name": {
+        "zh-CN": "白色四角星",
+        "en": "White sparkle",
+        "ja": "White sparkle",
+        "ko": "White sparkle",
+        "de": "White sparkle",
+        "fr": "White sparkle"
+      },
+      "width": 220,
+      "height": 220,
+      "tags": [
+        "decorate",
+        "sparkle-white"
+      ],
+      "file": "v1/materials/vector/sparkle-white.svg",
+      "thumbnail": "v1/materials/vector/sparkle-white.svg",
+      "mediaType": "image/svg+xml",
+      "hasTransparency": true,
+      "sourceType": "original-vector",
+      "license": "imging-original-free"
+    },
+    {
+      "id": "star-cluster",
+      "category": "decorate",
+      "subcategory": "",
+      "name": {
+        "zh-CN": "星星组合",
+        "en": "Star cluster",
+        "ja": "Star cluster",
+        "ko": "Star cluster",
+        "de": "Star cluster",
+        "fr": "Star cluster"
+      },
+      "width": 420,
+      "height": 280,
+      "tags": [
+        "decorate",
+        "star-cluster"
+      ],
+      "file": "v1/materials/vector/star-cluster.svg",
+      "thumbnail": "v1/materials/vector/star-cluster.svg",
+      "mediaType": "image/svg+xml",
+      "hasTransparency": true,
+      "sourceType": "original-vector",
+      "license": "imging-original-free"
+    },
+    {
+      "id": "wave-underline-blue",
+      "category": "decorate",
+      "subcategory": "",
+      "name": {
+        "zh-CN": "蓝色手绘下划线",
+        "en": "Blue hand-drawn underline",
+        "ja": "Blue hand-drawn underline",
+        "ko": "Blue hand-drawn underline",
+        "de": "Blue hand-drawn underline",
+        "fr": "Blue hand-drawn underline"
+      },
+      "width": 520,
+      "height": 100,
+      "tags": [
+        "decorate",
+        "wave-underline-blue"
+      ],
+      "file": "v1/materials/vector/wave-underline-blue.svg",
+      "thumbnail": "v1/materials/vector/wave-underline-blue.svg",
+      "mediaType": "image/svg+xml",
+      "hasTransparency": true,
+      "sourceType": "original-vector",
+      "license": "imging-original-free"
+    },
+    {
+      "id": "scribble-circle-red",
+      "category": "decorate",
+      "subcategory": "",
+      "name": {
+        "zh-CN": "红色手绘圆圈",
+        "en": "Red scribble circle",
+        "ja": "Red scribble circle",
+        "ko": "Red scribble circle",
+        "de": "Red scribble circle",
+        "fr": "Red scribble circle"
+      },
+      "width": 420,
+      "height": 420,
+      "tags": [
+        "decorate",
+        "scribble-circle-red"
+      ],
+      "file": "v1/materials/vector/scribble-circle-red.svg",
+      "thumbnail": "v1/materials/vector/scribble-circle-red.svg",
+      "mediaType": "image/svg+xml",
+      "hasTransparency": true,
+      "sourceType": "original-vector",
+      "license": "imging-original-free"
+    },
+    {
+      "id": "podium-ivory",
+      "category": "display",
+      "subcategory": "",
+      "name": {
+        "zh-CN": "象牙白商品展台",
+        "en": "Ivory product podium",
+        "ja": "Ivory product podium",
+        "ko": "Ivory product podium",
+        "de": "Ivory product podium",
+        "fr": "Ivory product podium"
+      },
+      "width": 640,
+      "height": 300,
+      "tags": [
+        "display",
+        "podium-ivory"
+      ],
+      "file": "v1/materials/vector/podium-ivory.svg",
+      "thumbnail": "v1/materials/vector/podium-ivory.svg",
+      "mediaType": "image/svg+xml",
+      "hasTransparency": true,
+      "sourceType": "original-vector",
+      "license": "imging-original-free"
+    },
+    {
+      "id": "podium-black",
+      "category": "display",
+      "subcategory": "",
+      "name": {
+        "zh-CN": "黑色商品展台",
+        "en": "Black product podium",
+        "ja": "Black product podium",
+        "ko": "Black product podium",
+        "de": "Black product podium",
+        "fr": "Black product podium"
+      },
+      "width": 640,
+      "height": 300,
+      "tags": [
+        "display",
+        "podium-black"
+      ],
+      "file": "v1/materials/vector/podium-black.svg",
+      "thumbnail": "v1/materials/vector/podium-black.svg",
+      "mediaType": "image/svg+xml",
+      "hasTransparency": true,
+      "sourceType": "original-vector",
+      "license": "imging-original-free"
+    },
+    {
+      "id": "arch-frame-sand",
+      "category": "display",
+      "subcategory": "",
+      "name": {
+        "zh-CN": "沙色拱门背景",
+        "en": "Sand arch frame",
+        "ja": "Sand arch frame",
+        "ko": "Sand arch frame",
+        "de": "Sand arch frame",
+        "fr": "Sand arch frame"
+      },
+      "width": 620,
+      "height": 820,
+      "tags": [
+        "display",
+        "arch-frame-sand"
+      ],
+      "file": "v1/materials/vector/arch-frame-sand.svg",
+      "thumbnail": "v1/materials/vector/arch-frame-sand.svg",
+      "mediaType": "image/svg+xml",
+      "hasTransparency": true,
+      "sourceType": "original-vector",
+      "license": "imging-original-free"
+    },
+    {
+      "id": "shadow-soft",
+      "category": "display",
+      "subcategory": "",
+      "name": {
+        "zh-CN": "柔和商品投影",
+        "en": "Soft product shadow",
+        "ja": "Soft product shadow",
+        "ko": "Soft product shadow",
+        "de": "Soft product shadow",
+        "fr": "Soft product shadow"
+      },
+      "width": 620,
+      "height": 180,
+      "tags": [
+        "display",
+        "shadow-soft"
+      ],
+      "file": "v1/materials/vector/shadow-soft.svg",
+      "thumbnail": "v1/materials/vector/shadow-soft.svg",
+      "mediaType": "image/svg+xml",
+      "hasTransparency": true,
+      "sourceType": "original-vector",
+      "license": "imging-original-free"
+    },
+    {
+      "id": "bubble-cluster-blue",
+      "category": "beauty",
+      "subcategory": "",
+      "name": {
+        "zh-CN": "蓝色气泡组合",
+        "en": "Blue bubble cluster",
+        "ja": "Blue bubble cluster",
+        "ko": "Blue bubble cluster",
+        "de": "Blue bubble cluster",
+        "fr": "Blue bubble cluster"
+      },
+      "width": 520,
+      "height": 520,
+      "tags": [
+        "beauty",
+        "bubble-cluster-blue"
+      ],
+      "file": "v1/materials/vector/bubble-cluster-blue.svg",
+      "thumbnail": "v1/materials/vector/bubble-cluster-blue.svg",
+      "mediaType": "image/svg+xml",
+      "hasTransparency": true,
+      "sourceType": "original-vector",
+      "license": "imging-original-free"
+    },
+    {
+      "id": "water-drops",
+      "category": "beauty",
+      "subcategory": "",
+      "name": {
+        "zh-CN": "护肤水滴",
+        "en": "Skincare water drops",
+        "ja": "Skincare water drops",
+        "ko": "Skincare water drops",
+        "de": "Skincare water drops",
+        "fr": "Skincare water drops"
+      },
+      "width": 420,
+      "height": 460,
+      "tags": [
+        "beauty",
+        "water-drops"
+      ],
+      "file": "v1/materials/vector/water-drops.svg",
+      "thumbnail": "v1/materials/vector/water-drops.svg",
+      "mediaType": "image/svg+xml",
+      "hasTransparency": true,
+      "sourceType": "original-vector",
+      "license": "imging-original-free"
+    },
+    {
+      "id": "botanical-leaf",
+      "category": "beauty",
+      "subcategory": "",
+      "name": {
+        "zh-CN": "护肤植物叶片",
+        "en": "Botanical skincare leaf",
+        "ja": "Botanical skincare leaf",
+        "ko": "Botanical skincare leaf",
+        "de": "Botanical skincare leaf",
+        "fr": "Botanical skincare leaf"
+      },
+      "width": 480,
+      "height": 660,
+      "tags": [
+        "beauty",
+        "botanical-leaf"
+      ],
+      "file": "v1/materials/vector/botanical-leaf.svg",
+      "thumbnail": "v1/materials/vector/botanical-leaf.svg",
+      "mediaType": "image/svg+xml",
+      "hasTransparency": true,
+      "sourceType": "original-vector",
+      "license": "imging-original-free"
+    },
+    {
+      "id": "ingredient-molecule",
+      "category": "beauty",
+      "subcategory": "",
+      "name": {
+        "zh-CN": "成分分子结构",
+        "en": "Ingredient molecule",
+        "ja": "Ingredient molecule",
+        "ko": "Ingredient molecule",
+        "de": "Ingredient molecule",
+        "fr": "Ingredient molecule"
+      },
+      "width": 520,
+      "height": 420,
+      "tags": [
+        "beauty",
+        "ingredient-molecule"
+      ],
+      "file": "v1/materials/vector/ingredient-molecule.svg",
+      "thumbnail": "v1/materials/vector/ingredient-molecule.svg",
+      "mediaType": "image/svg+xml",
+      "hasTransparency": true,
+      "sourceType": "original-vector",
+      "license": "imging-original-free"
+    },
+    {
+      "id": "shipping-truck",
+      "category": "commerce",
+      "subcategory": "",
+      "name": {
+        "zh-CN": "包邮货车图标",
+        "en": "Free shipping truck",
+        "ja": "Free shipping truck",
+        "ko": "Free shipping truck",
+        "de": "Free shipping truck",
+        "fr": "Free shipping truck"
+      },
+      "width": 520,
+      "height": 300,
+      "tags": [
+        "commerce",
+        "shipping-truck"
+      ],
+      "file": "v1/materials/vector/shipping-truck.svg",
+      "thumbnail": "v1/materials/vector/shipping-truck.svg",
+      "mediaType": "image/svg+xml",
+      "hasTransparency": true,
+      "sourceType": "original-vector",
+      "license": "imging-original-free"
+    },
+    {
+      "id": "guarantee-shield",
+      "category": "commerce",
+      "subcategory": "",
+      "name": {
+        "zh-CN": "正品保障盾牌",
+        "en": "Authenticity guarantee shield",
+        "ja": "Authenticity guarantee shield",
+        "ko": "Authenticity guarantee shield",
+        "de": "Authenticity guarantee shield",
+        "fr": "Authenticity guarantee shield"
+      },
+      "width": 360,
+      "height": 420,
+      "tags": [
+        "commerce",
+        "guarantee-shield"
+      ],
+      "file": "v1/materials/vector/guarantee-shield.svg",
+      "thumbnail": "v1/materials/vector/guarantee-shield.svg",
+      "mediaType": "image/svg+xml",
+      "hasTransparency": true,
+      "sourceType": "original-vector",
+      "license": "imging-original-free"
+    },
+    {
+      "id": "gift-box",
+      "category": "commerce",
+      "subcategory": "",
+      "name": {
+        "zh-CN": "礼盒图标",
+        "en": "Gift box icon",
+        "ja": "Gift box icon",
+        "ko": "Gift box icon",
+        "de": "Gift box icon",
+        "fr": "Gift box icon"
+      },
+      "width": 420,
+      "height": 420,
+      "tags": [
+        "commerce",
+        "gift-box"
+      ],
+      "file": "v1/materials/vector/gift-box.svg",
+      "thumbnail": "v1/materials/vector/gift-box.svg",
+      "mediaType": "image/svg+xml",
+      "hasTransparency": true,
+      "sourceType": "original-vector",
+      "license": "imging-original-free"
+    },
+    {
+      "id": "shopping-bag",
+      "category": "commerce",
+      "subcategory": "",
+      "name": {
+        "zh-CN": "购物袋图标",
+        "en": "Shopping bag icon",
+        "ja": "Shopping bag icon",
+        "ko": "Shopping bag icon",
+        "de": "Shopping bag icon",
+        "fr": "Shopping bag icon"
+      },
+      "width": 360,
+      "height": 420,
+      "tags": [
+        "commerce",
+        "shopping-bag"
+      ],
+      "file": "v1/materials/vector/shopping-bag.svg",
+      "thumbnail": "v1/materials/vector/shopping-bag.svg",
+      "mediaType": "image/svg+xml",
+      "hasTransparency": true,
+      "sourceType": "original-vector",
+      "license": "imging-original-free"
+    },
+    {
+      "id": "confetti",
+      "category": "decorate",
+      "subcategory": "",
+      "name": {
+        "zh-CN": "促销彩纸",
+        "en": "Sale confetti",
+        "ja": "Sale confetti",
+        "ko": "Sale confetti",
+        "de": "Sale confetti",
+        "fr": "Sale confetti"
+      },
+      "width": 520,
+      "height": 420,
+      "tags": [
+        "decorate",
+        "confetti"
+      ],
+      "file": "v1/materials/vector/confetti.svg",
+      "thumbnail": "v1/materials/vector/confetti.svg",
+      "mediaType": "image/svg+xml",
+      "hasTransparency": true,
+      "sourceType": "original-vector",
+      "license": "imging-original-free"
+    },
+    {
+      "id": "serum-pump-ivory",
+      "category": "cosmetics",
+      "subcategory": "skincare",
+      "name": {
+        "zh-CN": "精华泵瓶 · 象牙白",
+        "en": "Serum pump · ivory",
+        "ja": "Serum pump · ivory",
+        "ko": "Serum pump · ivory",
+        "de": "Serum pump · ivory",
+        "fr": "Serum pump · ivory"
+      },
+      "width": 490,
+      "height": 1465,
+      "tags": [
+        "cosmetics",
+        "skincare",
+        "serum-pump-ivory"
+      ],
+      "file": "v1/materials/cosmetics/serum-pump-ivory.png",
+      "thumbnail": "v1/thumbnails/serum-pump-ivory.webp",
+      "mediaType": "image/png",
+      "hasTransparency": true,
+      "sourceType": "ai-generated-and-locally-cut-out",
+      "license": "imging-original-free"
+    },
+    {
+      "id": "dropper-serum-amber",
+      "category": "cosmetics",
+      "subcategory": "skincare",
+      "name": {
+        "zh-CN": "滴管精华 · 琥珀",
+        "en": "Dropper serum · amber",
+        "ja": "Dropper serum · amber",
+        "ko": "Dropper serum · amber",
+        "de": "Dropper serum · amber",
+        "fr": "Dropper serum · amber"
+      },
+      "width": 525,
+      "height": 1262,
+      "tags": [
+        "cosmetics",
+        "skincare",
+        "dropper-serum-amber"
+      ],
+      "file": "v1/materials/cosmetics/dropper-serum-amber.png",
+      "thumbnail": "v1/thumbnails/dropper-serum-amber.webp",
+      "mediaType": "image/png",
+      "hasTransparency": true,
+      "sourceType": "ai-generated-and-locally-cut-out",
+      "license": "imging-original-free"
+    },
+    {
+      "id": "cream-jar-ivory",
+      "category": "cosmetics",
+      "subcategory": "skincare",
+      "name": {
+        "zh-CN": "面霜罐 · 香槟白",
+        "en": "Cream jar · ivory",
+        "ja": "Cream jar · ivory",
+        "ko": "Cream jar · ivory",
+        "de": "Cream jar · ivory",
+        "fr": "Cream jar · ivory"
+      },
+      "width": 933,
+      "height": 782,
+      "tags": [
+        "cosmetics",
+        "skincare",
+        "cream-jar-ivory"
+      ],
+      "file": "v1/materials/cosmetics/cream-jar-ivory.png",
+      "thumbnail": "v1/thumbnails/cream-jar-ivory.webp",
+      "mediaType": "image/png",
+      "hasTransparency": true,
+      "sourceType": "ai-generated-and-locally-cut-out",
+      "license": "imging-original-free"
+    },
+    {
+      "id": "sunscreen-tube-sand",
+      "category": "cosmetics",
+      "subcategory": "skincare",
+      "name": {
+        "zh-CN": "防晒软管 · 沙色",
+        "en": "Sunscreen tube · sand",
+        "ja": "Sunscreen tube · sand",
+        "ko": "Sunscreen tube · sand",
+        "de": "Sunscreen tube · sand",
+        "fr": "Sunscreen tube · sand"
+      },
+      "width": 588,
+      "height": 1311,
+      "tags": [
+        "cosmetics",
+        "skincare",
+        "sunscreen-tube-sand"
+      ],
+      "file": "v1/materials/cosmetics/sunscreen-tube-sand.png",
+      "thumbnail": "v1/thumbnails/sunscreen-tube-sand.webp",
+      "mediaType": "image/png",
+      "hasTransparency": true,
+      "sourceType": "ai-generated-and-locally-cut-out",
+      "license": "imging-original-free"
+    },
+    {
+      "id": "cleanser-pump-milky",
+      "category": "cosmetics",
+      "subcategory": "skincare",
+      "name": {
+        "zh-CN": "洁面泵瓶 · 乳白",
+        "en": "Cleanser pump · milky",
+        "ja": "Cleanser pump · milky",
+        "ko": "Cleanser pump · milky",
+        "de": "Cleanser pump · milky",
+        "fr": "Cleanser pump · milky"
+      },
+      "width": 537,
+      "height": 1363,
+      "tags": [
+        "cosmetics",
+        "skincare",
+        "cleanser-pump-milky"
+      ],
+      "file": "v1/materials/cosmetics/cleanser-pump-milky.png",
+      "thumbnail": "v1/thumbnails/cleanser-pump-milky.webp",
+      "mediaType": "image/png",
+      "hasTransparency": true,
+      "sourceType": "ai-generated-and-locally-cut-out",
+      "license": "imging-original-free"
+    },
+    {
+      "id": "toner-bottle-blue",
+      "category": "cosmetics",
+      "subcategory": "skincare",
+      "name": {
+        "zh-CN": "爽肤水瓶 · 浅蓝",
+        "en": "Toner bottle · pale blue",
+        "ja": "Toner bottle · pale blue",
+        "ko": "Toner bottle · pale blue",
+        "de": "Toner bottle · pale blue",
+        "fr": "Toner bottle · pale blue"
+      },
+      "width": 521,
+      "height": 1335,
+      "tags": [
+        "cosmetics",
+        "skincare",
+        "toner-bottle-blue"
+      ],
+      "file": "v1/materials/cosmetics/toner-bottle-blue.png",
+      "thumbnail": "v1/thumbnails/toner-bottle-blue.webp",
+      "mediaType": "image/png",
+      "hasTransparency": true,
+      "sourceType": "ai-generated-and-locally-cut-out",
+      "license": "imging-original-free"
+    },
+    {
+      "id": "eye-cream-pearl",
+      "category": "cosmetics",
+      "subcategory": "skincare",
+      "name": {
+        "zh-CN": "眼霜软管 · 珍珠白",
+        "en": "Eye cream tube · pearl",
+        "ja": "Eye cream tube · pearl",
+        "ko": "Eye cream tube · pearl",
+        "de": "Eye cream tube · pearl",
+        "fr": "Eye cream tube · pearl"
+      },
+      "width": 505,
+      "height": 1366,
+      "tags": [
+        "cosmetics",
+        "skincare",
+        "eye-cream-pearl"
+      ],
+      "file": "v1/materials/cosmetics/eye-cream-pearl.png",
+      "thumbnail": "v1/thumbnails/eye-cream-pearl.webp",
+      "mediaType": "image/png",
+      "hasTransparency": true,
+      "sourceType": "ai-generated-and-locally-cut-out",
+      "license": "imging-original-free"
+    },
+    {
+      "id": "facial-mist-aqua",
+      "category": "cosmetics",
+      "subcategory": "skincare",
+      "name": {
+        "zh-CN": "喷雾瓶 · 水蓝",
+        "en": "Facial mist · aqua",
+        "ja": "Facial mist · aqua",
+        "ko": "Facial mist · aqua",
+        "de": "Facial mist · aqua",
+        "fr": "Facial mist · aqua"
+      },
+      "width": 748,
+      "height": 1435,
+      "tags": [
+        "cosmetics",
+        "skincare",
+        "facial-mist-aqua"
+      ],
+      "file": "v1/materials/cosmetics/facial-mist-aqua.png",
+      "thumbnail": "v1/thumbnails/facial-mist-aqua.webp",
+      "mediaType": "image/png",
+      "hasTransparency": true,
+      "sourceType": "ai-generated-and-locally-cut-out",
+      "license": "imging-original-free"
+    },
+    {
+      "id": "sheet-mask-pouch-blush",
+      "category": "cosmetics",
+      "subcategory": "skincare",
+      "name": {
+        "zh-CN": "面膜袋 · 浅粉",
+        "en": "Sheet mask pouch · blush",
+        "ja": "Sheet mask pouch · blush",
+        "ko": "Sheet mask pouch · blush",
+        "de": "Sheet mask pouch · blush",
+        "fr": "Sheet mask pouch · blush"
+      },
+      "width": 807,
+      "height": 1153,
+      "tags": [
+        "cosmetics",
+        "skincare",
+        "sheet-mask-pouch-blush"
+      ],
+      "file": "v1/materials/cosmetics/sheet-mask-pouch-blush.png",
+      "thumbnail": "v1/thumbnails/sheet-mask-pouch-blush.webp",
+      "mediaType": "image/png",
+      "hasTransparency": true,
+      "sourceType": "ai-generated-and-locally-cut-out",
+      "license": "imging-original-free"
+    },
+    {
+      "id": "body-lotion-blush",
+      "category": "cosmetics",
+      "subcategory": "bodycare",
+      "name": {
+        "zh-CN": "身体乳泵瓶 · 浅粉",
+        "en": "Body lotion · blush",
+        "ja": "Body lotion · blush",
+        "ko": "Body lotion · blush",
+        "de": "Body lotion · blush",
+        "fr": "Body lotion · blush"
+      },
+      "width": 835,
+      "height": 1456,
+      "tags": [
+        "cosmetics",
+        "bodycare",
+        "body-lotion-blush"
+      ],
+      "file": "v1/materials/cosmetics/body-lotion-blush.png",
+      "thumbnail": "v1/thumbnails/body-lotion-blush.webp",
+      "mediaType": "image/png",
+      "hasTransparency": true,
+      "sourceType": "ai-generated-and-locally-cut-out",
+      "license": "imging-original-free"
+    },
+    {
+      "id": "shampoo-pump-amber",
+      "category": "cosmetics",
+      "subcategory": "haircare",
+      "name": {
+        "zh-CN": "洗护泵瓶 · 琥珀",
+        "en": "Shampoo pump · amber",
+        "ja": "Shampoo pump · amber",
+        "ko": "Shampoo pump · amber",
+        "de": "Shampoo pump · amber",
+        "fr": "Shampoo pump · amber"
+      },
+      "width": 571,
+      "height": 1463,
+      "tags": [
+        "cosmetics",
+        "haircare",
+        "shampoo-pump-amber"
+      ],
+      "file": "v1/materials/cosmetics/shampoo-pump-amber.png",
+      "thumbnail": "v1/thumbnails/shampoo-pump-amber.webp",
+      "mediaType": "image/png",
+      "hasTransparency": true,
+      "sourceType": "ai-generated-and-locally-cut-out",
+      "license": "imging-original-free"
+    },
+    {
+      "id": "perfume-blush",
+      "category": "cosmetics",
+      "subcategory": "fragrance",
+      "name": {
+        "zh-CN": "香水瓶 · 淡粉",
+        "en": "Perfume bottle · blush",
+        "ja": "Perfume bottle · blush",
+        "ko": "Perfume bottle · blush",
+        "de": "Perfume bottle · blush",
+        "fr": "Perfume bottle · blush"
+      },
+      "width": 649,
+      "height": 1223,
+      "tags": [
+        "cosmetics",
+        "fragrance",
+        "perfume-blush"
+      ],
+      "file": "v1/materials/cosmetics/perfume-blush.png",
+      "thumbnail": "v1/thumbnails/perfume-blush.webp",
+      "mediaType": "image/png",
+      "hasTransparency": true,
+      "sourceType": "ai-generated-and-locally-cut-out",
+      "license": "imging-original-free"
+    },
+    {
+      "id": "foundation-pump-neutral",
+      "category": "cosmetics",
+      "subcategory": "makeup",
+      "name": {
+        "zh-CN": "粉底液 · 自然色",
+        "en": "Foundation pump · neutral",
+        "ja": "Foundation pump · neutral",
+        "ko": "Foundation pump · neutral",
+        "de": "Foundation pump · neutral",
+        "fr": "Foundation pump · neutral"
+      },
+      "width": 479,
+      "height": 1367,
+      "tags": [
+        "cosmetics",
+        "makeup",
+        "foundation-pump-neutral"
+      ],
+      "file": "v1/materials/cosmetics/foundation-pump-neutral.png",
+      "thumbnail": "v1/thumbnails/foundation-pump-neutral.webp",
+      "mediaType": "image/png",
+      "hasTransparency": true,
+      "sourceType": "ai-generated-and-locally-cut-out",
+      "license": "imging-original-free"
+    },
+    {
+      "id": "lipstick-rose",
+      "category": "cosmetics",
+      "subcategory": "makeup",
+      "name": {
+        "zh-CN": "口红 · 玫瑰色",
+        "en": "Lipstick · rose",
+        "ja": "Lipstick · rose",
+        "ko": "Lipstick · rose",
+        "de": "Lipstick · rose",
+        "fr": "Lipstick · rose"
+      },
+      "width": 655,
+      "height": 1244,
+      "tags": [
+        "cosmetics",
+        "makeup",
+        "lipstick-rose"
+      ],
+      "file": "v1/materials/cosmetics/lipstick-rose.png",
+      "thumbnail": "v1/thumbnails/lipstick-rose.webp",
+      "mediaType": "image/png",
+      "hasTransparency": true,
+      "sourceType": "ai-generated-and-locally-cut-out",
+      "license": "imging-original-free"
+    },
+    {
+      "id": "lip-gloss-rose",
+      "category": "cosmetics",
+      "subcategory": "makeup",
+      "name": {
+        "zh-CN": "唇釉 · 玫瑰色",
+        "en": "Lip gloss · rose",
+        "ja": "Lip gloss · rose",
+        "ko": "Lip gloss · rose",
+        "de": "Lip gloss · rose",
+        "fr": "Lip gloss · rose"
+      },
+      "width": 420,
+      "height": 1369,
+      "tags": [
+        "cosmetics",
+        "makeup",
+        "lip-gloss-rose"
+      ],
+      "file": "v1/materials/cosmetics/lip-gloss-rose.png",
+      "thumbnail": "v1/thumbnails/lip-gloss-rose.webp",
+      "mediaType": "image/png",
+      "hasTransparency": true,
+      "sourceType": "ai-generated-and-locally-cut-out",
+      "license": "imging-original-free"
+    },
+    {
+      "id": "mascara-black-gold",
+      "category": "cosmetics",
+      "subcategory": "makeup",
+      "name": {
+        "zh-CN": "睫毛膏 · 黑金",
+        "en": "Mascara · black gold",
+        "ja": "Mascara · black gold",
+        "ko": "Mascara · black gold",
+        "de": "Mascara · black gold",
+        "fr": "Mascara · black gold"
+      },
+      "width": 566,
+      "height": 1463,
+      "tags": [
+        "cosmetics",
+        "makeup",
+        "mascara-black-gold"
+      ],
+      "file": "v1/materials/cosmetics/mascara-black-gold.png",
+      "thumbnail": "v1/thumbnails/mascara-black-gold.webp",
+      "mediaType": "image/png",
+      "hasTransparency": true,
+      "sourceType": "ai-generated-and-locally-cut-out",
+      "license": "imging-original-free"
+    },
+    {
+      "id": "cushion-compact-ivory",
+      "category": "cosmetics",
+      "subcategory": "makeup",
+      "name": {
+        "zh-CN": "气垫粉盒 · 象牙白",
+        "en": "Cushion compact · ivory",
+        "ja": "Cushion compact · ivory",
+        "ko": "Cushion compact · ivory",
+        "de": "Cushion compact · ivory",
+        "fr": "Cushion compact · ivory"
+      },
+      "width": 844,
+      "height": 1165,
+      "tags": [
+        "cosmetics",
+        "makeup",
+        "cushion-compact-ivory"
+      ],
+      "file": "v1/materials/cosmetics/cushion-compact-ivory.png",
+      "thumbnail": "v1/thumbnails/cushion-compact-ivory.webp",
+      "mediaType": "image/png",
+      "hasTransparency": true,
+      "sourceType": "ai-generated-and-locally-cut-out",
+      "license": "imging-original-free"
+    }
+  ],
+  "licensing": {
+    "id": "imging-original-free",
+    "summary": {
+      "zh-CN": "图映原创免费素材：不含第三方品牌与商标，可用于个人和商业设计；发布前仍需自行进行广告、商品与地区合规审核。",
+      "en": "ImgIng original free assets with no third-party brands or trademarks. Personal and commercial design use is allowed; review advertising, product and regional compliance before publication.",
+      "ja": "ImgIng original free assets with no third-party brands or trademarks. Personal and commercial design use is allowed; review advertising, product and regional compliance before publication.",
+      "ko": "ImgIng original free assets with no third-party brands or trademarks. Personal and commercial design use is allowed; review advertising, product and regional compliance before publication.",
+      "de": "ImgIng original free assets with no third-party brands or trademarks. Personal and commercial design use is allowed; review advertising, product and regional compliance before publication.",
+      "fr": "ImgIng original free assets with no third-party brands or trademarks. Personal and commercial design use is allowed; review advertising, product and regional compliance before publication."
+    },
+    "details": "v1/LICENSE.md"
+  }
+}

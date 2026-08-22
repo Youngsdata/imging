@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "groups": {
+    "ai": "9ee4e5368744",
+    "video": "4f1946329770",
+    "pdf": "2d4ba651b313",
+    "codecs": "0940109ec6cc",
+    "fonts": "02967640aa86"
+  },
+  "assets": {
+    "ai/background-removal.js": "/ai/background-removal.9ee4e5368744.js",
+    "ai/video-matting.js": "/ai/video-matting.9ee4e5368744.js",
+    "video/editor.js": "/video/editor.4f1946329770.js",
+    "pdf/workspace.js": "/pdf/workspace.2d4ba651b313.js",
+    "pdf/to-html-workspace.js": "/pdf/to-html-workspace.2d4ba651b313.js",
+    "pdf/from-html-workspace.js": "/pdf/from-html-workspace.2d4ba651b313.js"
+  }
+}

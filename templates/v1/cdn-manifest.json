@@ -1,0 +1,634 @@
+{
+  "schemaVersion": 1,
+  "libraryId": "imging-design-library",
+  "version": "v1",
+  "generatedAt": "2026-08-22T00:00:00.000Z",
+  "basePath": "/templates/",
+  "files": [
+    {
+      "path": "library.json",
+      "bytes": 69226,
+      "sha256": "661f8d7884948121360f5f0c599bdb9682acb92e094fa5320dff0d30141fa74d"
+    },
+    {
+      "path": "v1/CATALOG.md",
+      "bytes": 654,
+      "sha256": "bdc6cd5ccae0cceb689c622927288531468b51e1bb6066a065482824b9c179d5"
+    },
+    {
+      "path": "v1/CDN_UPLOAD_GUIDE.md",
+      "bytes": 599,
+      "sha256": "4995f85051582941d452e0115d36a3df072b347e88f3e5f7157bb602a5e0b1f4"
+    },
+    {
+      "path": "v1/FREE_IMAGE_SOURCES.md",
+      "bytes": 1628,
+      "sha256": "2cf98a2fd9047e7e8d55421d518a0c4169f5319a6197dd6aad844495fe3e3c40"
+    },
+    {
+      "path": "v1/LICENSE.md",
+      "bytes": 560,
+      "sha256": "8540174c74bce42dff349e5add6c340e5e3124306fc00a2a6e3738270ea8ed68"
+    },
+    {
+      "path": "v1/materials/cosmetics/body-lotion-blush.png",
+      "bytes": 778670,
+      "sha256": "1213c2e2fe21fcc0ba08e17da24a6d8c5a797a434d0376a04e336696fe348447"
+    },
+    {
+      "path": "v1/materials/cosmetics/cleanser-pump-milky.png",
+      "bytes": 441822,
+      "sha256": "b51eaf895f054a236fd1262542e2cbf36a6ac7c4661a63cf7fd71316c8125645"
+    },
+    {
+      "path": "v1/materials/cosmetics/cream-jar-ivory.png",
+      "bytes": 696264,
+      "sha256": "765e780fcecbe88e94b34a619640cc371f5bcd8cd6c18104bf5779c1b9724bfd"
+    },
+    {
+      "path": "v1/materials/cosmetics/cushion-compact-ivory.png",
+      "bytes": 1238296,
+      "sha256": "0452a676995ef6d9965a6bee32b7b9b0ddc5a3d97a41c7926faca441750bb163"
+    },
+    {
+      "path": "v1/materials/cosmetics/dropper-serum-amber.png",
+      "bytes": 487471,
+      "sha256": "a181d3c662afd652d5526aecf0a83ea1e19ab0f89eb7229baa593bd584d38089"
+    },
+    {
+      "path": "v1/materials/cosmetics/eye-cream-pearl.png",
+      "bytes": 435221,
+      "sha256": "c2fd563437cf403d1deb4e7c566f2a4661e4490ec0bc96741f0c2917eb113813"
+    },
+    {
+      "path": "v1/materials/cosmetics/facial-mist-aqua.png",
+      "bytes": 649731,
+      "sha256": "db9ceb3a36ff92a2eabfd50f9bec7e4963049425bfa2bd8b8c7f447916a4a230"
+    },
+    {
+      "path": "v1/materials/cosmetics/foundation-pump-neutral.png",
+      "bytes": 493582,
+      "sha256": "e46cac4d2dd15950484d6d214fdb30139d7749956e38a52fb1f6a497afaaa38a"
+    },
+    {
+      "path": "v1/materials/cosmetics/lip-gloss-rose.png",
+      "bytes": 546581,
+      "sha256": "6efff1bc72a5152fd6f001bedb52f4304d3f0b5b7eb3fdeaadb7516ac8100d14"
+    },
+    {
+      "path": "v1/materials/cosmetics/lipstick-rose.png",
+      "bytes": 586025,
+      "sha256": "268526d54be3bfdafe5d0eaee716039a89e35c74d778fca20c274fe673384aa6"
+    },
+    {
+      "path": "v1/materials/cosmetics/mascara-black-gold.png",
+      "bytes": 687453,
+      "sha256": "2cf49e128d577de22e4757eefb7109cdf062af0e3080f260dc194e2f616f3dab"
+    },
+    {
+      "path": "v1/materials/cosmetics/perfume-blush.png",
+      "bytes": 692701,
+      "sha256": "d30a7df8c84b1f5ccc55a475f604e9c80b7ca1c44d923433686f0ecbd23c0cbb"
+    },
+    {
+      "path": "v1/materials/cosmetics/serum-pump-ivory.png",
+      "bytes": 555284,
+      "sha256": "e893d3c5b29559dc0995466d576592976eb103498c8dce14c1de73e2e9da3a99"
+    },
+    {
+      "path": "v1/materials/cosmetics/shampoo-pump-amber.png",
+      "bytes": 653174,
+      "sha256": "6a6c99c2765f49618aaca1ff85e7d213bde874bee8f46534f217db085e5ca02f"
+    },
+    {
+      "path": "v1/materials/cosmetics/sheet-mask-pouch-blush.png",
+      "bytes": 1064159,
+      "sha256": "5abfa8894fc5b9196fc31be5cf9f06224652b4d2543b0deced2df3f2b5455db6"
+    },
+    {
+      "path": "v1/materials/cosmetics/sunscreen-tube-sand.png",
+      "bytes": 481719,
+      "sha256": "b999ca6e4a575316a50fc59769954fa8799d34dfb3dc85da138ade152db51ad6"
+    },
+    {
+      "path": "v1/materials/cosmetics/toner-bottle-blue.png",
+      "bytes": 530483,
+      "sha256": "61ab22fa51d570bde92a9735d22f384749f038e0fe883c14185b425cd2e689e8"
+    },
+    {
+      "path": "v1/materials/vector/arch-frame-sand.svg",
+      "bytes": 263,
+      "sha256": "d835a80bc5e4fb099ed361e435837793a1cdbccfc6887667e58d8840753fc091"
+    },
+    {
+      "path": "v1/materials/vector/botanical-leaf.svg",
+      "bytes": 485,
+      "sha256": "d3316cc5f69d08461de23c4d2cdd513eb3fd3b855c5fac370f16d6dff8a8d254"
+    },
+    {
+      "path": "v1/materials/vector/bubble-cluster-blue.svg",
+      "bytes": 555,
+      "sha256": "96a81c8499d1f8172119059335b001492922beb72c2a8a7b0ceca2dfaf6f44c5"
+    },
+    {
+      "path": "v1/materials/vector/chart-bars-blue.svg",
+      "bytes": 492,
+      "sha256": "c29e728ac859b756f6851deda2d113c1de4682e4300431289b3a9b55f15f5adb"
+    },
+    {
+      "path": "v1/materials/vector/chart-line-lime.svg",
+      "bytes": 541,
+      "sha256": "62177846d317a9e3e0fadb8e8c17168ae93809d42be865ed9bfa2cbde4c3bf0e"
+    },
+    {
+      "path": "v1/materials/vector/confetti.svg",
+      "bytes": 769,
+      "sha256": "357b24407f1d49a9d77a190bc2ec4ba38c95622d0bc8ac4a393b6516815bdb7e"
+    },
+    {
+      "path": "v1/materials/vector/coupon-ticket-red.svg",
+      "bytes": 336,
+      "sha256": "024616b92fee4799b955401c44c72a3b749a3c607464553c9fa2ca8456bf68c2"
+    },
+    {
+      "path": "v1/materials/vector/dot-grid-dark.svg",
+      "bytes": 347,
+      "sha256": "3b854bb520e25167131fae6698e3954d5f5463ea27398592efc739f1676bc5de"
+    },
+    {
+      "path": "v1/materials/vector/dot-grid-light.svg",
+      "bytes": 344,
+      "sha256": "41be914183b442fff6c9d19989f37267aff48335092e26934f52dd8c28a2ea7b"
+    },
+    {
+      "path": "v1/materials/vector/gift-box.svg",
+      "bytes": 415,
+      "sha256": "393f46758b32e0890af67457b51b45847993b534d43b5e5f938365b8b4ce1a34"
+    },
+    {
+      "path": "v1/materials/vector/glass-card.svg",
+      "bytes": 448,
+      "sha256": "d8923d2fd31b39cd35b6996c3537dedfe99496188a5e5ab623a243f3dcae6305"
+    },
+    {
+      "path": "v1/materials/vector/gradient-orb-blue.svg",
+      "bytes": 454,
+      "sha256": "2214cf5bd7ea3b72d92a095050c668a30d21980b12a7ba0474a98df511e9ea0d"
+    },
+    {
+      "path": "v1/materials/vector/gradient-orb-coral.svg",
+      "bytes": 454,
+      "sha256": "00d5df19de8d846291949fcc7098e2836fc2a7c1b72b594df20d6d522c313af2"
+    },
+    {
+      "path": "v1/materials/vector/gradient-orb-gold.svg",
+      "bytes": 453,
+      "sha256": "af528f4af27d3b88cb84628b91dc1ba43a26e6121ae87c2b7e3ad343fc142719"
+    },
+    {
+      "path": "v1/materials/vector/gradient-orb-mint.svg",
+      "bytes": 454,
+      "sha256": "3d8e5cc385b1fa012531e12bf7f97bb9683c32f9477d3d8e42eb78217e0b3759"
+    },
+    {
+      "path": "v1/materials/vector/guarantee-shield.svg",
+      "bytes": 355,
+      "sha256": "54560f177b6fb5c7e6f5013ca537563731ac574b2ac0bdbeadfc1cef13ed95b5"
+    },
+    {
+      "path": "v1/materials/vector/ingredient-molecule.svg",
+      "bytes": 513,
+      "sha256": "5e3b01de887d5cacfc8ce6a30239f1f9f68024af8221ecfb176ffca5127524eb"
+    },
+    {
+      "path": "v1/materials/vector/line-grid-blue.svg",
+      "bytes": 361,
+      "sha256": "14d9041c9786a0f1f194c82ef583f25f9970e09c265907e1baaa3ed2e1ab4afb"
+    },
+    {
+      "path": "v1/materials/vector/outline-frame-blue.svg",
+      "bytes": 301,
+      "sha256": "761ed8cea13768d76cd08be193d45877d85d70792de6ba506492f6a01bdcddea"
+    },
+    {
+      "path": "v1/materials/vector/pill-blue.svg",
+      "bytes": 244,
+      "sha256": "36237c4be9b72767f57f80947cd41379478c4d59037115334b79ef07e8e54407"
+    },
+    {
+      "path": "v1/materials/vector/pill-red.svg",
+      "bytes": 244,
+      "sha256": "9d9e28c8ff863a7e365e38841357e077916b595d3e3d6e25b856a010ab5836ea"
+    },
+    {
+      "path": "v1/materials/vector/podium-black.svg",
+      "bytes": 457,
+      "sha256": "a9f887c7855889bac34a474efb60073c4cc64e3b44c54366e76dfcedf5c02a97"
+    },
+    {
+      "path": "v1/materials/vector/podium-ivory.svg",
+      "bytes": 654,
+      "sha256": "43b50f061f7022c19389b9c46a9d8684f279954e627dfc505bf865316891455c"
+    },
+    {
+      "path": "v1/materials/vector/price-tag-black.svg",
+      "bytes": 250,
+      "sha256": "237967cb28a0125c6a9e8450cfab3dcb9db3619de8bf11c8d647f7100ac242c5"
+    },
+    {
+      "path": "v1/materials/vector/quote-mark.svg",
+      "bytes": 292,
+      "sha256": "2dccbf77c5f1b75555dbd57717d038cde77f34450846acd1b3720cd99512ad61"
+    },
+    {
+      "path": "v1/materials/vector/ribbon-red.svg",
+      "bytes": 253,
+      "sha256": "71219c0efee28e9b36b677f519bb7cb7c1cd8a0b6cb9924ba0b087b8ecb36155"
+    },
+    {
+      "path": "v1/materials/vector/sale-burst-yellow.svg",
+      "bytes": 353,
+      "sha256": "be254ba60e5c409a791226d432b5746eaef87a97f6a55e32aab88b7d492cd401"
+    },
+    {
+      "path": "v1/materials/vector/scribble-circle-red.svg",
+      "bytes": 408,
+      "sha256": "c2b48e7b218bfba62209d10da12f933d7423bce97337606940c2aeca40a33c3f"
+    },
+    {
+      "path": "v1/materials/vector/shadow-soft.svg",
+      "bytes": 354,
+      "sha256": "732649b346f582e1115b4d5f9f442c68ac26f7af25f6961258beefedae3c0f17"
+    },
+    {
+      "path": "v1/materials/vector/shipping-truck.svg",
+      "bytes": 395,
+      "sha256": "a3484cab8c2d85a55e71c4728b42672560a435b49dac07e9f8606de985b6da9e"
+    },
+    {
+      "path": "v1/materials/vector/shopping-bag.svg",
+      "bytes": 315,
+      "sha256": "8a6d3e9390cd3647e4baf1f6073c16d25cae6974fa7c83c277de816937576f3d"
+    },
+    {
+      "path": "v1/materials/vector/sparkle-gold.svg",
+      "bytes": 257,
+      "sha256": "badefc61b59e118430b23080089ae30e9f2cbeaea04669c7e3ce8301a56d8de2"
+    },
+    {
+      "path": "v1/materials/vector/sparkle-white.svg",
+      "bytes": 254,
+      "sha256": "5488c81a8647bf139cff4566310ec006b80bc6d2bf164ff1fb5c22b2041f53d5"
+    },
+    {
+      "path": "v1/materials/vector/star-cluster.svg",
+      "bytes": 420,
+      "sha256": "81747a228419738ed5ed9616889edcc9eff6eccb8df3f614b4690a9c857c73d3"
+    },
+    {
+      "path": "v1/materials/vector/water-drops.svg",
+      "bytes": 606,
+      "sha256": "6653b06dd128894ad388d70e60dabbd8c1e8919dd26c42621d6764b2ce5c72fb"
+    },
+    {
+      "path": "v1/materials/vector/wave-underline-blue.svg",
+      "bytes": 338,
+      "sha256": "a3db79c25a2d83f95d730d524c1a83c15177dcd2a88d45d0402bddc5f4312759"
+    },
+    {
+      "path": "v1/previews/business-conference-poster.png",
+      "bytes": 53402,
+      "sha256": "9c7d8a6f08e11c28c3a962fca685571e867064fec0981d2871f2cfa47f8c6b52"
+    },
+    {
+      "path": "v1/previews/business-conference-poster.svg",
+      "bytes": 4390,
+      "sha256": "24b8bc6a2ee861d11576fdcf7e3f371442b71e9480826a5a0bdf42e283a7c8ad"
+    },
+    {
+      "path": "v1/previews/business-consulting-cover.png",
+      "bytes": 31406,
+      "sha256": "ed8560d7056b02ea510c76a0f32392bfed4e1205ba2907e4de9fbdf5d3491ed5"
+    },
+    {
+      "path": "v1/previews/business-consulting-cover.svg",
+      "bytes": 3233,
+      "sha256": "328ac1b84ed690b07cd3d13a15e893ccc498b353029712125cf0004a033960c6"
+    },
+    {
+      "path": "v1/previews/business-contact-card.png",
+      "bytes": 30223,
+      "sha256": "d1482754d0ba04851f1daf4258f96c2c4ed46becf3483c60cd99b5ddbd3fe9c2"
+    },
+    {
+      "path": "v1/previews/business-contact-card.svg",
+      "bytes": 3356,
+      "sha256": "04d1d991587e0c84012c3adc26054ce3d3697b84f086d14eafb8b8e80ae660b2"
+    },
+    {
+      "path": "v1/previews/business-hiring-poster.png",
+      "bytes": 53824,
+      "sha256": "02d52e508cf606d4c9e2f00b90b21c0b370f1ee4ab27ca32fd35f28755f912e2"
+    },
+    {
+      "path": "v1/previews/business-hiring-poster.svg",
+      "bytes": 4124,
+      "sha256": "8e71f6727ac577a38cb31355f828edec956960eb0242c885dd3a06fd6f316030"
+    },
+    {
+      "path": "v1/previews/business-quarterly-data.png",
+      "bytes": 40910,
+      "sha256": "d49300bbed4ce4c539ead33efa73c19f2a49e035f69ed502b5512916769d1932"
+    },
+    {
+      "path": "v1/previews/business-quarterly-data.svg",
+      "bytes": 4355,
+      "sha256": "06992c1ee37ec72ebdf3043f72f97ea51342bf93c428f08de6176b1a9257763f"
+    },
+    {
+      "path": "v1/previews/business-social-quote.png",
+      "bytes": 38425,
+      "sha256": "33ebcf634c362a03cf6ce44b8660723ba3de0a5934ba259e928e7d7192a20d35"
+    },
+    {
+      "path": "v1/previews/business-social-quote.svg",
+      "bytes": 3172,
+      "sha256": "d673b143317f79ea2d18a05ca4332e968d35a79a2a8dea285dc4a3a5049fecb5"
+    },
+    {
+      "path": "v1/previews/business-strategy-cover.png",
+      "bytes": 32949,
+      "sha256": "47e3f30fc88f40b58386de48d4854aa05ae07fcd1ecda59797e53aad33e51121"
+    },
+    {
+      "path": "v1/previews/business-strategy-cover.svg",
+      "bytes": 4186,
+      "sha256": "7f266a3c0d0436ec7cd0d3215ff56645308db9ce2484c00372aad692aeccd2d9"
+    },
+    {
+      "path": "v1/previews/business-whitepaper-cover.png",
+      "bytes": 44486,
+      "sha256": "16a4f8f513d1843136fa1881cc1f199949438c8c91600be73cd4a786aacf076d"
+    },
+    {
+      "path": "v1/previews/business-whitepaper-cover.svg",
+      "bytes": 3308,
+      "sha256": "ed790ff5f9c6542e6101417721966bcafcf5f956356bb0147623a0a78f1e88bf"
+    },
+    {
+      "path": "v1/previews/ecommerce-flash-sale.png",
+      "bytes": 97740,
+      "sha256": "e6cef861a5e211fb95c43a53525812af54b3abb347dc0c91bc876eaa0be371c2"
+    },
+    {
+      "path": "v1/previews/ecommerce-flash-sale.svg",
+      "bytes": 4009,
+      "sha256": "8333fd95ff3a944c0403a004270eead15beaad96245f3920473cfcaf386f79e1"
+    },
+    {
+      "path": "v1/previews/ecommerce-gift-set-banner.png",
+      "bytes": 58162,
+      "sha256": "d6141bc765350af0aa8d23279b38fb52abe65b5a8e302b0e72a9c23ccf1cca41"
+    },
+    {
+      "path": "v1/previews/ecommerce-gift-set-banner.svg",
+      "bytes": 5592,
+      "sha256": "5be38bfc1206bdfd5b514cb5cf4e41c1deb9dd4b1270aa4ccc6760b296a60781"
+    },
+    {
+      "path": "v1/previews/ecommerce-hydration-blue.png",
+      "bytes": 143550,
+      "sha256": "6ce8b8640b1d5e1960c8c7ad397b0375becc3492821d45559005703f76653660"
+    },
+    {
+      "path": "v1/previews/ecommerce-hydration-blue.svg",
+      "bytes": 5434,
+      "sha256": "c5b8d0a37c1224c8615961e2d2e3c01bc6759fd80351e50897327c2375dbafc0"
+    },
+    {
+      "path": "v1/previews/ecommerce-ingredient-detail.png",
+      "bytes": 90429,
+      "sha256": "377d715f61e889b27fb3671d45e3fda1bd7a157a3633c187613c4dffcf2fed39"
+    },
+    {
+      "path": "v1/previews/ecommerce-ingredient-detail.svg",
+      "bytes": 4701,
+      "sha256": "2b76b4fa73a72b680de9da3d7369fe419f96cbb4d47c230dca74f5059f5566fe"
+    },
+    {
+      "path": "v1/previews/ecommerce-livestream-story.png",
+      "bytes": 116338,
+      "sha256": "9a7c4d7939e2cd450248a56ec833f8e35903f712b5374ce4c1b0d5dd185258be"
+    },
+    {
+      "path": "v1/previews/ecommerce-livestream-story.svg",
+      "bytes": 4274,
+      "sha256": "620334d2fd7e25b90fda28d1292201eae2486851d61ac87f9a01c61d0c8c4b32"
+    },
+    {
+      "path": "v1/previews/ecommerce-review-card.png",
+      "bytes": 52548,
+      "sha256": "22a0dc170999aa9f2b6db95da1b886c0ee7e191475dc106c94fe447be9e4c0b6"
+    },
+    {
+      "path": "v1/previews/ecommerce-review-card.svg",
+      "bytes": 3936,
+      "sha256": "b3e36f78846be70872989ebfa25b29b76c7061e31dd44d1cfc55e2078c4ace67"
+    },
+    {
+      "path": "v1/previews/ecommerce-skincare-launch.png",
+      "bytes": 56859,
+      "sha256": "b5303b63a16902d08f4d3efebeb50282278805b29c92131b6bbb859723df2315"
+    },
+    {
+      "path": "v1/previews/ecommerce-skincare-launch.svg",
+      "bytes": 4989,
+      "sha256": "f4b5a1df12aba459283d4d7d056dbac69b852622cda8eafa67c7c456b431f5b0"
+    },
+    {
+      "path": "v1/previews/ecommerce-sunscreen-summer.png",
+      "bytes": 81563,
+      "sha256": "a3634ef5abccaf3a9ded84df3c3fd11a67963e6e0ffb300b3d02792030146414"
+    },
+    {
+      "path": "v1/previews/ecommerce-sunscreen-summer.svg",
+      "bytes": 4202,
+      "sha256": "d1c89b2fade59add11823999bf78e40d43cf71f1962e13f847443e53db1490ae"
+    },
+    {
+      "path": "v1/projects/business-conference-poster.imging",
+      "bytes": 12047,
+      "sha256": "81e6ecd1c33699ead67b89fd2d12902f19de9622a1fbae8c8402a572dea9b9e7"
+    },
+    {
+      "path": "v1/projects/business-consulting-cover.imging",
+      "bytes": 9157,
+      "sha256": "a4afa3970ee70d649624dc9b3be2e387c4f7534e6533578a4ef44b3b98d18b95"
+    },
+    {
+      "path": "v1/projects/business-contact-card.imging",
+      "bytes": 9114,
+      "sha256": "7ee750dc0bff3f6979883056aa8325fb8ff73f345e9832b8074e19bca5774b3b"
+    },
+    {
+      "path": "v1/projects/business-hiring-poster.imging",
+      "bytes": 11318,
+      "sha256": "d4d4caa91c06de13fc38f1148007b99ab9acd94932d37661d7b39066581ce550"
+    },
+    {
+      "path": "v1/projects/business-quarterly-data.imging",
+      "bytes": 12396,
+      "sha256": "782c76717982449b32fbf51d7668e72a7059ff8ef62c914ecc37f9909264b5ef"
+    },
+    {
+      "path": "v1/projects/business-social-quote.imging",
+      "bytes": 8315,
+      "sha256": "9a0521b3e74acb2c24be8171ff8fbeeb91e94bb37db42cf2cc24037b06d72d00"
+    },
+    {
+      "path": "v1/projects/business-strategy-cover.imging",
+      "bytes": 11003,
+      "sha256": "27fbbbefacad5ee9f2f0da1ed56151bb4223120a36985d32e68ee7eb453c9a04"
+    },
+    {
+      "path": "v1/projects/business-whitepaper-cover.imging",
+      "bytes": 9221,
+      "sha256": "f95755e53d38b908678fc13409d41c8278b1fd775def3f4dfbfd75d958f9e295"
+    },
+    {
+      "path": "v1/projects/ecommerce-flash-sale.imging",
+      "bytes": 597275,
+      "sha256": "df16ce16a54bbc6719c1082e92f7425e8242b68c809e9e1eae1728c95a19bd35"
+    },
+    {
+      "path": "v1/projects/ecommerce-gift-set-banner.imging",
+      "bytes": 1404324,
+      "sha256": "77d641dd38dff59bdc9fd7f2b393583f7e192efd7ef06e4f48f9ec02d7ff75df"
+    },
+    {
+      "path": "v1/projects/ecommerce-hydration-blue.imging",
+      "bytes": 544626,
+      "sha256": "bc9bb89cfa224cbf36dc6f04c7add013a244bdf0d76d6e03ec97e2f82d9c3fde"
+    },
+    {
+      "path": "v1/projects/ecommerce-ingredient-detail.imging",
+      "bytes": 500394,
+      "sha256": "ed0170222ca8eded77e4e499be3e18a5d8178f0ee667c4740312e82509986d25"
+    },
+    {
+      "path": "v1/projects/ecommerce-livestream-story.imging",
+      "bytes": 700018,
+      "sha256": "2f026373d65f9905f2fa0983087476d62b9396678b7cf631f042c3e1f86c0a5a"
+    },
+    {
+      "path": "v1/projects/ecommerce-review-card.imging",
+      "bytes": 452995,
+      "sha256": "555ae8043e2fce68e0085909de1da5c518bcf4ed56464b679baab444799de0c4"
+    },
+    {
+      "path": "v1/projects/ecommerce-skincare-launch.imging",
+      "bytes": 569517,
+      "sha256": "ad55785b8ad28750b94e79a0681230b5021694b4677bd8911a080c6cf67d07b1"
+    },
+    {
+      "path": "v1/projects/ecommerce-sunscreen-summer.imging",
+      "bytes": 493878,
+      "sha256": "df2e3d7befc1274c7d8a30be816c75a6476c0ea97379ede6bc589a89d24d7c2a"
+    },
+    {
+      "path": "v1/PROMPT_SET.md",
+      "bytes": 1500,
+      "sha256": "c327dc8719e11ab8e5e10c816bc24bec131944ac50229957c56c93436c8f4405"
+    },
+    {
+      "path": "v1/sources.json",
+      "bytes": 16602,
+      "sha256": "1bd7b9b7c76d06b93c011381d587d8c5ad22bb2d1cadbbdd78bbac7f0bce14a5"
+    },
+    {
+      "path": "v1/thumbnails/body-lotion-blush.webp",
+      "bytes": 5770,
+      "sha256": "96a3af3cb1325bd0ae0d1dc414b8c1075f8f04e551ac2dbdec8941a07b30a4cb"
+    },
+    {
+      "path": "v1/thumbnails/cleanser-pump-milky.webp",
+      "bytes": 3708,
+      "sha256": "120ca7941b6b06d7aaab177bf4c4d2b9f58b64321456bb72497da5e5adc53464"
+    },
+    {
+      "path": "v1/thumbnails/cream-jar-ivory.webp",
+      "bytes": 8362,
+      "sha256": "4d31b4d8098c2ea255ccdaa21bc6d42a61070608f8ed2f3f9b152eca4c02bee5"
+    },
+    {
+      "path": "v1/thumbnails/cushion-compact-ivory.webp",
+      "bytes": 19980,
+      "sha256": "0f62ee318daa9224a2c922b7b422c07836318b8fb68cbdddb3daf1fea06eb261"
+    },
+    {
+      "path": "v1/thumbnails/dropper-serum-amber.webp",
+      "bytes": 5822,
+      "sha256": "98adacc251ce3ba3426935bc009875a81cfc060c9b67ba3b66b4141b9da53e2a"
+    },
+    {
+      "path": "v1/thumbnails/eye-cream-pearl.webp",
+      "bytes": 4558,
+      "sha256": "405145ac9961db37ba9f26a7744f731f79c3aea99f6268717aa049fe5e17576e"
+    },
+    {
+      "path": "v1/thumbnails/facial-mist-aqua.webp",
+      "bytes": 4446,
+      "sha256": "1776208dd203f0eb7a5e54385f89a6ce54e65bb7d61e49c17133f539123329f7"
+    },
+    {
+      "path": "v1/thumbnails/foundation-pump-neutral.webp",
+      "bytes": 4086,
+      "sha256": "e3710f69473568c21ee45bda65bf444d329bc9e578b2cc146263ad076c470d5d"
+    },
+    {
+      "path": "v1/thumbnails/lip-gloss-rose.webp",
+      "bytes": 5128,
+      "sha256": "02c830c2764205991f9d59368b6048c064371dc26b5f4147e58212a9f037dfa6"
+    },
+    {
+      "path": "v1/thumbnails/lipstick-rose.webp",
+      "bytes": 7218,
+      "sha256": "99c6dabba60cc3a948315e8de1103c2d3cc1bcd7a220edd141b9e2c2a46ccd57"
+    },
+    {
+      "path": "v1/thumbnails/mascara-black-gold.webp",
+      "bytes": 6028,
+      "sha256": "84509a6feaed07ceb078cd666d0ad805f640150db9cdbed259ab9118efa9eff4"
+    },
+    {
+      "path": "v1/thumbnails/perfume-blush.webp",
+      "bytes": 12520,
+      "sha256": "387ce71ffa20629945b6ccb25d3a6787a4e847d4a9c6f5726a0798382a9b19e2"
+    },
+    {
+      "path": "v1/thumbnails/serum-pump-ivory.webp",
+      "bytes": 3668,
+      "sha256": "3791c44977e633f524210736254d13f73411063a21d150d118be33309f695094"
+    },
+    {
+      "path": "v1/thumbnails/shampoo-pump-amber.webp",
+      "bytes": 5872,
+      "sha256": "2d382ec51c24bd03f0a11569fbd19863c4b0fad666b8e5d47f51144190ef48da"
+    },
+    {
+      "path": "v1/thumbnails/sheet-mask-pouch-blush.webp",
+      "bytes": 6246,
+      "sha256": "99729032c93188a8d6a7d927bf24cc4ea3f5b79fdabe2f827e841a368c12d111"
+    },
+    {
+      "path": "v1/thumbnails/sunscreen-tube-sand.webp",
+      "bytes": 5174,
+      "sha256": "3321a301386a02a29a33c929a13e0a7d4bfb5efc73173641d6f2a2a5c3003ab0"
+    },
+    {
+      "path": "v1/thumbnails/toner-bottle-blue.webp",
+      "bytes": 5190,
+      "sha256": "bd90aa7222d8637d969061585ac18fe2fb204e99a39c243c742f70cf6ecaadab"
+    }
+  ]
+}

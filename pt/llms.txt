@@ -1,0 +1,48 @@
+# ImgIng
+
+> Converta e comprima imagens, crie animações e designs em camadas e remova fundos com IA diretamente no navegador. Formatos comuns não são enviados; grátis, sem cadastro e sem marca-d’água.
+
+Site oficial em português: https://imging.cn/pt/
+Última revisão: 2026-08-22
+
+## Informações do produto
+
+- No navegador
+- Grátis · Sem cadastro · Sem marca-d’água
+- Formatos comuns e recursos de IA local não são enviados. Os formatos que exigem servidor são identificados claramente antes do processamento.
+- Você pode comparar o original com o resultado; o arquivo gerado é lido novamente para confirmar o formato e as dimensões.
+
+## Áreas de trabalho
+
+- [Criar imagens online com camadas](https://imging.cn/pt/img)
+- [Recorte de vídeo Beta](https://imging.cn/pt/video)
+- [Comprimir PDF localmente](https://imging.cn/pt/pdf)
+- [Converter PDF em HTML autônomo](https://imging.cn/pt/pdf-html)
+- [Converter HTML em PDF no tamanho real](https://imging.cn/pt/html-pdf)
+
+## Guias
+
+- [Converter HEIC em JPG localmente](https://imging.cn/pt/heic-to-jpg/): Converta imagens HEIC do iPhone em JPG, WebP ou AVIF diretamente no navegador. A imagem não é enviada.
+- [Comprimir PNG com alta qualidade](https://imging.cn/pt/png-compress/): Preserve a transparência e ajuste PNG-8, paleta e pontilhamento para reduzir o arquivo sem diferença visual.
+- [Comprimir GIF, APNG e WebP animado](https://imging.cn/pt/compress-gif/): Preserve tempos e repetições, edite quadros e comprima animações diretamente no navegador.
+- [Remover fundo com IA local](https://imging.cn/pt/remove-background/): Recorte pessoas e produtos localmente e troque o fundo por transparência, cor sólida ou imagem.
+- [Criar imagens online com camadas](https://imging.cn/pt/online-design/): Até 24 camadas, filtros, beleza, rotação, composição e projetos .imging editáveis no navegador.
+- [Recorte de vídeo Beta](https://imging.cn/pt/video-editor/): Recorte pessoas com IA temporal, preserve a proporção, troque o fundo e exporte MP4 ou WebM transparente.
+- [Comprimir PDF localmente](https://imging.cn/pt/pdf-compress/): Analise o DPI efetivo das imagens e reduza o tamanho preservando texto, vetores, links e dimensões das páginas.
+- [Converter PDF em HTML autônomo](https://imging.cn/pt/pdf-to-html/): Reconstrua layout fixo, texto selecionável, imagens, vetores e fontes permitidas sem menu de visualizador.
+- [Converter HTML em PDF no tamanho real](https://imging.cn/pt/html-to-pdf/): Visualize o HTML imediatamente e salve CSS, texto, links e geometria real de página como PDF do Chromium.
+- [Processamento local de imagens e privacidade](https://imging.cn/pt/privacy/): Entenda com clareza os limites entre processamento local, WASM, modelos de IA e recursos do servidor.
+- [Avaliar a qualidade da compressão](https://imging.cn/pt/benchmark/): Meça em conjunto tamanho, qualidade visual, transparência, animação e compatibilidade.
+- [Comparar o ImgIng com outras ferramentas](https://imging.cn/pt/compare/): Compare processamento local, privacidade, formatos, animação, IA e limites com os mesmos critérios.
+- [Histórico e roteiro](https://imging.cn/pt/roadmap/)
+
+## Versões por idioma
+
+- 中文: https://imging.cn/
+- English: https://imging.cn/en/
+- 日本語: https://imging.cn/ja/
+- 한국어: https://imging.cn/ko/
+- Deutsch: https://imging.cn/de/
+- Español: https://imging.cn/es/
+- Português: https://imging.cn/pt/
+- Français: https://imging.cn/fr/

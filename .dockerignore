@@ -14,6 +14,8 @@
 !server/**
 !dist/
 !dist/index.html
+!dist/runtime/
+!dist/runtime/**
 !codecs/
 !codecs/**
 !ai/
@@ -30,9 +32,12 @@
 !licenses/**
 !assets/
 !assets/**
+!templates/
+!templates/**
 !docs/
 !docs/imging-project-v1.schema.json
 !docs/imging-project-v2.schema.json
+!docs/imging-project-v3.schema.json
 !seo/
 !seo/**
 # imging-locales:start
@@ -44,6 +49,10 @@
 !ko/**
 !de/
 !de/**
+!es/
+!es/**
+!pt/
+!pt/**
 !fr/
 !fr/**
 # imging-locales:end

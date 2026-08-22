@@ -18,12 +18,17 @@ COPY --link models/video-matting/rvm-mobilenetv3-fp16.onnx /usr/share/nginx/html
 COPY --link models/video-matting/rvm-resnet50-fp16.onnx /usr/share/nginx/html/models/video-matting/rvm-resnet50-fp16.onnx
 COPY --link licenses/ /usr/share/nginx/html/licenses/
 COPY --link assets/ /usr/share/nginx/html/assets/
+COPY --link templates/ /usr/share/nginx/html/templates/
 COPY --link docs/imging-project-v1.schema.json /usr/share/nginx/html/schemas/imging-project-v1.schema.json
 COPY --link docs/imging-project-v2.schema.json /usr/share/nginx/html/schemas/imging-project-v2.schema.json
+COPY --link docs/imging-project-v3.schema.json /usr/share/nginx/html/schemas/imging-project-v3.schema.json
 COPY --link ai/background-removal.js /usr/share/nginx/html/ai/background-removal.js
 COPY --link ai/video-matting.js /usr/share/nginx/html/ai/video-matting.js
 COPY --link video/ /usr/share/nginx/html/video/
 COPY --link pdf/ /usr/share/nginx/html/pdf/
+# 构建生成的内容指纹入口覆盖在稳定资源目录之上；代码更新只新增 URL，
+# 已缓存的旧入口仍可继续使用，HTML 会立即切换到当前内容哈希。
+COPY --link dist/runtime/ /usr/share/nginx/html/
 COPY --link server/ /opt/imging/server/
 COPY --link fonts/ /usr/share/nginx/html/fonts/
 COPY --link seo/ /usr/share/nginx/html/
@@ -32,6 +37,8 @@ COPY --link en/ /usr/share/nginx/html/en/
 COPY --link ja/ /usr/share/nginx/html/ja/
 COPY --link ko/ /usr/share/nginx/html/ko/
 COPY --link de/ /usr/share/nginx/html/de/
+COPY --link es/ /usr/share/nginx/html/es/
+COPY --link pt/ /usr/share/nginx/html/pt/
 COPY --link fr/ /usr/share/nginx/html/fr/
 # imging-locales:end
 COPY --link dist/index.html /usr/share/nginx/html/index.html

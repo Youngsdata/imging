@@ -1,0 +1,535 @@
+{
+  "schemaVersion": 1,
+  "records": [
+    {
+      "id": "gradient-orb-blue",
+      "file": "v1/materials/vector/gradient-orb-blue.svg",
+      "sourceType": "original-vector",
+      "license": "imging-original-free",
+      "generatedAt": "2026-08-22T00:00:00.000Z",
+      "brand": "none",
+      "trademark": "none",
+      "transparent": true
+    },
+    {
+      "id": "gradient-orb-coral",
+      "file": "v1/materials/vector/gradient-orb-coral.svg",
+      "sourceType": "original-vector",
+      "license": "imging-original-free",
+      "generatedAt": "2026-08-22T00:00:00.000Z",
+      "brand": "none",
+      "trademark": "none",
+      "transparent": true
+    },
+    {
+      "id": "gradient-orb-mint",
+      "file": "v1/materials/vector/gradient-orb-mint.svg",
+      "sourceType": "original-vector",
+      "license": "imging-original-free",
+      "generatedAt": "2026-08-22T00:00:00.000Z",
+      "brand": "none",
+      "trademark": "none",
+      "transparent": true
+    },
+    {
+      "id": "gradient-orb-gold",
+      "file": "v1/materials/vector/gradient-orb-gold.svg",
+      "sourceType": "original-vector",
+      "license": "imging-original-free",
+      "generatedAt": "2026-08-22T00:00:00.000Z",
+      "brand": "none",
+      "trademark": "none",
+      "transparent": true
+    },
+    {
+      "id": "dot-grid-dark",
+      "file": "v1/materials/vector/dot-grid-dark.svg",
+      "sourceType": "original-vector",
+      "license": "imging-original-free",
+      "generatedAt": "2026-08-22T00:00:00.000Z",
+      "brand": "none",
+      "trademark": "none",
+      "transparent": true
+    },
+    {
+      "id": "dot-grid-light",
+      "file": "v1/materials/vector/dot-grid-light.svg",
+      "sourceType": "original-vector",
+      "license": "imging-original-free",
+      "generatedAt": "2026-08-22T00:00:00.000Z",
+      "brand": "none",
+      "trademark": "none",
+      "transparent": true
+    },
+    {
+      "id": "line-grid-blue",
+      "file": "v1/materials/vector/line-grid-blue.svg",
+      "sourceType": "original-vector",
+      "license": "imging-original-free",
+      "generatedAt": "2026-08-22T00:00:00.000Z",
+      "brand": "none",
+      "trademark": "none",
+      "transparent": true
+    },
+    {
+      "id": "glass-card",
+      "file": "v1/materials/vector/glass-card.svg",
+      "sourceType": "original-vector",
+      "license": "imging-original-free",
+      "generatedAt": "2026-08-22T00:00:00.000Z",
+      "brand": "none",
+      "trademark": "none",
+      "transparent": true
+    },
+    {
+      "id": "outline-frame-blue",
+      "file": "v1/materials/vector/outline-frame-blue.svg",
+      "sourceType": "original-vector",
+      "license": "imging-original-free",
+      "generatedAt": "2026-08-22T00:00:00.000Z",
+      "brand": "none",
+      "trademark": "none",
+      "transparent": true
+    },
+    {
+      "id": "quote-mark",
+      "file": "v1/materials/vector/quote-mark.svg",
+      "sourceType": "original-vector",
+      "license": "imging-original-free",
+      "generatedAt": "2026-08-22T00:00:00.000Z",
+      "brand": "none",
+      "trademark": "none",
+      "transparent": true
+    },
+    {
+      "id": "chart-bars-blue",
+      "file": "v1/materials/vector/chart-bars-blue.svg",
+      "sourceType": "original-vector",
+      "license": "imging-original-free",
+      "generatedAt": "2026-08-22T00:00:00.000Z",
+      "brand": "none",
+      "trademark": "none",
+      "transparent": true
+    },
+    {
+      "id": "chart-line-lime",
+      "file": "v1/materials/vector/chart-line-lime.svg",
+      "sourceType": "original-vector",
+      "license": "imging-original-free",
+      "generatedAt": "2026-08-22T00:00:00.000Z",
+      "brand": "none",
+      "trademark": "none",
+      "transparent": true
+    },
+    {
+      "id": "pill-blue",
+      "file": "v1/materials/vector/pill-blue.svg",
+      "sourceType": "original-vector",
+      "license": "imging-original-free",
+      "generatedAt": "2026-08-22T00:00:00.000Z",
+      "brand": "none",
+      "trademark": "none",
+      "transparent": true
+    },
+    {
+      "id": "pill-red",
+      "file": "v1/materials/vector/pill-red.svg",
+      "sourceType": "original-vector",
+      "license": "imging-original-free",
+      "generatedAt": "2026-08-22T00:00:00.000Z",
+      "brand": "none",
+      "trademark": "none",
+      "transparent": true
+    },
+    {
+      "id": "sale-burst-yellow",
+      "file": "v1/materials/vector/sale-burst-yellow.svg",
+      "sourceType": "original-vector",
+      "license": "imging-original-free",
+      "generatedAt": "2026-08-22T00:00:00.000Z",
+      "brand": "none",
+      "trademark": "none",
+      "transparent": true
+    },
+    {
+      "id": "coupon-ticket-red",
+      "file": "v1/materials/vector/coupon-ticket-red.svg",
+      "sourceType": "original-vector",
+      "license": "imging-original-free",
+      "generatedAt": "2026-08-22T00:00:00.000Z",
+      "brand": "none",
+      "trademark": "none",
+      "transparent": true
+    },
+    {
+      "id": "price-tag-black",
+      "file": "v1/materials/vector/price-tag-black.svg",
+      "sourceType": "original-vector",
+      "license": "imging-original-free",
+      "generatedAt": "2026-08-22T00:00:00.000Z",
+      "brand": "none",
+      "trademark": "none",
+      "transparent": true
+    },
+    {
+      "id": "ribbon-red",
+      "file": "v1/materials/vector/ribbon-red.svg",
+      "sourceType": "original-vector",
+      "license": "imging-original-free",
+      "generatedAt": "2026-08-22T00:00:00.000Z",
+      "brand": "none",
+      "trademark": "none",
+      "transparent": true
+    },
+    {
+      "id": "sparkle-gold",
+      "file": "v1/materials/vector/sparkle-gold.svg",
+      "sourceType": "original-vector",
+      "license": "imging-original-free",
+      "generatedAt": "2026-08-22T00:00:00.000Z",
+      "brand": "none",
+      "trademark": "none",
+      "transparent": true
+    },
+    {
+      "id": "sparkle-white",
+      "file": "v1/materials/vector/sparkle-white.svg",
+      "sourceType": "original-vector",
+      "license": "imging-original-free",
+      "generatedAt": "2026-08-22T00:00:00.000Z",
+      "brand": "none",
+      "trademark": "none",
+      "transparent": true
+    },
+    {
+      "id": "star-cluster",
+      "file": "v1/materials/vector/star-cluster.svg",
+      "sourceType": "original-vector",
+      "license": "imging-original-free",
+      "generatedAt": "2026-08-22T00:00:00.000Z",
+      "brand": "none",
+      "trademark": "none",
+      "transparent": true
+    },
+    {
+      "id": "wave-underline-blue",
+      "file": "v1/materials/vector/wave-underline-blue.svg",
+      "sourceType": "original-vector",
+      "license": "imging-original-free",
+      "generatedAt": "2026-08-22T00:00:00.000Z",
+      "brand": "none",
+      "trademark": "none",
+      "transparent": true
+    },
+    {
+      "id": "scribble-circle-red",
+      "file": "v1/materials/vector/scribble-circle-red.svg",
+      "sourceType": "original-vector",
+      "license": "imging-original-free",
+      "generatedAt": "2026-08-22T00:00:00.000Z",
+      "brand": "none",
+      "trademark": "none",
+      "transparent": true
+    },
+    {
+      "id": "podium-ivory",
+      "file": "v1/materials/vector/podium-ivory.svg",
+      "sourceType": "original-vector",
+      "license": "imging-original-free",
+      "generatedAt": "2026-08-22T00:00:00.000Z",
+      "brand": "none",
+      "trademark": "none",
+      "transparent": true
+    },
+    {
+      "id": "podium-black",
+      "file": "v1/materials/vector/podium-black.svg",
+      "sourceType": "original-vector",
+      "license": "imging-original-free",
+      "generatedAt": "2026-08-22T00:00:00.000Z",
+      "brand": "none",
+      "trademark": "none",
+      "transparent": true
+    },
+    {
+      "id": "arch-frame-sand",
+      "file": "v1/materials/vector/arch-frame-sand.svg",
+      "sourceType": "original-vector",
+      "license": "imging-original-free",
+      "generatedAt": "2026-08-22T00:00:00.000Z",
+      "brand": "none",
+      "trademark": "none",
+      "transparent": true
+    },
+    {
+      "id": "shadow-soft",
+      "file": "v1/materials/vector/shadow-soft.svg",
+      "sourceType": "original-vector",
+      "license": "imging-original-free",
+      "generatedAt": "2026-08-22T00:00:00.000Z",
+      "brand": "none",
+      "trademark": "none",
+      "transparent": true
+    },
+    {
+      "id": "bubble-cluster-blue",
+      "file": "v1/materials/vector/bubble-cluster-blue.svg",
+      "sourceType": "original-vector",
+      "license": "imging-original-free",
+      "generatedAt": "2026-08-22T00:00:00.000Z",
+      "brand": "none",
+      "trademark": "none",
+      "transparent": true
+    },
+    {
+      "id": "water-drops",
+      "file": "v1/materials/vector/water-drops.svg",
+      "sourceType": "original-vector",
+      "license": "imging-original-free",
+      "generatedAt": "2026-08-22T00:00:00.000Z",
+      "brand": "none",
+      "trademark": "none",
+      "transparent": true
+    },
+    {
+      "id": "botanical-leaf",
+      "file": "v1/materials/vector/botanical-leaf.svg",
+      "sourceType": "original-vector",
+      "license": "imging-original-free",
+      "generatedAt": "2026-08-22T00:00:00.000Z",
+      "brand": "none",
+      "trademark": "none",
+      "transparent": true
+    },
+    {
+      "id": "ingredient-molecule",
+      "file": "v1/materials/vector/ingredient-molecule.svg",
+      "sourceType": "original-vector",
+      "license": "imging-original-free",
+      "generatedAt": "2026-08-22T00:00:00.000Z",
+      "brand": "none",
+      "trademark": "none",
+      "transparent": true
+    },
+    {
+      "id": "shipping-truck",
+      "file": "v1/materials/vector/shipping-truck.svg",
+      "sourceType": "original-vector",
+      "license": "imging-original-free",
+      "generatedAt": "2026-08-22T00:00:00.000Z",
+      "brand": "none",
+      "trademark": "none",
+      "transparent": true
+    },
+    {
+      "id": "guarantee-shield",
+      "file": "v1/materials/vector/guarantee-shield.svg",
+      "sourceType": "original-vector",
+      "license": "imging-original-free",
+      "generatedAt": "2026-08-22T00:00:00.000Z",
+      "brand": "none",
+      "trademark": "none",
+      "transparent": true
+    },
+    {
+      "id": "gift-box",
+      "file": "v1/materials/vector/gift-box.svg",
+      "sourceType": "original-vector",
+      "license": "imging-original-free",
+      "generatedAt": "2026-08-22T00:00:00.000Z",
+      "brand": "none",
+      "trademark": "none",
+      "transparent": true
+    },
+    {
+      "id": "shopping-bag",
+      "file": "v1/materials/vector/shopping-bag.svg",
+      "sourceType": "original-vector",
+      "license": "imging-original-free",
+      "generatedAt": "2026-08-22T00:00:00.000Z",
+      "brand": "none",
+      "trademark": "none",
+      "transparent": true
+    },
+    {
+      "id": "confetti",
+      "file": "v1/materials/vector/confetti.svg",
+      "sourceType": "original-vector",
+      "license": "imging-original-free",
+      "generatedAt": "2026-08-22T00:00:00.000Z",
+      "brand": "none",
+      "trademark": "none",
+      "transparent": true
+    },
+    {
+      "id": "serum-pump-ivory",
+      "file": "v1/materials/cosmetics/serum-pump-ivory.png",
+      "sourceType": "ai-generated-and-locally-cut-out",
+      "license": "imging-original-free",
+      "generatedAt": "2026-08-22T00:00:00.000Z",
+      "brand": "none",
+      "trademark": "none",
+      "transparent": true
+    },
+    {
+      "id": "dropper-serum-amber",
+      "file": "v1/materials/cosmetics/dropper-serum-amber.png",
+      "sourceType": "ai-generated-and-locally-cut-out",
+      "license": "imging-original-free",
+      "generatedAt": "2026-08-22T00:00:00.000Z",
+      "brand": "none",
+      "trademark": "none",
+      "transparent": true
+    },
+    {
+      "id": "cream-jar-ivory",
+      "file": "v1/materials/cosmetics/cream-jar-ivory.png",
+      "sourceType": "ai-generated-and-locally-cut-out",
+      "license": "imging-original-free",
+      "generatedAt": "2026-08-22T00:00:00.000Z",
+      "brand": "none",
+      "trademark": "none",
+      "transparent": true
+    },
+    {
+      "id": "sunscreen-tube-sand",
+      "file": "v1/materials/cosmetics/sunscreen-tube-sand.png",
+      "sourceType": "ai-generated-and-locally-cut-out",
+      "license": "imging-original-free",
+      "generatedAt": "2026-08-22T00:00:00.000Z",
+      "brand": "none",
+      "trademark": "none",
+      "transparent": true
+    },
+    {
+      "id": "cleanser-pump-milky",
+      "file": "v1/materials/cosmetics/cleanser-pump-milky.png",
+      "sourceType": "ai-generated-and-locally-cut-out",
+      "license": "imging-original-free",
+      "generatedAt": "2026-08-22T00:00:00.000Z",
+      "brand": "none",
+      "trademark": "none",
+      "transparent": true
+    },
+    {
+      "id": "toner-bottle-blue",
+      "file": "v1/materials/cosmetics/toner-bottle-blue.png",
+      "sourceType": "ai-generated-and-locally-cut-out",
+      "license": "imging-original-free",
+      "generatedAt": "2026-08-22T00:00:00.000Z",
+      "brand": "none",
+      "trademark": "none",
+      "transparent": true
+    },
+    {
+      "id": "eye-cream-pearl",
+      "file": "v1/materials/cosmetics/eye-cream-pearl.png",
+      "sourceType": "ai-generated-and-locally-cut-out",
+      "license": "imging-original-free",
+      "generatedAt": "2026-08-22T00:00:00.000Z",
+      "brand": "none",
+      "trademark": "none",
+      "transparent": true
+    },
+    {
+      "id": "facial-mist-aqua",
+      "file": "v1/materials/cosmetics/facial-mist-aqua.png",
+      "sourceType": "ai-generated-and-locally-cut-out",
+      "license": "imging-original-free",
+      "generatedAt": "2026-08-22T00:00:00.000Z",
+      "brand": "none",
+      "trademark": "none",
+      "transparent": true
+    },
+    {
+      "id": "sheet-mask-pouch-blush",
+      "file": "v1/materials/cosmetics/sheet-mask-pouch-blush.png",
+      "sourceType": "ai-generated-and-locally-cut-out",
+      "license": "imging-original-free",
+      "generatedAt": "2026-08-22T00:00:00.000Z",
+      "brand": "none",
+      "trademark": "none",
+      "transparent": true
+    },
+    {
+      "id": "body-lotion-blush",
+      "file": "v1/materials/cosmetics/body-lotion-blush.png",
+      "sourceType": "ai-generated-and-locally-cut-out",
+      "license": "imging-original-free",
+      "generatedAt": "2026-08-22T00:00:00.000Z",
+      "brand": "none",
+      "trademark": "none",
+      "transparent": true
+    },
+    {
+      "id": "shampoo-pump-amber",
+      "file": "v1/materials/cosmetics/shampoo-pump-amber.png",
+      "sourceType": "ai-generated-and-locally-cut-out",
+      "license": "imging-original-free",
+      "generatedAt": "2026-08-22T00:00:00.000Z",
+      "brand": "none",
+      "trademark": "none",
+      "transparent": true
+    },
+    {
+      "id": "perfume-blush",
+      "file": "v1/materials/cosmetics/perfume-blush.png",
+      "sourceType": "ai-generated-and-locally-cut-out",
+      "license": "imging-original-free",
+      "generatedAt": "2026-08-22T00:00:00.000Z",
+      "brand": "none",
+      "trademark": "none",
+      "transparent": true
+    },
+    {
+      "id": "foundation-pump-neutral",
+      "file": "v1/materials/cosmetics/foundation-pump-neutral.png",
+      "sourceType": "ai-generated-and-locally-cut-out",
+      "license": "imging-original-free",
+      "generatedAt": "2026-08-22T00:00:00.000Z",
+      "brand": "none",
+      "trademark": "none",
+      "transparent": true
+    },
+    {
+      "id": "lipstick-rose",
+      "file": "v1/materials/cosmetics/lipstick-rose.png",
+      "sourceType": "ai-generated-and-locally-cut-out",
+      "license": "imging-original-free",
+      "generatedAt": "2026-08-22T00:00:00.000Z",
+      "brand": "none",
+      "trademark": "none",
+      "transparent": true
+    },
+    {
+      "id": "lip-gloss-rose",
+      "file": "v1/materials/cosmetics/lip-gloss-rose.png",
+      "sourceType": "ai-generated-and-locally-cut-out",
+      "license": "imging-original-free",
+      "generatedAt": "2026-08-22T00:00:00.000Z",
+      "brand": "none",
+      "trademark": "none",
+      "transparent": true
+    },
+    {
+      "id": "mascara-black-gold",
+      "file": "v1/materials/cosmetics/mascara-black-gold.png",
+      "sourceType": "ai-generated-and-locally-cut-out",
+      "license": "imging-original-free",
+      "generatedAt": "2026-08-22T00:00:00.000Z",
+      "brand": "none",
+      "trademark": "none",
+      "transparent": true
+    },
+    {
+      "id": "cushion-compact-ivory",
+      "file": "v1/materials/cosmetics/cushion-compact-ivory.png",
+      "sourceType": "ai-generated-and-locally-cut-out",
+      "license": "imging-original-free",
+      "generatedAt": "2026-08-22T00:00:00.000Z",
+      "brand": "none",
+      "trademark": "none",
+      "transparent": true
+    }
+  ]
+}

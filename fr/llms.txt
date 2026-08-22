@@ -43,4 +43,6 @@ Dernière vérification: 2026-08-22
 - 日本語: https://imging.cn/ja/
 - 한국어: https://imging.cn/ko/
 - Deutsch: https://imging.cn/de/
+- Español: https://imging.cn/es/
+- Português: https://imging.cn/pt/
 - Français: https://imging.cn/fr/

@@ -1,0 +1,104 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://imging.cn/schemas/imging-project-v3.schema.json",
+  "title": "图映开放工程格式 v3",
+  "$defs": {
+    "transform": {
+      "type": "object",
+      "required": ["origin", "x", "y", "scale", "rotation"],
+      "properties": {
+        "origin": { "const": "canvas-center" },
+        "x": { "type": "number", "minimum": -32768, "maximum": 32768 },
+        "y": { "type": "number", "minimum": -32768, "maximum": 32768 },
+        "scale": { "type": "number", "minimum": 0.01, "maximum": 5 },
+        "rotation": { "type": "number", "minimum": -180, "maximum": 180 }
+      },
+      "additionalProperties": true
+    },
+    "adjustments": {
+      "type": "object",
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "preset": { "type": "string", "pattern": "^[A-Za-z0-9-]{1,32}$" },
+        "intensity": { "type": "number", "minimum": 0, "maximum": 100 },
+        "exposure": { "type": "number", "minimum": -100, "maximum": 100 },
+        "contrast": { "type": "number", "minimum": -100, "maximum": 100 },
+        "highlights": { "type": "number", "minimum": -100, "maximum": 100 },
+        "shadows": { "type": "number", "minimum": -100, "maximum": 100 },
+        "saturation": { "type": "number", "minimum": -100, "maximum": 100 },
+        "vibrance": { "type": "number", "minimum": -100, "maximum": 100 },
+        "temperature": { "type": "number", "minimum": -100, "maximum": 100 },
+        "tint": { "type": "number", "minimum": -100, "maximum": 100 },
+        "hue": { "type": "number", "minimum": -180, "maximum": 180 },
+        "skinSmooth": { "type": "number", "minimum": 0, "maximum": 100 },
+        "skinBrighten": { "type": "number", "minimum": 0, "maximum": 100 },
+        "rosy": { "type": "number", "minimum": -100, "maximum": 100 },
+        "clarity": { "type": "number", "minimum": -100, "maximum": 100 },
+        "sharpen": { "type": "number", "minimum": 0, "maximum": 100 },
+        "fade": { "type": "number", "minimum": 0, "maximum": 100 },
+        "vignette": { "type": "number", "minimum": 0, "maximum": 100 },
+        "grain": { "type": "number", "minimum": 0, "maximum": 100 }
+      },
+      "additionalProperties": true
+    },
+    "canvas": {
+      "type": "object",
+      "required": ["unit", "width", "height", "coordinateSystem", "background"],
+      "properties": {
+        "unit": { "const": "px" },
+        "width": { "type": "integer", "minimum": 64, "maximum": 8192 },
+        "height": { "type": "integer", "minimum": 64, "maximum": 8192 },
+        "coordinateSystem": { "type": "object", "required": ["origin", "xAxis", "yAxis"], "properties": { "origin": { "const": "center" }, "xAxis": { "const": "right" }, "yAxis": { "const": "down" } }, "additionalProperties": false },
+        "background": { "type": "object", "required": ["type", "color"], "properties": { "type": { "enum": ["transparent", "color"] }, "color": { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$" } }, "additionalProperties": true },
+        "adjustments": { "$ref": "#/$defs/adjustments" }
+      },
+      "additionalProperties": true
+    },
+    "imageLayer": {
+      "type": "object",
+      "required": ["id", "type", "name", "assetId", "visible", "opacity", "transform"],
+      "properties": { "id": { "type": "string", "minLength": 1 }, "type": { "const": "image" }, "name": { "type": "string", "maxLength": 512 }, "assetId": { "type": "string", "minLength": 1 }, "visible": { "const": true }, "opacity": { "type": "number", "minimum": 0, "maximum": 1 }, "transform": { "$ref": "#/$defs/transform" }, "adjustments": { "$ref": "#/$defs/adjustments" } },
+      "additionalProperties": true
+    },
+    "textLayer": {
+      "type": "object",
+      "required": ["id", "type", "name", "visible", "opacity", "transform", "text"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 }, "type": { "const": "text" }, "name": { "type": "string", "maxLength": 512 }, "visible": { "const": true }, "opacity": { "type": "number", "minimum": 0, "maximum": 1 }, "transform": { "$ref": "#/$defs/transform" },
+        "text": { "type": "object", "required": ["value", "fontId", "fontFamily", "fontSize", "color", "align", "lineHeight", "effect", "depth"], "properties": { "value": { "type": "string", "maxLength": 500, "pattern": "^[^\\r\\n]*(?:\\r?\\n[^\\r\\n]*){0,23}$" }, "fontId": { "type": "string", "pattern": "^[A-Za-z0-9-]{1,40}$" }, "fontFamily": { "type": "string", "maxLength": 300 }, "fontSize": { "type": "number", "minimum": 8, "maximum": 1024 }, "color": { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$" }, "align": { "enum": ["left", "center", "right"] }, "lineHeight": { "type": "number", "minimum": 0.8, "maximum": 3 }, "effect": { "enum": ["flat", "soft3d"] }, "depth": { "type": "number", "minimum": 1, "maximum": 12 } }, "additionalProperties": true }
+      },
+      "additionalProperties": true
+    },
+    "shapeLayer": {
+      "type": "object",
+      "required": ["id", "type", "name", "visible", "opacity", "transform", "shape"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 }, "type": { "const": "shape" }, "name": { "type": "string", "maxLength": 512 }, "visible": { "const": true }, "opacity": { "type": "number", "minimum": 0, "maximum": 1 }, "transform": { "$ref": "#/$defs/transform" },
+        "shape": { "type": "object", "required": ["kind", "width", "height", "fill", "stroke", "strokeWidth", "radius"], "properties": { "kind": { "enum": ["rect", "round", "ellipse", "triangle", "diamond", "star", "line", "arrow"] }, "width": { "type": "number", "minimum": 8, "maximum": 8192 }, "height": { "type": "number", "minimum": 8, "maximum": 8192 }, "fill": { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$" }, "stroke": { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$" }, "strokeWidth": { "type": "number", "minimum": 0, "maximum": 80 }, "radius": { "type": "number", "minimum": 0, "maximum": 50 } }, "additionalProperties": true }
+      },
+      "additionalProperties": true
+    },
+    "layer": { "oneOf": [{ "$ref": "#/$defs/imageLayer" }, { "$ref": "#/$defs/textLayer" }, { "$ref": "#/$defs/shapeLayer" }] },
+    "page": {
+      "type": "object",
+      "required": ["id", "name", "canvas", "layers"],
+      "properties": { "id": { "type": "string", "minLength": 1, "maxLength": 200 }, "name": { "type": "string", "maxLength": 80 }, "canvas": { "$ref": "#/$defs/canvas" }, "layers": { "type": "array", "maxItems": 24, "items": { "$ref": "#/$defs/layer" } }, "editor": { "type": "object" } },
+      "additionalProperties": true
+    }
+  },
+  "type": "object",
+  "required": ["format", "formatVersion", "mimeType", "generator", "document", "assets", "pages"],
+  "properties": {
+    "format": { "const": "imging-project" },
+    "formatVersion": { "const": 3 },
+    "mimeType": { "const": "application/vnd.imging.project+zip" },
+    "generator": { "type": "object", "required": ["name", "id"], "properties": { "name": { "type": "string" }, "id": { "const": "imging" }, "url": { "type": "string", "format": "uri" } }, "additionalProperties": true },
+    "document": { "type": "object", "required": ["id", "title", "createdAt", "modifiedAt"], "properties": { "id": { "type": "string", "minLength": 1, "maxLength": 200 }, "title": { "type": "string", "maxLength": 200 }, "createdAt": { "type": "string", "format": "date-time" }, "modifiedAt": { "type": "string", "format": "date-time" } }, "additionalProperties": true },
+    "assets": { "type": "array", "maxItems": 576, "items": { "type": "object", "required": ["id", "path", "fileName", "mediaType", "byteLength", "pixelWidth", "pixelHeight", "crc32"], "properties": { "id": { "type": "string", "minLength": 1 }, "path": { "type": "string", "pattern": "^assets/[A-Za-z0-9._/-]+$" }, "fileName": { "type": "string", "maxLength": 512 }, "mediaType": { "type": "string", "pattern": "^image/" }, "byteLength": { "type": "integer", "minimum": 0 }, "pixelWidth": { "type": "integer", "minimum": 1 }, "pixelHeight": { "type": "integer", "minimum": 1 }, "crc32": { "type": "string", "pattern": "^[0-9a-f]{8}$" }, "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" } }, "additionalProperties": true } },
+    "pages": { "type": "array", "minItems": 1, "maxItems": 24, "items": { "$ref": "#/$defs/page" } },
+    "editor": { "type": "object" },
+    "exportSettings": { "type": "object", "properties": { "format": { "enum": ["png", "webp", "jpeg"] }, "quality": { "type": ["number", "null"], "minimum": 1, "maximum": 100 }, "qualityMode": { "enum": ["auto", "manual", null] }, "pngMode": { "enum": ["truecolor", "indexed"] }, "pngColors": { "type": "integer", "minimum": 4, "maximum": 256 }, "pngDither": { "type": "boolean" } }, "additionalProperties": true },
+    "preview": { "type": "object" }
+  },
+  "additionalProperties": true
+}
