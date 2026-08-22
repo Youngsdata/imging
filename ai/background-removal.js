@@ -71,6 +71,26 @@
   function getModel(id){ return MODELS[id]||MODELS.quick; }
   function publicModel(model){ return {id:model.id,label:model.label,technicalName:model.technicalName,description:model.description,sizeText:model.sizeText,bytes:model.bytes,sha256:model.sha256,release:MODEL_RELEASE,url:model.url,fallbackUrl:model.localUrl}; }
   function listModels(){ return Object.keys(MODELS).map(function(id){return publicModel(MODELS[id]);}); }
+  function deviceProfile(){
+    var nav=typeof navigator==='object'&&navigator?navigator:{},ua=String(nav.userAgent||''),platform=String(nav.platform||''),touch=+nav.maxTouchPoints||0;
+    var ios=/iPhone|iPad|iPod/i.test(ua)||(platform==='MacIntel'&&touch>1),android=/Android/i.test(ua),mobile=ios||android||/Mobile|Windows Phone/i.test(ua);
+    var wechat=/MicroMessenger/i.test(ua),memory=Math.max(0,+nav.deviceMemory||0);
+    // 微信 iOS 使用 WKWebView；它通常会在 JS 收到可捕获异常前直接终止高内存页面。
+    // 这里给最终透明画布留出模型、原图解码、运行时和浏览器自身所需的内存空间。
+    var maxOutputPixels=ios&&wechat?8000000:(wechat?10000000:(mobile?(memory>=8?16000000:12000000):0));
+    return {ios:ios,android:android,mobile:mobile,wechat:wechat,memory:memory,webgpu:!!nav.gpu,maxOutputPixels:maxOutputPixels};
+  }
+  function modelSupport(modelId){
+    var model=getModel(modelId),profile=deviceProfile(),supported=true,reason='';
+    if(typeof WebAssembly!=='object'){
+      supported=false;reason=copy('当前浏览器不支持本地 AI 所需的 WebAssembly，请使用最新版 Chrome、Edge 或 Safari','This browser does not support the WebAssembly required by local AI. Use the latest Chrome, Edge or Safari.');
+    }else if(profile.mobile&&model.id!=='quick'){
+      supported=false;reason=profile.wechat
+        ?copy('微信手机端为避免内存不足导致页面退出，仅开放快速 AI；专业 AI 与骨灰级 AI 请使用电脑端 Chrome 或 Edge','To prevent the page closing when memory runs low, WeChat mobile only enables Fast AI. Use desktop Chrome or Edge for Pro AI and Ultimate AI.')
+        :copy('手机端为保证稳定性仅开放快速 AI；专业 AI 与骨灰级 AI 请使用电脑端 Chrome、Edge 或 Safari','For reliable processing, mobile devices only enable Fast AI. Use desktop Chrome, Edge or Safari for Pro AI and Ultimate AI.');
+    }
+    return {supported:supported,reason:reason,model:model.id,profile:profile,recommended:profile.mobile?'quick':model.id};
+  }
   function cacheKey(model){ return model.localUrl; }
   function verifiedKey(model){ return CACHE_NAME+':verified:'+model.id; }
   function isVerified(model){ try{return localStorage.getItem(verifiedKey(model))===model.sha256;}catch(_e){return false;} }
@@ -172,10 +192,12 @@
   async function createSession(modelId,onProgress,options){
     var model=getModel(modelId);
     var signal=options&&options.signal;throwIfAborted(signal);
+    var support=modelSupport(model.id);
+    if(!support.supported){var unsupported=new Error(support.reason);unsupported.code='MODEL_UNSUPPORTED';throw unsupported;}
     if(sessionPromises[model.id]) return guarded(sessionPromises[model.id],0,'',signal);
     sessionPromises[model.id]=(async function(){
       var ort=await loadRuntime(onProgress,signal);
-      ort.env.logLevel='error'; ort.env.wasm.wasmPaths=BASE; ort.env.wasm.numThreads=(self.crossOriginIsolated&&navigator.hardwareConcurrency)?Math.min(4,navigator.hardwareConcurrency):1;
+      ort.env.logLevel='error'; ort.env.wasm.wasmPaths=BASE; ort.env.wasm.numThreads=!support.profile.mobile&&self.crossOriginIsolated&&navigator.hardwareConcurrency?Math.min(4,navigator.hardwareConcurrency):1;
       var bytes=await readModel(model,onProgress,signal),sessionOptions={graphOptimizationLevel:'all',executionMode:'sequential',logSeverityLevel:3};
       emit(onProgress,{model:model.id,phase:'init',loaded:model.bytes,total:model.bytes,text:copy('正在初始化 '+model.label,'Initialising '+model.label)});
       if(navigator.gpu){
@@ -200,6 +222,8 @@
         out[i]=(d[p]-128)/256; out[n+i]=(d[p+1]-128)/256; out[n*2+i]=(d[p+2]-128)/256;
       }
     }
+    // 推理只需要 Float32 输入；立即释放临时 RGBA 画布，降低移动端峰值内存。
+    d=null;g=null;c.width=c.height=1;c=null;
     return out;
   }
 
@@ -222,8 +246,10 @@
     if(inferencePending>0)emit(onProgress,{model:model.id,phase:'queue',loaded:model.bytes,total:model.bytes,text:copy('正在等待上一项本地 AI 计算结束','Waiting for the previous local AI task to finish')});
     inferencePending++;
     var scheduled=inferenceTail.then(async function(){throwIfAborted(signal);emit(onProgress,{model:model.id,phase:'infer',loaded:model.bytes,total:model.bytes,text:copy(model.label+' 正在运行本地推理',model.label+' is running local inference')});await yieldToUI();return session.run(feeds,[wanted]);}).finally(function(){inferencePending--;});
-    inferenceTail=scheduled.catch(function(){});
+    // 队列只保留“已结束”信号，不能把上一次输出张量长期挂在全局 Promise 上。
+    inferenceTail=scheduled.then(function(){},function(){});
     var results=await guarded(scheduled,inferenceTimeout(model),copy(model.label+'推理超时，请重试或改用快速 AI',model.label+' inference timed out; retry or use Fast AI'),signal),result=results[wanted],raw=result.data,dims=result.dims||[],mh=dims[dims.length-2]||size,mw=dims[dims.length-1]||size,count=mw*mh;
+    input=null;tensor=null;feeds=null;results=null;
     emit(onProgress,{model:model.id,phase:'mask',loaded:model.bytes,total:model.bytes,text:copy('推理完成，正在生成透明蒙版','Inference is complete; generating the transparency mask')});
     await yieldToUI();throwIfAborted(signal);
     if(raw.length<count) throw new Error(copy(model.label+' 返回的蒙版尺寸异常',model.label+' returned an invalid mask size'));
@@ -246,5 +272,5 @@
   async function cachedModels(){ var out={}; await Promise.all(Object.keys(MODELS).map(async function(id){out[id]=await isCached(id);})); return out; }
   async function removeCached(modelId){ var model=getModel(modelId);markVerified(model,false);if(!('caches' in window)) return false;try{var c=await guarded(caches.open(CACHE_NAME),10000,copy('模型缓存响应超时','The model cache timed out'));return await guarded(c.delete(cacheKey(model)),10000,copy('删除模型缓存超时','Removing the model cache timed out'));}catch(_e){return false;} }
   function status(modelId){ var model=getModel(modelId); return {model:model.id,sessionReady:!!sessionPromises[model.id],backend:backends[model.id]||''}; }
-  window.TYBG={segment:segment,load:createSession,isCached:isCached,cachedModels:cachedModels,removeCached:removeCached,status:status,getModel:function(id){return publicModel(getModel(id));},models:listModels(),modelRelease:MODEL_RELEASE,modelBytes:MODELS.quick.bytes,modelUrl:MODELS.quick.url};
+  window.TYBG={segment:segment,load:createSession,isCached:isCached,cachedModels:cachedModels,removeCached:removeCached,status:status,support:modelSupport,deviceProfile:deviceProfile,getModel:function(id){return publicModel(getModel(id));},models:listModels(),modelRelease:MODEL_RELEASE,modelBytes:MODELS.quick.bytes,modelUrl:MODELS.quick.url};
 })();
