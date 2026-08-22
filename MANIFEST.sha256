@@ -2,7 +2,7 @@
 bccf5db2a11edcd177a54a784e8d0580e3c9aaf941efb76a19775a060a75f5f8  ./.gitattributes
 a7af3f3517670652802376dc5543cf2c07b82fd15a23b089064030b0cbca91a1  ./.github/workflows/publish-image.yml
 a786670ca340cb94b738db5e82f676ae28bf4f6bf17e0318dc0901a3aaef368d  ./DISTRIBUTION-NOTICE.md
-62b558fc6432156176869f87259d3c9766ebc8408f35489f221e8f2ba75a3e44  ./Dockerfile
+5fdf5d4852b02d2dc3af5b72ac4a1acf09478be070534fc1c22418190b6f6308  ./Dockerfile
 4bd5130e5cce626aa604e12950c8eb0d38bb296c1a8f71acc0193ab95cd534b2  ./README.en.md
 a0f8ed6277dd346c6826081c0e4b021d4accaf6aed2edf4b43af617fca8ed094  ./README.md
 a9934882d10695635496996440f67114ee7d8d24739b5a9533da0d423ed743d2  ./THIRD_PARTY_NOTICES.md
@@ -78,8 +78,8 @@ f31807f4ab936a4be19a01e1450379941bf0551e1eee79cf8a9f23f292a5f490  ./dist/runtime
 0a973d3ccb018f6f9240e5d8ce8373d99d0e93997fd4251579bb62b844db9c03  ./docker/nginx/41-inject-beian.sh
 6955a9ba433b738f4c3bc720223fb7c81af7490f696a9e7bd2d3b7c78d67d076  ./docker/nginx/42-configure-real-ip.sh
 a9f2d71428f412c2addd506cc8b1a69f2d48e551a9eec3e94870eb431433a780  ./docker/nginx/43-start-html-pdf.sh
-610083865d2b45c9e9ca83b24963c138070dcfab6a32439c4b9d1884708403fd  ./docker/nginx/app.conf
-8df477dd4b2031b4739e51813a8bfc02f303bbe3d5a70ece4499cc2726f1026b  ./docker/nginx/default.conf
+5cc809d466c837ae2eb052a50fbd7a1b52377113d7452f1cd90f981e2a424040  ./docker/nginx/app.conf
+5ce333e520db06f1689b054da7837cec0862079c1c062a55fe7bd6e3c237b4c8  ./docker/nginx/default.conf
 678a8ac0e21b2f4fa5dfd7e3c8b032a773d766b2ed04bba83939e9a6cec1709b  ./docker/nginx/ssl.conf
 2c1e5b160ffd5f1064337d28974b9837f78ac57575e1be812496e5171dc6c8eb  ./docs/imging-project-format.md
 cebe898b415de849c1ec954ba9a9756702c2cf4c2f3462ca9208aec04228f233  ./docs/imging-project-v1.schema.json

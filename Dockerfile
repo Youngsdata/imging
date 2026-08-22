@@ -1,5 +1,13 @@
 FROM nginx:1.30.4-alpine-slim@sha256:ddde39c6e51f02fde7410c2e9c234cf2d0a4c7bdbbe176aeb37d8ad7ab4eb58c
 
+# 配置先于 1.9 GB 模型层校验。正则引号、include 或指令一旦有误，镜像会在
+# 发布大文件前直接构建失败，避免“镜像能 build、容器启动才发现 Nginx 挂掉”。
+COPY --link docker/nginx/default.conf /etc/nginx/conf.d/default.conf
+COPY --link docker/nginx/app.conf /etc/nginx/snippets/imging-app.conf
+RUN mkdir -p /var/log/imging /etc/nginx/snippets \
+    && touch /etc/nginx/snippets/imging-real-ip.conf \
+    && nginx -t
+
 ENV TZ=UTC
 
 RUN apk add --no-cache tzdata nodejs chromium font-noto-cjk font-noto-emoji
@@ -46,16 +54,11 @@ COPY --link robots.txt sitemap.xml llms.txt /usr/share/nginx/html/
 COPY --link b3449251ce1eb68a7b2920d31af684c1.txt /usr/share/nginx/html/
 
 # Small, mutable deployment files are last so they cannot invalidate assets.
-COPY --link docker/nginx/default.conf /etc/nginx/conf.d/default.conf
-COPY --link docker/nginx/app.conf /etc/nginx/snippets/imging-app.conf
 COPY --link docker/nginx/ssl.conf /etc/nginx/optional/ssl.conf
 COPY --link --chmod=755 docker/nginx/40-enable-ssl.sh /docker-entrypoint.d/40-enable-ssl.sh
 COPY --link --chmod=755 docker/nginx/41-inject-beian.sh /docker-entrypoint.d/41-inject-beian.sh
 COPY --link --chmod=755 docker/nginx/42-configure-real-ip.sh /docker-entrypoint.d/42-configure-real-ip.sh
 COPY --link --chmod=755 docker/nginx/43-start-html-pdf.sh /docker-entrypoint.d/43-start-html-pdf.sh
-
-RUN mkdir -p /var/log/imging \
-    && touch /etc/nginx/snippets/imging-real-ip.conf
 
 EXPOSE 80 443
 
